@@ -1,0 +1,2351 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="galdur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="GALDUR — Complete methodology for governing agentic development and operations v0.9">
+<title>GALDUR Docs — Complete Methodology v0.9</title>
+<script>
+(function(){
+  var t=localStorage.getItem('g-theme');
+  if(t){document.documentElement.setAttribute('data-theme',t);}
+  else if(window.matchMedia('(prefers-color-scheme: light)').matches){
+    document.documentElement.setAttribute('data-theme','light');
+  }
+})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* ═══ THEMES ═══ */
+  :root,[data-theme="galdur"]{
+    --bg:#060d1a;--bg2:#0c1628;--bg3:#111f36;--bg4:#192840;
+    --cyan:#00d4ff;--cyan-dim:#0099bb;--gold:#f5c842;--gold-dim:#c49d2a;
+    --green:#00e896;--green-dim:#00a86b;--red:#ff6b6b;--purple:#b06dff;
+    --text:#dde8f5;--muted:#6a80a0;--border:#1e3050;
+    --heading:#ffffff;
+    --glow-c:rgba(0,212,255,0.15);--glow-g:rgba(245,200,66,0.15);
+    --nav-bg:rgba(6,13,26,.92);--grid-c:var(--border);--grid-op:.3;
+    --pnum-bg:rgba(0,212,255,.08);--pnum-border:rgba(0,212,255,.2);
+  }
+  [data-theme="dark"]{
+    --bg:#080808;--bg2:#101010;--bg3:#181818;--bg4:#202020;
+    --cyan:#00d4ff;--cyan-dim:#0099bb;--gold:#f5c842;--gold-dim:#c49d2a;
+    --green:#00e896;--green-dim:#00a86b;--red:#ff6b6b;--purple:#b06dff;
+    --text:#dde8f5;--muted:#5a6878;--border:#222222;
+    --heading:#ffffff;
+    --glow-c:rgba(0,212,255,.12);--glow-g:rgba(245,200,66,.12);
+    --nav-bg:rgba(8,8,8,.95);--grid-c:#1e1e1e;--grid-op:.5;
+    --pnum-bg:rgba(0,212,255,.08);--pnum-border:rgba(0,212,255,.2);
+  }
+  [data-theme="light"]{
+    --bg:#f0f4f9;--bg2:#ffffff;--bg3:#e4eaf4;--bg4:#d8e2f0;
+    --cyan:#0066cc;--cyan-dim:#004fa3;--gold:#8a6200;--gold-dim:#6a4900;
+    --green:#006633;--green-dim:#004d26;--red:#c0392b;--purple:#5533bb;
+    --text:#1e2d40;--muted:#5a6f8a;--border:#c4d0e0;
+    --heading:#1e2d40;
+    --glow-c:rgba(0,102,204,.1);--glow-g:rgba(138,98,0,.1);
+    --nav-bg:rgba(240,244,249,.95);--grid-c:#c4d0e0;--grid-op:.5;
+    --pnum-bg:rgba(0,102,204,.07);--pnum-border:rgba(0,102,204,.2);
+  }
+
+  /* ═══ BASE ═══ */
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:17px;line-height:1.78;overflow-x:hidden;transition:background .3s,color .3s}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--grid-c) 1px,transparent 1px),linear-gradient(90deg,var(--grid-c) 1px,transparent 1px);background-size:48px 48px;opacity:var(--grid-op)}
+
+  /* ═══ NAV ═══ */
+  .docs-nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:var(--nav-bg);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding:0 28px;height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;transition:background .3s,border-color .3s;
+  }
+  .docs-nav-left{display:flex;align-items:center;gap:20px}
+  .nav-logo{font-family:'Playfair Display',serif;font-weight:900;font-size:22px;color:var(--heading);text-decoration:none;letter-spacing:-.5px;transition:color .3s;flex-shrink:0}
+  .nav-logo span{color:var(--cyan)}
+  .nav-breadcrumb{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .nav-breadcrumb a{color:var(--muted);text-decoration:none;transition:color .2s}
+  .nav-breadcrumb a:hover{color:var(--cyan)}
+  .nav-breadcrumb-sep{color:var(--border)}
+  .nav-breadcrumb-cur{color:var(--cyan)}
+  .nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+  .lang-toggle{display:flex;align-items:center;gap:2px}
+  .lang-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;padding:4px 7px;border-radius:3px;transition:all .2s;text-decoration:none;display:inline-block}
+  .lang-btn.active{color:var(--cyan);background:var(--pnum-bg)}
+  .lang-sep-ch{color:var(--border);font-size:12px;font-family:'JetBrains Mono',monospace}
+  .theme-toggle{display:flex;align-items:center;gap:5px;padding:0 4px}
+  .theme-btn{width:22px;height:22px;border-radius:50%;border:2px solid transparent;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s;padding:0}
+  .theme-btn.active{border-color:var(--muted)}
+  .theme-dot{width:12px;height:12px;border-radius:50%;display:block}
+  .tdot-galdur{background:#060d1a;border:2px solid #00d4ff;box-shadow:0 0 4px rgba(0,212,255,.5)}
+  .tdot-dark{background:#141414;border:2px solid #444}
+  .tdot-light{background:#f0f4f9;border:2px solid #c49d2a;box-shadow:0 0 4px rgba(245,200,66,.4)}
+  .nav-home-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;transition:all .2s;text-decoration:none;white-space:nowrap}
+  .nav-home-btn:hover{border-color:var(--muted);color:var(--heading)}
+  @media(max-width:640px){.nav-breadcrumb{display:none}.docs-nav{padding:0 16px}}
+
+  /* ═══ CONTENT ═══ */
+  .wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:80px 32px 100px}
+  .hero{text-align:center;padding:80px 0 60px;border-bottom:1px solid var(--border);margin-bottom:60px}
+  .hero-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);border:1px solid var(--cyan-dim);padding:4px 14px;border-radius:2px;margin-bottom:28px;background:rgba(0,212,255,.06)}
+  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(52px,8vw,88px);font-weight:900;line-height:1;letter-spacing:-2px;background:linear-gradient(135deg,#fff 30%,var(--cyan) 70%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px}
+  .hero-sub{font-size:20px;color:var(--muted);max-width:560px;margin:0 auto 32px;font-weight:300}
+  .hero-meta{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
+  .hero-meta span{display:flex;align-items:center;gap:6px}
+  .hero-meta span::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);display:inline-block}
+  .blockquote{border-left:3px solid var(--gold);margin:40px 0;padding:16px 24px;background:linear-gradient(90deg,rgba(245,200,66,.05) 0%,transparent 100%);font-style:italic;font-size:18px;color:var(--gold);border-radius:0 4px 4px 0}
+  h2{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:#fff;margin:64px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  h2 .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);display:block;margin-bottom:4px;letter-spacing:2px;text-transform:uppercase}
+  h3{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--cyan);margin:36px 0 14px}
+  h4{font-size:15px;font-weight:700;color:var(--gold);margin:24px 0 8px;text-transform:uppercase;letter-spacing:1px}
+  p{margin-bottom:16px;color:var(--text)}
+  ul,ol{margin:12px 0 16px 26px}
+  li{margin-bottom:7px}
+  strong{color:#fff;font-weight:700}
+  em{color:var(--gold);font-style:italic}
+  code{font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg3);color:var(--cyan);padding:2px 7px;border-radius:3px;border:1px solid var(--border)}
+  pre{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:20px 24px;overflow-x:auto;margin:20px 0;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#a8c0d8;white-space:pre-wrap;word-break:break-word}
+  table{width:100%;border-collapse:collapse;margin:20px 0;font-size:15px}
+  th{background:var(--bg3);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:10px 14px;border:1px solid var(--border);text-align:left}
+  td{padding:9px 14px;border:1px solid var(--border);color:var(--text);vertical-align:top}
+  tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+  tr:hover td{background:rgba(0,212,255,.04)}
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin:20px 0}
+  .card-cyan{border-color:var(--cyan-dim);box-shadow:0 0 24px var(--glow-c)}
+  .card-gold{border-color:var(--gold-dim);box-shadow:0 0 24px var(--glow-g)}
+  .card-red{border-color:#7a2020;background:rgba(255,50,50,.04)}
+  .card-purple{border-color:#6040a0;background:rgba(176,109,255,.04)}
+  .diagram{margin:40px 0;text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:28px 16px;overflow:hidden}
+  .diagram-title{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--muted);margin-bottom:22px}
+  .toc{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:28px 32px;margin:40px 0}
+  .toc-h{font-family:'JetBrains Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:var(--cyan);margin-bottom:14px}
+  .toc ol{margin-left:18px;column-count:2;column-gap:32px}
+  .toc li{margin-bottom:5px;font-size:15px;break-inside:avoid}
+  .toc a{color:var(--muted);text-decoration:none}
+  .toc a:hover{color:var(--cyan)}
+  hr{border:none;border-top:1px solid var(--border);margin:48px 0}
+  .notice{background:rgba(0,232,150,.05);border:1px solid rgba(0,232,150,.25);border-radius:6px;padding:16px 20px;margin:20px 0;font-size:15px;color:#80d0a0}
+  .warning{background:rgba(255,107,107,.05);border:1px solid rgba(255,107,107,.25);border-radius:6px;padding:16px 20px;margin:20px 0;font-size:15px;color:#e08080}
+  .gm-table td:nth-child(2){font-family:'JetBrains Mono',monospace;font-weight:700;text-align:center;font-size:14px}
+  .l0{color:var(--green)}
+  .l1{color:var(--gold)}
+  .l2{color:var(--purple)}
+  .l3{color:var(--red)}
+  .hard{color:var(--red);font-size:11px;font-family:'JetBrains Mono',monospace}
+  @media(max-width:640px){.toc ol{column-count:1}pre{font-size:11px}}
+  @media print{body::before{display:none}.diagram{break-inside:avoid}h2{break-before:page}}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="docs-nav">
+  <div class="docs-nav-left">
+    <a href="/" class="nav-logo">GAL<span>DUR</span></a>
+    <div class="nav-breadcrumb">
+      <a href="/">Home</a>
+      <span class="nav-breadcrumb-sep">›</span>
+      <span class="nav-breadcrumb-cur">Documentation</span>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <a href="/docs/" class="lang-btn">CS</a>
+      <span class="lang-sep-ch">/</span>
+      <button class="lang-btn active">EN</button>
+    </div>
+    <div class="theme-toggle">
+      <button class="theme-btn" data-theme-btn="galdur" title="Galdur" onclick="setTheme('galdur')"><span class="theme-dot tdot-galdur"></span></button>
+      <button class="theme-btn" data-theme-btn="dark" title="Dark" onclick="setTheme('dark')"><span class="theme-dot tdot-dark"></span></button>
+      <button class="theme-btn" data-theme-btn="light" title="Light" onclick="setTheme('light')"><span class="theme-dot tdot-light"></span></button>
+    </div>
+    <a href="/" class="nav-home-btn">← Back to site</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-badge">Methodology · v0.9-draft · Living Document</div>
+  <h1>GALDUR</h1>
+  <p style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;letter-spacing:1px">From Old Norse <strong style="color:var(--cyan)">galdr</strong> — magical incantatory speech, intent formulated so precisely it becomes reality</p>
+  <p class="hero-sub">Methodology for governing agentic development and operations in hybrid human/AI teams</p>
+  <div class="hero-meta">
+    <span>Vladimír + Claude</span>
+    <span>April 2026</span>
+    <span>Dev · Ops · Infra · Robots · Finance</span>
+  </div>
+</div>
+
+<div class="diagram">
+  <div class="diagram-title">GALDUR Ecosystem — orchestra metaphor</div>
+  <svg viewBox="0 0 900 420" width="100%" style="max-width:860px">
+    <defs>
+      <radialGradient id="hg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#00d4ff" stop-opacity=".12"/><stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/></radialGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#00d4ff" opacity=".6"/></marker>
+    </defs>
+    <ellipse cx="450" cy="210" rx="220" ry="160" fill="url(#hg)"/>
+    <circle cx="450" cy="210" r="70" fill="#0c1628" stroke="#00d4ff" stroke-width="2" filter="url(#glow)"/>
+    <text x="450" y="200" text-anchor="middle" font-family="Playfair Display,serif" font-size="20" font-weight="900" fill="#fff">GALDUR</text>
+    <text x="450" y="220" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" letter-spacing="2">GOVERNANCE ENGINE</text>
+    <circle cx="450" cy="70" r="44" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="450" y="65" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">INTENT</text>
+    <text x="450" y="82" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">ARCHITECT</text>
+    <line x1="450" y1="114" x2="450" y2="140" stroke="#f5c842" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)" opacity=".7"/>
+    <text x="476" y="132" font-family="JetBrains Mono,monospace" font-size="9" fill="#f5c842" opacity=".7">Intent Spec</text>
+    <circle cx="720" cy="100" r="44" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="720" y="95" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#b06dff">GOVERNANCE</text>
+    <text x="720" y="112" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#b06dff">STEWARD</text>
+    <line x1="678" y1="120" x2="525" y2="175" stroke="#b06dff" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)" opacity=".6"/>
+    <text x="614" y="140" font-family="JetBrains Mono,monospace" font-size="9" fill="#b06dff" opacity=".7">Gates &amp; Drift</text>
+    <circle cx="720" cy="320" r="44" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="720" y="315" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#00e896">AGENT</text>
+    <text x="720" y="332" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#00e896">CURATOR</text>
+    <line x1="678" y1="300" x2="525" y2="245" stroke="#00e896" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)" opacity=".6"/>
+    <text x="614" y="283" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e896" opacity=".7">Validation</text>
+    <rect x="322" y="340" width="72" height="46" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.2"/>
+    <text x="358" y="358" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">coding</text>
+    <text x="358" y="374" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">agent</text>
+    <rect x="414" y="340" width="72" height="46" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.2"/>
+    <text x="450" y="358" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">infra</text>
+    <text x="450" y="374" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">agent</text>
+    <rect x="506" y="340" width="72" height="46" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.2"/>
+    <text x="542" y="358" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">db/net</text>
+    <text x="542" y="374" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">agent</text>
+    <line x1="422" y1="278" x2="365" y2="340" stroke="#00d4ff" stroke-width="1.2" stroke-dasharray="3,3" opacity=".5"/>
+    <line x1="450" y1="280" x2="450" y2="340" stroke="#00d4ff" stroke-width="1.2" stroke-dasharray="3,3" opacity=".5"/>
+    <line x1="478" y1="278" x2="535" y2="340" stroke="#00d4ff" stroke-width="1.2" stroke-dasharray="3,3" opacity=".5"/>
+    <text x="450" y="412" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0" letter-spacing="2">AGENTS — EXECUTION</text>
+    <circle cx="180" cy="100" r="44" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="180" y="95" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#ff6b6b">PHYSICAL</text>
+    <text x="180" y="112" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#ff6b6b">AGENTS</text>
+    <line x1="222" y1="120" x2="378" y2="175" stroke="#ff6b6b" stroke-width="1.5" stroke-dasharray="4,3" opacity=".6" marker-end="url(#arr)"/>
+    <text x="283" y="140" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff6b6b" opacity=".7">Physical Spec</text>
+    <circle cx="180" cy="320" r="44" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="180" y="315" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">PEOPLE</text>
+    <text x="180" y="332" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">&amp; TEAMS</text>
+    <line x1="222" y1="300" x2="378" y2="245" stroke="#f5c842" stroke-width="1.5" stroke-dasharray="4,3" opacity=".6" marker-end="url(#arr)"/>
+    <text x="283" y="282" font-family="JetBrains Mono,monospace" font-size="9" fill="#f5c842" opacity=".7">Escalation / Review</text>
+  </svg>
+</div>
+
+<div class="blockquote">
+  Galdr is not sung for entertainment.<br>
+  It is a word that shapes reality.<br>
+  Those who can formulate intent precisely are the ones who govern outcomes.
+</div>
+
+<div class="toc">
+  <div class="toc-h">Table of Contents</div>
+  <ol>
+    <li><a href="#s1">Context &amp; Motivation</a></li>
+    <li><a href="#s2">Seven Principles of GALDUR</a></li>
+    <li><a href="#s3">Domains of Operation</a></li>
+    <li><a href="#s4">Roles in a GALDUR Team</a></li>
+    <li><a href="#s5">Intent Spec — the Living Artefact</a></li>
+    <li><a href="#s6">Governance Levels L0–L3</a></li>
+    <li><a href="#s7">Governance Matrix — Dev &amp; Ops</a></li>
+    <li><a href="#s8">Operational Cycle</a></li>
+    <li><a href="#s9">Trace Audit</a></li>
+    <li><a href="#s10">Hard Locks</a></li>
+    <li><a href="#s11">Team Size Adaptation</a></li>
+    <li><a href="#s12">Relationship to Existing Methodologies</a></li>
+    <li><a href="#s13">Appendices — Templates</a></li>
+    <li><a href="#scale">ADDENDUM I — SAFe &amp; Enterprise Frameworks</a></li>
+    <li><a href="#robots">ADDENDUM II/R — Robotics &amp; Physical Systems</a></li>
+    <li><a href="#human">ADDENDUM II/H — Human Dimension</a></li>
+    <li><a href="#finance">ADDENDUM II/F — Finance &amp; Budgeting</a></li>
+    <li><a href="#examples">ADDENDUM III — Real-World Examples</a></li>
+    <li><a href="#knowledge">ADDENDUM IV — Knowledge Domains</a></li>
+    <li><a href="#k-obchod">IV.1 — Sales &amp; CRM</a></li>
+    <li><a href="#k-marketing">IV.2 — Marketing &amp; Content</a></li>
+    <li><a href="#k-pravo">IV.3 — Legal &amp; Compliance</a></li>
+    <li><a href="#k-finance">IV.4 — Finance &amp; Controlling</a></li>
+  </ol>
+</div>
+
+<hr>
+
+<!-- ═══ S1 ═══ -->
+<h2 id="s1"><span class="num">01 —</span>Context &amp; Motivation</h2>
+
+<h3>Why existing methodologies fail</h3>
+<p>Traditional management methodologies — whether Waterfall or Agile in its various forms (Scrum, Kanban, SAFe) — were designed for <strong>human execution</strong>. Their foundational assumption: work is done by people, coordination takes time, and speed is limited by human capacity.</p>
+<p>This assumption breaks down the moment AI agents capable of the following enter the team:</p>
+<ul>
+  <li>Writing, testing and documenting a function in minutes, not hours</li>
+  <li>Managing a server, applying a patch and verifying infrastructure state without sleep</li>
+  <li>Working on dozens of tasks in parallel simultaneously</li>
+  <li>Producing prototypes faster than the team can convene a planning meeting</li>
+</ul>
+
+<div class="diagram">
+  <div class="diagram-title">Scrum assumptions vs. reality with agents</div>
+  <svg viewBox="0 0 820 280" width="100%" style="max-width:820px">
+    <defs>
+      <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f5c842" stop-opacity=".15"/><stop offset="100%" stop-color="#f5c842" stop-opacity="0"/></linearGradient>
+      <linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00d4ff" stop-opacity="0"/><stop offset="100%" stop-color="#00d4ff" stop-opacity=".15"/></linearGradient>
+    </defs>
+    <rect x="0" y="0" width="280" height="280" fill="url(#lg1)" rx="6"/>
+    <rect x="290" y="0" width="240" height="280" fill="#0c1628" rx="6" opacity=".5"/>
+    <rect x="540" y="0" width="280" height="280" fill="url(#lg2)" rx="6"/>
+    <text x="140" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842" letter-spacing="2">SCRUM ASSUMPTION</text>
+    <text x="410" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#6a80a0" letter-spacing="1">ELEMENT</text>
+    <text x="680" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00d4ff" letter-spacing="2">REALITY WITH AGENTS</text>
+    <line x1="0" y1="38" x2="820" y2="38" stroke="#1e3050" stroke-width="1"/>
+    <g font-family="Source Sans 3,sans-serif" font-size="14">
+      <text x="140" y="70" text-anchor="middle" fill="#c8a830">People need time</text>
+      <text x="410" y="70" text-anchor="middle" fill="#9aafcc" font-weight="600">2-week sprint</text>
+      <text x="680" y="70" text-anchor="middle" fill="#00c4ee">Agents execute in hours</text>
+      <line x1="0" y1="82" x2="820" y2="82" stroke="#1e3050" stroke-width=".5"/>
+      <text x="140" y="114" text-anchor="middle" fill="#c8a830">People coordination</text>
+      <text x="410" y="114" text-anchor="middle" fill="#9aafcc" font-weight="600">Daily standup</text>
+      <text x="680" y="114" text-anchor="middle" fill="#00c4ee">Agents don't need standups</text>
+      <line x1="0" y1="126" x2="820" y2="126" stroke="#1e3050" stroke-width=".5"/>
+      <text x="140" y="158" text-anchor="middle" fill="#c8a830">We plan what fits</text>
+      <text x="410" y="158" text-anchor="middle" fill="#9aafcc" font-weight="600">Sprint planning</text>
+      <text x="680" y="158" text-anchor="middle" fill="#00c4ee">Done before the plan ends</text>
+      <line x1="0" y1="170" x2="820" y2="170" stroke="#1e3050" stroke-width=".5"/>
+      <text x="140" y="202" text-anchor="middle" fill="#c8a830">Measures human output</text>
+      <text x="410" y="202" text-anchor="middle" fill="#9aafcc" font-weight="600">Velocity</text>
+      <text x="680" y="202" text-anchor="middle" fill="#00c4ee">Meaningless with agents</text>
+      <line x1="0" y1="214" x2="820" y2="214" stroke="#1e3050" stroke-width=".5"/>
+      <text x="140" y="252" text-anchor="middle" fill="#c8a830">How did the team feel?</text>
+      <text x="410" y="252" text-anchor="middle" fill="#9aafcc" font-weight="600">Retrospective</text>
+      <text x="680" y="252" text-anchor="middle" fill="#00c4ee">Relevant questions are different</text>
+    </g>
+  </svg>
+</div>
+
+<p><strong>Waterfall's concrete failure:</strong> Waterfall assumes sequential phases and stable requirements. Agents produce iteratively, in parallel and continuously — sequential phasing is a natural brake for them.</p>
+
+<h3>What actually changed</h3>
+<p>The shift is not just in speed. The <strong>nature of human work</strong> in a technical team is changing. Previously: People = Executors, agents assist. Now: People = Architects, agents execute.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Fundamental shift — the role of people in the agentic world</div>
+  <svg viewBox="0 0 760 180" width="100%" style="max-width:760px">
+    <defs><linearGradient id="shg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f5c842"/><stop offset="100%" stop-color="#00d4ff"/></linearGradient></defs>
+    <rect x="20" y="30" width="200" height="120" rx="8" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="120" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842" letter-spacing="2">BEFORE</text>
+    <text x="120" y="90" text-anchor="middle" font-family="Playfair Display,serif" font-size="26" font-weight="700" fill="#fff">People</text>
+    <text x="120" y="112" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="14" fill="#9aafcc">= Executors</text>
+    <text x="120" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#6a80a0">AI assists</text>
+    <line x1="240" y1="90" x2="510" y2="90" stroke="url(#shg)" stroke-width="2.5"/>
+    <polygon points="510,84 524,90 510,96" fill="#00d4ff"/>
+    <text x="375" y="78" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">VALUE SHIFT</text>
+    <text x="375" y="116" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#6a80a0">Intent · Governance · Strategy</text>
+    <rect x="540" y="30" width="200" height="120" rx="8" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="640" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff" letter-spacing="2">NOW</text>
+    <text x="640" y="90" text-anchor="middle" font-family="Playfair Display,serif" font-size="26" font-weight="700" fill="#fff">People</text>
+    <text x="640" y="112" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="14" fill="#9aafcc">= Architects</text>
+    <text x="640" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#00d4ff">Agents execute</text>
+  </svg>
+</div>
+
+<p>Human value shifts from implementation to: defining intent (what we want and why), architecting guardrails (what must never happen), governance (control, validation, escalation) and strategic decisions (pivots, priorities, risks).</p>
+<p>GALDUR is the methodology that structures this new reality.</p>
+
+<div class="blockquote" style="border-color:var(--cyan);background:linear-gradient(90deg,rgba(0,212,255,.05) 0%,transparent 100%)">
+  People don't move the world with their hands.<br>
+  They move it with the precision of their intentions.
+</div>
+
+<hr>
+
+<!-- ═══ S2 ═══ -->
+<h2 id="s2"><span class="num">02 —</span>Seven Principles of GALDUR</h2>
+
+<div class="diagram">
+  <div class="diagram-title">7 core principles of GALDUR</div>
+  <svg viewBox="0 0 820 340" width="100%" style="max-width:820px">
+    <polygon points="410,20 460,48 460,104 410,132 360,104 360,48" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="410" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">P1</text>
+    <text x="410" y="88" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Intent-first</text>
+    <text x="410" y="104" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">Spec = contract</text>
+    <polygon points="280,20 330,48 330,104 280,132 230,104 230,48" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="280" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">P2</text>
+    <text x="280" y="88" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Continuous</text>
+    <text x="280" y="104" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">flow, not sprint</text>
+    <polygon points="540,20 590,48 590,104 540,132 490,104 490,48" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="540" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">P3</text>
+    <text x="540" y="88" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Layered</text>
+    <text x="540" y="104" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">autonomy L0–L3</text>
+    <polygon points="215,150 265,178 265,234 215,262 165,234 165,178" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="215" y="198" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">P4</text>
+    <text x="215" y="218" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Deterministic</text>
+    <text x="215" y="234" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">orchestration</text>
+    <polygon points="410,150 460,178 460,234 410,262 360,234 360,178" fill="#0c1628" stroke="#f5c842" stroke-width="2"/>
+    <text x="410" y="198" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">P5</text>
+    <text x="410" y="218" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Spec = living</text>
+    <text x="410" y="234" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">artefact</text>
+    <polygon points="605,150 655,178 655,234 605,262 555,234 555,178" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="605" y="198" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">P6</text>
+    <text x="605" y="218" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Drift as</text>
+    <text x="605" y="234" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">primary metric</text>
+    <rect x="360" y="278" width="100" height="50" rx="6" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="410" y="300" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">P7</text>
+    <text x="410" y="318" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Hard Locks</text>
+    <line x1="330" y1="76" x2="360" y2="76" stroke="#1e3050" stroke-width="1"/>
+    <line x1="460" y1="76" x2="490" y2="76" stroke="#1e3050" stroke-width="1"/>
+    <line x1="265" y1="206" x2="360" y2="206" stroke="#1e3050" stroke-width="1"/>
+    <line x1="460" y1="206" x2="555" y2="206" stroke="#1e3050" stroke-width="1"/>
+    <line x1="460" y1="234" x2="460" y2="278" stroke="#1e3050" stroke-width="1"/>
+  </svg>
+</div>
+
+<h3>P1 — Intent-first</h3>
+<p>Work does not begin with a task list. It begins with a <strong>clearly defined intent</strong> — a structured document that an agent can read, interpret and execute against. Intent is not a prompt. It is a contract.</p>
+
+<h3>P2 — Continuous flow</h3>
+<p>No fixed cadences. Work flows continuously, governed by event-triggered governance gates, not by the calendar. The team responds to signals, not to scheduled meetings.</p>
+
+<h3>P3 — Layered autonomy</h3>
+<p>Every task has an explicitly assigned governance level (L0–L3). Autonomy is not a binary choice — it is a continuum calibratable by task type, reversibility, blast radius and sensitivity.</p>
+
+<h3>P4 — Deterministic orchestration</h3>
+<p>Agents do not decide on the order of work or on workflow sequences. A deterministic engine governs state transitions. Agents execute within their bounded scope.</p>
+
+<h3>P5 — Spec as living artefact</h3>
+<p>Intent Spec is not static documentation. It is a versioned, machine-readable document that evolves together with the work — agents can propose clarifications, curators approve them.</p>
+
+<h3>P6 — Drift as primary metric</h3>
+<p>We are not interested in velocity (how much was done). We care about <strong>drift</strong> — how much execution deviated from intent. Low drift = good specs and guardrails. High drift = specs are ambiguous or agents are crossing boundaries.</p>
+
+<h3>P7 — Hard Locks are inviolable</h3>
+<p>There are categories of actions an agent must never perform without explicit human approval, regardless of any instructions in the spec. These locks are hardcoded in the governance engine, not in the Intent Spec.</p>
+
+<hr>
+
+<!-- ═══ S3 ═══ -->
+<h2 id="s3"><span class="num">03 —</span>Coverage Domains</h2>
+<p>GALDUR covers the <strong>full breadth of technical operations</strong>, not just code development. Each domain has its own governance level profile — Ops domains generally have stricter default levels and more Hard Locks than Dev domains.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Seven coverage domains of GALDUR</div>
+  <svg viewBox="0 0 700 380" width="100%" style="max-width:700px">
+    <circle cx="350" cy="190" r="55" fill="#0c1628" stroke="#00d4ff" stroke-width="2"/>
+    <text x="350" y="185" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#00d4ff">GALDUR</text>
+    <text x="350" y="204" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">domains</text>
+    <rect x="285" y="50" width="130" height="60" rx="7" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="350" y="74" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#f5c842">Software Dev</text>
+    <text x="350" y="92" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">code · tests · API · docs</text>
+    <line x1="350" y1="110" x2="350" y2="135" stroke="#f5c842" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="502" y="76" width="138" height="60" rx="7" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="571" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00d4ff">Infrastructure</text>
+    <text x="571" y="118" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">servers · VM · cloud</text>
+    <line x1="502" y1="114" x2="420" y2="163" stroke="#00d4ff" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="534" y="166" width="132" height="60" rx="7" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="600" y="190" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Database</text>
+    <text x="600" y="208" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">migrations · backups · SQL</text>
+    <line x1="534" y1="196" x2="405" y2="196" stroke="#00e896" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="482" y="268" width="138" height="60" rx="7" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="551" y="292" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#b06dff">Network &amp; Routing</text>
+    <text x="551" y="310" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">DNS · VPN · firewall</text>
+    <line x1="492" y1="276" x2="400" y2="236" stroke="#b06dff" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="80" y="268" width="130" height="60" rx="7" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="145" y="292" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#ff6b6b">Security</text>
+    <text x="145" y="310" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">IAM · certs · audit</text>
+    <line x1="210" y1="276" x2="302" y2="236" stroke="#ff6b6b" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="34" y="166" width="130" height="60" rx="7" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="99" y="190" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00d4ff">Cloud Ops</text>
+    <text x="99" y="208" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">scaling · cost · backup</text>
+    <line x1="164" y1="196" x2="295" y2="196" stroke="#00d4ff" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="60" y="76" width="130" height="60" rx="7" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="125" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Data Ops</text>
+    <text x="125" y="118" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">ETL · GDPR · reporting</text>
+    <line x1="190" y1="114" x2="296" y2="163" stroke="#00e896" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+  </svg>
+</div>
+
+<hr>
+
+<!-- ═══ S4 ═══ -->
+<h2 id="s4"><span class="num">04 —</span>Roles in a GALDUR Team</h2>
+
+<div class="diagram">
+  <div class="diagram-title">Role structure and responsibilities</div>
+  <svg viewBox="0 0 780 310" width="100%" style="max-width:780px">
+    <rect x="270" y="20" width="240" height="78" rx="8" fill="#0c1628" stroke="#f5c842" stroke-width="2"/>
+    <text x="390" y="50" text-anchor="middle" font-family="Playfair Display,serif" font-size="17" font-weight="700" fill="#f5c842">Intent Architect</text>
+    <text x="390" y="70" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Intent · Architecture · Strategic Decisions</text>
+    <text x="390" y="88" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">formerly: Tech Lead / Architect</text>
+    <rect x="30" y="158" width="220" height="78" rx="8" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="140" y="188" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#b06dff">Governance Steward</text>
+    <text x="140" y="208" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Gates · Escalations · Drift Metrics</text>
+    <text x="140" y="226" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">formerly: Scrum Master</text>
+    <rect x="530" y="158" width="220" height="78" rx="8" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="640" y="188" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#00e896">Agent Curator</text>
+    <text x="640" y="208" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Review · Validation · Escalation Resolution</text>
+    <text x="640" y="226" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">formerly: Developer / Sysadmin</text>
+    <rect x="200" y="258" width="150" height="44" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.2"/>
+    <text x="275" y="276" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">coding_agent</text>
+    <text x="275" y="293" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">infra_agent</text>
+    <rect x="430" y="258" width="150" height="44" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.2"/>
+    <text x="505" y="276" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">db_agent</text>
+    <text x="505" y="293" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">security_agent</text>
+    <line x1="330" y1="98" x2="200" y2="158" stroke="#f5c842" stroke-width="1.5" opacity=".5"/>
+    <line x1="450" y1="98" x2="590" y2="158" stroke="#f5c842" stroke-width="1.5" opacity=".5"/>
+    <line x1="200" y1="236" x2="250" y2="258" stroke="#6a80a0" stroke-width="1" opacity=".4"/>
+    <line x1="560" y1="236" x2="505" y2="258" stroke="#6a80a0" stroke-width="1" opacity=".4"/>
+  </svg>
+</div>
+
+<h3>Intent Architect <span style="font-size:14px;font-family:'JetBrains Mono',monospace;color:var(--muted);font-weight:400">(formerly: Tech Lead / Architect)</span></h3>
+<p><strong>Responsibility:</strong> Defines and prioritizes Intent Specs. Decides on architecture, data models, system integrations. Approves specs before crystallization.</p>
+<p><strong>Typical activities:</strong> Writes or reviews Intent Specs for L2/L3 tasks. Decides on architectural pivots. Defines domain guardrails and hard locks for new domains. Leads Trace Audits.</p>
+<p><strong>Key shift:</strong> Does not spend time on implementation. Spends time on quality of intent and architecture of boundaries.</p>
+
+<h3>Governance Steward <span style="font-size:14px;font-family:'JetBrains Mono',monospace;color:var(--muted);font-weight:400">(formerly: Scrum Master / Ops Manager)</span></h3>
+<p><strong>Responsibility:</strong> Manages governance gates, escalations, monitors drift metrics, handles timeout escalations.</p>
+<p><strong>Typical activities:</strong> Monitors Drift Dashboard. Triages agent escalations. Ensures specs meet minimum standard before activation. Manages Hard Lock incidents. Coordinates Trace Audits.</p>
+<p><strong>Key shift:</strong> Does not coordinate people — coordinates the interface between agents and humans.</p>
+
+<h3>Agent Curator <span style="font-size:14px;font-family:'JetBrains Mono',monospace;color:var(--muted);font-weight:400">(formerly: Developer / Sysadmin / DBA)</span></h3>
+<p><strong>Responsibility:</strong> Reviews agent outputs, refines specs, resolves escalations. Domain expert for specific areas (code, infra, network, DB...).</p>
+<p><strong>Typical activities:</strong> Validates agent outputs at Validation Gates. Processes escalations requiring domain expertise. Proposes spec refinements based on outputs. Holds contextual knowledge that agents lack.</p>
+<p><strong>Key shift:</strong> Does not write all code or admin everything manually — is the quality gate and escalation handler.</p>
+
+<h3>Agents</h3>
+<p>Execute Intent Spec tasks within the assigned governance level. Log drift, escalate when boundaries are exceeded, propose spec refinements. Types: <code>coding_agent</code>, <code>infra_agent</code>, <code>db_agent</code>, <code>network_agent</code>, <code>security_agent</code>, <code>docs_agent</code>, <code>analysis_agent</code>.</p>
+
+<hr>
+
+<!-- ═══ S5 ═══ -->
+<h2 id="s5"><span class="num">05 —</span>Intent Spec — Living Artifact</h2>
+
+<h3>5.1 What is an Intent Spec</h3>
+<p>Intent Spec is the <strong>primary working artifact of the GALDUR methodology</strong>. It is not a user story (too vague), a technical specification (too detailed), a JIRA task (too atomic), nor documentation (static). It is a <strong>structured contract</strong> between human intent and the agent executing it. It has two parts:</p>
+<ul>
+  <li><strong>Header</strong> — human-authored, strategic, describes intent</li>
+  <li><strong>Execution Body</strong> — machine-readable, operational, drives execution</li>
+</ul>
+
+<h3>5.2 State lifecycle</h3>
+
+<div class="diagram">
+  <div class="diagram-title">Intent Spec lifecycle — states, transitions and who can initiate them</div>
+  <svg viewBox="0 0 880 300" width="100%" style="max-width:880px">
+    <defs>
+      <marker id="a2" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#00d4ff" opacity=".7"/></marker>
+      <marker id="a3" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#ff6b6b" opacity=".7"/></marker>
+      <marker id="a4" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#00e896" opacity=".7"/></marker>
+    </defs>
+    <!-- States row 1 -->
+    <rect x="10" y="118" width="88" height="44" rx="5" fill="#0c1628" stroke="#6a80a0" stroke-width="1.5"/>
+    <text x="54" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#9aafcc">DRAFT</text>
+    <text x="54" y="152" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">IA writes</text>
+
+    <rect x="120" y="118" width="108" height="44" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="174" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">CRYSTALLIZED</text>
+    <text x="174" y="152" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">ready to run</text>
+
+    <rect x="252" y="118" width="88" height="44" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="2"/>
+    <text x="296" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">ACTIVE</text>
+    <text x="296" y="152" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">agent executes</text>
+
+    <!-- ESCALATED above ACTIVE -->
+    <rect x="244" y="36" width="104" height="44" rx="5" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="296" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">ESCALATED</text>
+    <text x="296" y="70" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">awaiting curator</text>
+
+    <!-- SUSPENDED below ACTIVE -->
+    <rect x="244" y="206" width="104" height="44" rx="5" fill="#0c1628" stroke="#6a80a0" stroke-width="1.5"/>
+    <text x="296" y="224" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#9aafcc">SUSPENDED</text>
+    <text x="296" y="240" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">blocker</text>
+
+    <!-- PENDING VALIDATION -->
+    <rect x="368" y="118" width="120" height="44" rx="5" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="428" y="134" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">PENDING</text>
+    <text x="428" y="150" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">VALIDATION</text>
+
+    <!-- VALIDATED -->
+    <rect x="512" y="118" width="96" height="44" rx="5" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <text x="560" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">VALIDATED</text>
+    <text x="560" y="152" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">approved</text>
+
+    <!-- CLOSED / REVERTED -->
+    <rect x="634" y="100" width="88" height="40" rx="5" fill="#0c1628" stroke="#00e896" stroke-width="1"/>
+    <text x="678" y="115" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">CLOSED</text>
+    <text x="678" y="131" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">&#10003; done</text>
+
+    <rect x="634" y="154" width="88" height="40" rx="5" fill="#0c1628" stroke="#ff6b6b" stroke-width="1"/>
+    <text x="678" y="169" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">REVERTED</text>
+    <text x="678" y="185" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">reverted</text>
+
+    <!-- Arrows -->
+    <line x1="98" y1="140" x2="120" y2="140" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#a2)"/>
+    <text x="109" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#6a80a0">review</text>
+    <line x1="228" y1="140" x2="252" y2="140" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#a2)"/>
+    <text x="240" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#6a80a0">activation</text>
+    <line x1="296" y1="118" x2="296" y2="80" stroke="#ff6b6b" stroke-width="1.2" marker-end="url(#a3)"/>
+    <text x="316" y="100" font-family="Source Sans 3,sans-serif" font-size="9" fill="#ff6b6b">escalation</text>
+    <line x1="296" y1="162" x2="296" y2="206" stroke="#6a80a0" stroke-width="1.2" stroke-dasharray="3,3"/>
+    <text x="316" y="188" font-family="Source Sans 3,sans-serif" font-size="9" fill="#6a80a0">blocker</text>
+    <line x1="340" y1="140" x2="368" y2="140" stroke="#b06dff" stroke-width="1.5" marker-end="url(#a2)"/>
+    <text x="354" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#b06dff">done</text>
+    <line x1="488" y1="140" x2="512" y2="140" stroke="#00e896" stroke-width="1.5" marker-end="url(#a4)"/>
+    <text x="500" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#00e896">approve</text>
+    <line x1="608" y1="130" x2="634" y2="118" stroke="#00e896" stroke-width="1.2" marker-end="url(#a4)"/>
+    <line x1="608" y1="150" x2="634" y2="162" stroke="#ff6b6b" stroke-width="1.2" marker-end="url(#a3)"/>
+
+    <!-- Legend -->
+    <text x="10" y="290" font-family="JetBrains Mono,monospace" font-size="9" fill="#f5c842">&#9679; human initiates transition</text>
+    <text x="200" y="290" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff">&#9679; agent can initiate transition</text>
+    <text x="430" y="290" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">DRAFT&#8594;CRYSTALLIZED and CRYSTALLIZED&#8594;ACTIVE transitions always by human</text>
+  </svg>
+</div>
+
+<p><strong>Agent-initiated transitions:</strong> ACTIVE → ESCALATED (boundary exceeded), ACTIVE → PENDING VALIDATION (task completion), ACTIVE → SUSPENDED (blocking dependency).</p>
+<p><strong>Always human-initiated transitions:</strong> DRAFT → CRYSTALLIZED, CRYSTALLIZED → ACTIVE, PENDING VALIDATION → VALIDATED or REVERTED, ESCALATED → ACTIVE.</p>
+
+<h3>5.3 Spec versioning</h3>
+<p>Intent Spec is versioned just like code — in a git repository. Any change to scope or constraints requires a new version and re-crystallization.</p>
+<table>
+  <tr><th>Change type</th><th>Bump</th><th>Who can</th></tr>
+  <tr><td>Typo fix / more precise wording</td><td>Minor (v1 → v1.1)</td><td>Curator or Agent (with flagging)</td></tr>
+  <tr><td>Scope or constraints change</td><td>Major (v1 → v2) + re-crystallization</td><td>Intent Architect</td></tr>
+  <tr><td>Adding a task to execution body</td><td>Minor</td><td>Curator</td></tr>
+  <tr><td>Governance level change <strong>up</strong></td><td>Major + re-crystallization</td><td>Intent Architect</td></tr>
+  <tr><td>Governance level change <strong>down</strong></td><td>Minor</td><td>Curator</td></tr>
+</table>
+
+<h3>5.4 Agent-proposed refinements (Amendments)</h3>
+<p>An agent may <strong>propose spec refinements</strong> (Amendment) based on what it discovers during execution — it must not change the spec unilaterally. The agent MUST stop execution of the affected task and wait for a decision. The Curator has 24 hours to decide, then it escalates to the Intent Architect. Rejected amendment → agent continues without change and logs to drift_log.</p>
+
+<h3>5.5 Spec Health Indicators</h3>
+<table>
+  <tr><th>Indicator</th><th>Calculation</th><th>Threshold</th><th>Action on breach</th></tr>
+  <tr><td>Amendment Rate</td><td>amendments / tasks</td><td>&gt; 0.3</td><td>Re-crystallization meeting</td></tr>
+  <tr><td>Escalation Rate</td><td>escalations / tasks</td><td>&gt; 0.2</td><td>Review constraints</td></tr>
+  <tr><td>Drift Score</td><td>weighted drift events</td><td>&gt; 15</td><td>Trace Audit</td></tr>
+  <tr><td>Timeout Rate</td><td>timeouts / tasks</td><td>&gt; 0.1</td><td>Review agent_role assignments</td></tr>
+  <tr><td>Suspension Age</td><td>days in SUSPENDED</td><td>&gt; 3 days</td><td>Force resolution or cancel</td></tr>
+</table>
+
+<h3>5.6 Complete Intent Spec template</h3>
+<pre>
+## IDENTIFICATION
+id: IS-YYYY-NNN
+domain: dev | infra | db | network | security | cloud | data | mixed
+title: ""
+status: draft
+version: "1.0"
+created_by: ""
+
+## HEADER — human-authored
+intent: |
+  # Why we are doing this (2-4 sentences).
+  # What is the strategic reason, what problem it solves, what it unblocks.
+  # This is NOT a description of the implementation.
+
+outcome:
+  # How SPECIFICALLY and MEASURABLY will we know it is done.
+  # Each point must be binary-verifiable (yes/no, pass/fail).
+  - ""
+
+scope:
+  in_scope:
+    - ""
+  out_of_scope:
+    # MANDATORY — agents tend to scope-creep.
+    - ""
+
+constraints:
+  # What the agent MUST NOT do. Negative rules.
+  - ""
+
+environment:
+  # For Ops domains — what environment is being worked on.
+  target: production | staging | dev | mixed
+  systems: []
+  change_window: ""
+
+dependencies:
+  depends_on: []   # IS-IDs that must be validated
+  blocks: []       # IS-IDs waiting for this spec
+
+context: |
+  # Technical context the agent needs for execution.
+
+risk_assessment:
+  blast_radius: low | medium | high | critical
+  reversibility: easy | partial | hard | irreversible
+  rollback_plan: ""
+
+## EXECUTION BODY — machine-readable
+governance:
+  level: autonomous | supervised | collaborative | manual
+  escalate_on:
+    - schema_changes
+    - new_external_dependency
+    - security_sensitive
+    - production_impact
+  escalation_to: ""
+  timeout_hours: 4
+  change_window_required: false
+
+tasks:
+  - id: IS-NNN-T1
+    title: ""
+    type: implementation | testing | documentation | analysis |
+           infrastructure | database | network | security | migration
+    agent_role: coding_agent | infra_agent | db_agent | network_agent |
+                security_agent | docs_agent | analysis_agent
+    depends_on: []
+    governance_override: ~   # only down (more autonomy), never up
+    pre_conditions: []
+    acceptance: ""
+    rollback: ""
+    timeout_hours: 2
+
+## VALIDATION GATE
+validation:
+  reviewer: ""
+  checklist:
+    - "All outcome conditions met?"
+    - "No constraint violated?"
+    - "Drift report read and understood?"
+    - "Rollback plan verified (if relevant)?"
+
+## AUDIT TRAIL
+drift_log: []
+# - task_id: IS-NNN-T1
+#   timestamp: YYYY-MM-DDTHH:MM:SSZ
+#   type: scope_expansion | constraint_violation | technical_deviation |
+#         inferred_decision | escalation | timeout | amendment_proposed
+#   description: ""
+#   resolution: approved | reverted | escalated | accepted_with_note
+#   resolved_by: ""
+</pre>
+
+<hr>
+
+<!-- ═══ S6 ═══ -->
+<h2 id="s6"><span class="num">06 —</span>Governance Levels L0–L3</h2>
+
+<div class="diagram">
+  <div class="diagram-title">Four autonomy levels — from fully autonomous to manual assistance</div>
+  <svg viewBox="0 0 880 360" width="100%" style="max-width:880px">
+    <defs>
+      <linearGradient id="lvlg" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e896" stop-opacity=".07"/>
+        <stop offset="100%" stop-color="#ff6b6b" stop-opacity=".07"/>
+      </linearGradient>
+    </defs>
+    <rect x="0" y="0" width="880" height="360" rx="8" fill="url(#lvlg)"/>
+    <!-- L0 -->
+    <rect x="20" y="18" width="840" height="72" rx="6" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <rect x="20" y="18" width="88" height="72" rx="6" fill="rgba(0,232,150,.12)"/>
+    <text x="64" y="50" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="22" font-weight="700" fill="#00e896">L0</text>
+    <text x="64" y="70" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">AUTONOMOUS</text>
+    <text x="200" y="46" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Full autonomy — agent executes, logs, continues</text>
+    <text x="200" y="66" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Human touchpoint: Drift Signal async. Outputs are communicated to humans but do not stop the flow.</text>
+    <text x="200" y="83" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Examples: unit tests · README · isolated bug fix · log rotation · read-only analysis</text>
+    <!-- L1 -->
+    <rect x="20" y="104" width="840" height="72" rx="6" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <rect x="20" y="104" width="88" height="72" rx="6" fill="rgba(245,200,66,.1)"/>
+    <text x="64" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="22" font-weight="700" fill="#f5c842">L1</text>
+    <text x="64" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">SUPERVISED</text>
+    <text x="200" y="132" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Supervised execution — output passes Validation Gate before deploy</text>
+    <text x="200" y="152" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Human touchpoint: Curator reviews and approves or sends back for revision.</text>
+    <text x="200" y="169" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Examples: new feature · staging deploy · additive DB migration · OS patch non-prod</text>
+    <!-- L2 -->
+    <rect x="20" y="190" width="840" height="72" rx="6" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <rect x="20" y="190" width="88" height="72" rx="6" fill="rgba(176,109,255,.1)"/>
+    <text x="64" y="222" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="22" font-weight="700" fill="#b06dff">L2</text>
+    <text x="64" y="242" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">COLLABORATIVE</text>
+    <text x="200" y="218" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Collaborative planning — agent plans, human approves, then execution</text>
+    <text x="200" y="238" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Human touchpoint: Approval before execution. Plan &#8594; approval &#8594; execution.</text>
+    <text x="200" y="255" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Examples: prod deploy · destructive migration · firewall changes · API breaking change</text>
+    <!-- L3 -->
+    <rect x="20" y="276" width="840" height="70" rx="6" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <rect x="20" y="276" width="88" height="70" rx="6" fill="rgba(255,107,107,.1)"/>
+    <text x="64" y="306" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="22" font-weight="700" fill="#ff6b6b">L3</text>
+    <text x="64" y="326" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">MANUAL</text>
+    <text x="200" y="304" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Manually assisted execution — human drives, agent assists</text>
+    <text x="200" y="324" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Human touchpoint: Every step must be explicitly triggered by a human.</text>
+    <text x="200" y="339" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Examples: IAM changes · payment logic · cryptography · incident containment</text>
+  </svg>
+</div>
+
+<div class="diagram">
+  <div class="diagram-title">Escalation cascade — what the agent does when it encounters uncertainty</div>
+  <svg viewBox="0 0 740 455" width="100%" style="max-width:740px">
+    <defs>
+      <marker id="ae" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#00d4ff" opacity=".8"/></marker>
+    </defs>
+    <!-- Start -->
+    <rect x="195" y="14" width="350" height="50" rx="6" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="370" y="35" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="14" font-weight="700" fill="#ff6b6b">Agent detects uncertainty</text>
+    <text x="370" y="54" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">or boundary crossing</text>
+    <line x1="370" y1="64" x2="370" y2="88" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ae)"/>
+    <!-- Step 1 -->
+    <rect x="140" y="88" width="460" height="62" rx="6" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="370" y="111" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">&#9312; SELF-RESOLVE</text>
+    <text x="370" y="130" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Does a rule exist in constraints? &#8594; Apply, log, continue.</text>
+    <!-- Branch YES -->
+    <line x1="550" y1="110" x2="608" y2="94" stroke="#00e896" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="608" y="78" width="122" height="34" rx="4" fill="rgba(0,232,150,.08)" stroke="#00e896" stroke-width="1"/>
+    <text x="669" y="91" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">&#8594; CONTINUES</text>
+    <text x="669" y="105" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#6a80a0">rule found</text>
+    <line x1="370" y1="150" x2="370" y2="182" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ae)"/>
+    <!-- Step 2 -->
+    <rect x="140" y="182" width="460" height="62" rx="6" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="370" y="205" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">&#9313; CONTEXTUAL INFERENCE</text>
+    <text x="370" y="224" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Can it be inferred from intent + out_of_scope? &#8594; Infer, log.</text>
+    <line x1="370" y1="244" x2="370" y2="272" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ae)"/>
+    <!-- Step 3 -->
+    <rect x="140" y="272" width="460" height="62" rx="6" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="370" y="295" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#b06dff">&#9314; SUSPEND + SIGNAL</text>
+    <text x="370" y="314" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Suspends task &#183; creates Drift Signal &#183; waits for curator (timeout_hours)</text>
+    <line x1="370" y1="334" x2="370" y2="358" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ae)"/>
+    <!-- Step 4 -->
+    <rect x="100" y="358" width="540" height="78" rx="6" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="370" y="378" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00d4ff">&#9315; CURATOR REVIEW — decision</text>
+    <line x1="110" y1="388" x2="630" y2="388" stroke="#1e3050" stroke-width=".5"/>
+    <text x="210" y="407" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">approve_and_continue</text>
+    <text x="370" y="407" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">refine_spec</text>
+    <text x="540" y="407" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">escalate_to_architect</text>
+    <text x="210" y="425" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">continues</text>
+    <text x="370" y="425" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">refine spec</text>
+    <text x="540" y="425" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">IA decides</text>
+  </svg>
+</div>
+
+<hr>
+
+<!-- ═══ S7 ═══ -->
+<h2 id="s7"><span class="num">07 —</span>Governance Matrix for Dev and Ops</h2>
+<p>Each domain has a defined default governance level for various task types. Cells marked <span class="hard">HARD</span> cannot be reduced by any governance_override in an Intent Spec.</p>
+
+<h3>7.1 Software Development</h3>
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Escalation trigger</th></tr>
+  <tr><td>New isolated function</td><td class="l1">L1</td><td>new dependency, API change</td></tr>
+  <tr><td>Refactor (no API change)</td><td class="l0">L0</td><td>blast radius &gt; 5 files</td></tr>
+  <tr><td>Bug fix (isolated)</td><td class="l0">L0</td><td>fix changes business logic</td></tr>
+  <tr><td>Bug fix (in production)</td><td class="l1">L1</td><td>always gate before deploy</td></tr>
+  <tr><td>API breaking change</td><td class="l2">L2</td><td>always</td></tr>
+  <tr><td>DB migration — additive</td><td class="l1">L1</td><td>always gate before apply</td></tr>
+  <tr><td>DB migration — destructive</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced</span></td></tr>
+  <tr><td>Schema breaking change</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced</span></td></tr>
+  <tr><td>Auth / session logic</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced</span></td></tr>
+  <tr><td>Cryptography / secret handling</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Payment / billing logic</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Unit tests</td><td class="l0">L0</td><td>coverage drops below threshold</td></tr>
+  <tr><td>Integration tests</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>E2E tests</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Security tests / pen testing</td><td class="l2">L2</td><td>always</td></tr>
+  <tr><td>Inline documentation</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>API documentation (OpenAPI)</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Changelog / release notes</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>External communication</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced</span></td></tr>
+  <tr><td>Technical research / spike</td><td class="l0">L0</td><td>proposes action outside scope</td></tr>
+  <tr><td>Architecture decision (ADR)</td><td class="l2">L2</td><td>always</td></tr>
+</table>
+
+<h3>7.2 Infrastructure (Servers, VMs, Containers)</h3>
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Note</th></tr>
+  <tr><td>Status read / monitoring read</td><td class="l0">L0</td><td>read-only always L0</td></tr>
+  <tr><td>Log analysis</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Configuration — dev environment</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Configuration — staging</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Configuration — production</td><td class="l2">L2</td><td>change window required</td></tr>
+  <tr><td>OS patch — non-prod</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>OS patch — production</td><td class="l2">L2</td><td>change window + rollback plan</td></tr>
+  <tr><td>Deployment — staging</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Deployment — production</td><td class="l2">L2</td><td>change window required</td></tr>
+  <tr><td>New server provisioning</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Server decommission</td><td class="l2">L2</td><td>data backup verification first</td></tr>
+  <tr><td>Service restart — non-prod</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Service restart — production</td><td class="l2">L2</td><td>change window</td></tr>
+  <tr><td>OS restart — production</td><td class="l2">L2</td><td>change window + notification</td></tr>
+  <tr><td>SSL certificate — renewal</td><td class="l1">L1</td><td>expiry monitoring required</td></tr>
+  <tr><td>SSL certificate — new/replace</td><td class="l2">L2</td><td>downtime risk</td></tr>
+  <tr><td>Backup run (manual)</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Backup restore — test environment</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Backup restore — production</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+</table>
+
+<h3>7.3 Database</h3>
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Note</th></tr>
+  <tr><td>SELECT query / reporting</td><td class="l0">L0</td><td>read-only always L0</td></tr>
+  <tr><td>EXPLAIN / query analysis</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Index creation — non-prod</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Index creation — production</td><td class="l1">L1</td><td>CONCURRENTLY recommended</td></tr>
+  <tr><td>Additive migration — non-prod</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Additive migration — production</td><td class="l2">L2</td><td>backup + rollback mandatory</td></tr>
+  <tr><td>Destructive migration (DROP/ALTER)</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced, always L2</span></td></tr>
+  <tr><td>Data update (batch)</td><td class="l2">L2</td><td>sample first, mandatory rollback</td></tr>
+  <tr><td>Data delete — non-prod</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Data delete — production</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Data export (contains PII)</td><td class="l2">L2</td><td>GDPR compliance check</td></tr>
+  <tr><td>Backup run</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Backup restore — test</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Backup restore — production</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Replication configuration</td><td class="l2">L2</td><td>downtime risk</td></tr>
+  <tr><td>DB user — creation</td><td class="l2">L2</td><td>principle of least privilege</td></tr>
+  <tr><td>DB user — deletion</td><td class="l2">L2</td><td>dependency check first</td></tr>
+  <tr><td>Stored procedure / trigger</td><td class="l2">L2</td><td>code review equivalent</td></tr>
+</table>
+
+<h3>7.4 Network (Router, Switch, DNS, VPN, Load Balancer)</h3>
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Note</th></tr>
+  <tr><td>Network monitoring / read</td><td class="l0">L0</td><td>read-only always L0</td></tr>
+  <tr><td>DNS record — add</td><td class="l1">L1</td><td>TTL awareness</td></tr>
+  <tr><td>DNS record — change</td><td class="l2">L2</td><td>propagation risk</td></tr>
+  <tr><td>DNS record — delete</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced</span></td></tr>
+  <tr><td>VLAN — new (isolated)</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>VLAN — change existing</td><td class="l2">L2</td><td>blast radius assessment</td></tr>
+  <tr><td>Routing table — add</td><td class="l2">L2</td><td>loop risk assessment</td></tr>
+  <tr><td>Routing table — change/delete</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced</span></td></tr>
+  <tr><td>VPN — user add/remove</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>VPN — configuration change</td><td class="l2">L2</td><td>disconnection risk</td></tr>
+  <tr><td>Load balancer — backend add</td><td class="l1">L1</td><td>health check verification</td></tr>
+  <tr><td>Load balancer — backend remove</td><td class="l2">L2</td><td>traffic drain first</td></tr>
+  <tr><td>BGP configuration</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Core switch configuration</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+</table>
+
+<h3>7.5 Security &amp; Firewall</h3>
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Note</th></tr>
+  <tr><td>Vulnerability scan (read)</td><td class="l0">L0</td><td>read-only, never auto-exploit</td></tr>
+  <tr><td>Security audit / report</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Firewall rule — add (allow)</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced, always L2</span></td></tr>
+  <tr><td>Firewall rule — add (deny)</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced</span></td></tr>
+  <tr><td>Firewall rule — change / delete</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>SSL/TLS configuration</td><td class="l2">L2</td><td>downtime risk</td></tr>
+  <tr><td>Certificate — renewal (auto)</td><td class="l1">L1</td><td>monitoring mandatory</td></tr>
+  <tr><td>IAM role — creation</td><td class="l2">L2</td><td>least privilege review</td></tr>
+  <tr><td>IAM role — modification</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced</span></td></tr>
+  <tr><td>IAM role — deletion</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>API key — generation</td><td class="l2">L2</td><td>scope + expiry mandatory</td></tr>
+  <tr><td>Secret rotation</td><td class="l2">L2</td><td>rollback plan mandatory</td></tr>
+  <tr><td>Penetration testing</td><td class="l2">L2</td><td>scope + authorization mandatory</td></tr>
+  <tr><td>Incident response — investigation</td><td class="l1">L1</td><td>read-mostly</td></tr>
+  <tr><td>Incident response — containment</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ S8 ═══ -->
+<h2 id="s8"><span class="num">08 —</span>Operational Cycle</h2>
+<p>How GALDUR works in practice — no sprints, no standups. Work is driven by events, not the calendar.</p>
+
+<div class="diagram">
+  <div class="diagram-title">GALDUR Operational Cycle — swimlane diagram</div>
+  <svg viewBox="0 0 820 440" width="100%" style="max-width:820px">
+    <defs>
+      <marker id="sw" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#00d4ff" opacity=".7"/></marker>
+    </defs>
+    <!-- Swimlanes -->
+    <rect x="0" y="50" width="820" height="110" fill="rgba(245,200,66,.05)" rx="3"/>
+    <rect x="0" y="168" width="820" height="110" fill="rgba(176,109,255,.05)" rx="3"/>
+    <rect x="0" y="286" width="820" height="110" fill="rgba(0,212,255,.05)" rx="3"/>
+    <!-- Lane labels -->
+    <text x="12" y="115" font-family="JetBrains Mono,monospace" font-size="9" fill="#f5c842" transform="rotate(-90,12,115)" text-anchor="middle">INTENT ARCH</text>
+    <text x="12" y="228" font-family="JetBrains Mono,monospace" font-size="9" fill="#b06dff" transform="rotate(-90,12,228)" text-anchor="middle">GOV STEWARD</text>
+    <text x="12" y="340" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" transform="rotate(-90,12,340)" text-anchor="middle">AGENT</text>
+    <!-- Nodes -->
+    <circle cx="100" cy="104" r="30" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="100" y="99" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f5c842">1. Draft</text>
+    <text x="100" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">Intent Spec</text>
+    <circle cx="240" cy="104" r="30" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="240" y="99" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f5c842">2. Crystallize</text>
+    <text x="240" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">review</text>
+    <circle cx="360" cy="222" r="30" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="360" y="217" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#b06dff">3. Activation</text>
+    <text x="360" y="232" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">launch agents</text>
+    <circle cx="470" cy="340" r="30" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="470" y="335" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#00d4ff">4. Execution</text>
+    <text x="470" y="350" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">agent works</text>
+    <circle cx="575" cy="222" r="30" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="575" y="217" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#b06dff">5. Drift Signal</text>
+    <text x="575" y="232" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">/ escalation</text>
+    <circle cx="680" cy="104" r="30" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="680" y="99" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f5c842">6. Validation</text>
+    <text x="680" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">Gate</text>
+    <circle cx="780" cy="104" r="30" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <text x="780" y="99" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#00e896">7. &#10003;</text>
+    <text x="780" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">VALIDATED</text>
+    <!-- Connections -->
+    <line x1="130" y1="104" x2="210" y2="104" stroke="#f5c842" stroke-width="1.5" marker-end="url(#sw)" opacity=".7"/>
+    <line x1="257" y1="122" x2="344" y2="208" stroke="#b06dff" stroke-width="1.5" marker-end="url(#sw)" opacity=".6"/>
+    <line x1="378" y1="248" x2="454" y2="318" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#sw)" opacity=".6"/>
+    <line x1="490" y1="318" x2="556" y2="246" stroke="#b06dff" stroke-width="1.5" marker-end="url(#sw)" opacity=".6"/>
+    <line x1="594" y1="206" x2="662" y2="122" stroke="#f5c842" stroke-width="1.5" marker-end="url(#sw)" opacity=".6"/>
+    <line x1="710" y1="104" x2="750" y2="104" stroke="#00e896" stroke-width="1.5" marker-end="url(#sw)" opacity=".7"/>
+    <!-- Scrum equivalents -->
+    <text x="100" y="435" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">Sprint Planning</text>
+    <text x="360" y="435" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">Daily Standup</text>
+    <text x="570" y="435" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">Sprint Review</text>
+    <text x="730" y="435" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">Retrospective</text>
+    <text x="410" y="420" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0" letter-spacing="1">SCRUM EQUIVALENTS:</text>
+  </svg>
+</div>
+
+<h3>Replacing Scrum ceremonies</h3>
+<table>
+  <tr><th>Scrum ceremony</th><th>GALDUR equivalent</th><th>Cadence</th><th>Duration</th></tr>
+  <tr><td>Sprint Planning</td><td><strong>Intent Crystallization</strong></td><td>Event-triggered (new need)</td><td>20–45 min</td></tr>
+  <tr><td>Daily Standup</td><td><strong>Drift Dashboard</strong></td><td>Continuous, async</td><td>0 min (read)</td></tr>
+  <tr><td>Sprint Review</td><td><strong>Validation Gate</strong></td><td>Event-triggered (spec completion)</td><td>15–30 min</td></tr>
+  <tr><td>Retrospective</td><td><strong>Trace Audit</strong></td><td>2–4 weeks or after milestone</td><td>60–90 min</td></tr>
+  <tr><td>Backlog Grooming</td><td><strong>Spec Backlog Review</strong></td><td>Weekly (optional)</td><td>30 min</td></tr>
+  <tr><td>Sprint (2 weeks)</td><td><strong>Intent Cycle</strong></td><td>Completion-triggered, not time-based</td><td>Variable</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ S9 ═══ -->
+<h2 id="s9"><span class="num">09 —</span>Trace Audit</h2>
+
+<h3>9.1 What is a Trace Audit</h3>
+<p>Trace Audit is the GALDUR equivalent of a retrospective — but with a key difference: <strong>we do not ask how the team felt</strong>, we ask <strong>what the data tells us about the quality of our specs and guardrails</strong>.</p>
+<p>Trace Audit takes place:</p>
+<ul>
+  <li>Every 2–4 weeks (or after a major milestone / incident)</li>
+  <li>Always after a Hard Lock incident</li>
+  <li>Always after Drift Score &gt; 15 on any spec</li>
+</ul>
+<p><strong>Participants:</strong> Intent Architect + Governance Steward (mandatory), relevant Curators (based on domains in review period).</p>
+
+<h3>9.2 Trace Audit Template</h3>
+<pre>
+# Trace Audit — [Date]
+## Review period: [from] &#8594; [to]
+
+### 1. PERIOD OVERVIEW
+| Metric                              | Value | Trend | Threshold |
+|-------------------------------------|-------|-------|-----------|
+| Total specs launched                |       |       | —         |
+| Validated (successfully)            |       |       | &gt; 85%     |
+| Reverted                            |       |       | &lt; 5%      |
+| Average Drift Score                 |       |       | &lt; 10      |
+| Total escalations                   |       |       | —         |
+| Hard Lock incidents                 |       |       | 0         |
+| Average Amendment Rate              |       |       | &lt; 0.2     |
+| Average time spec &#8594; validated       |       |       | —         |
+
+### 2. DRIFT ANALYSIS
+#### 2.1 Most common drift event types
+| Drift type          | Count | % of total | Examples |
+|---------------------|-------|------------|----------|
+| scope_expansion     |       |            |          |
+| constraint_violation|       |            |          |
+| technical_deviation |       |            |          |
+| inferred_decision   |       |            |          |
+| timeout             |       |            |          |
+| amendment_proposed  |       |            |          |
+
+#### 2.2 Specs with highest Drift Score
+| Spec ID | Domain | Drift Score | Root cause | Action |
+
+#### 2.3 Where specs failed (pattern analysis)
+Pattern #1: [description]
+  Occurrence: [N times]
+  Hypothesis for cause: [...]
+  Proposed fix: [...]
+
+### 3. ESCALATION ANALYSIS
+#### 3.1 Recurring escalations (2x in period = systemic problem)
+Recurring escalation: [description]
+  Cause: [missing constraint / vague intent / wrong governance level]
+  Recommendation: [concrete fix]
+
+#### 3.2 Escalations that could be eliminated
+| Escalation | What would eliminate it |
+|------------|-------------------------|
+|            | Better intent wording in spec template |
+|            | New constraint in domain guardrails |
+|            | Governance level reduction / increase |
+
+### 4. GOVERNANCE LEVEL CALIBRATION
+#### 4.1 Over-governed (candidates for reduction)
+| Task type | Domain | Current level | Proposed level | Rationale |
+
+#### 4.2 Under-governed (caused incident or rollback)
+| Task type | Domain | Current level | Proposed level | Rationale |
+
+#### 4.3 New Hard Lock candidates
+| Action | Domain | Rationale |
+
+### 5. AGENT PERFORMANCE
+| Agent role     | Tasks | Drift rate | Timeout rate | Escalation rate |
+|----------------|-------|------------|--------------|-----------------|
+| coding_agent   |       |            |              |                 |
+| infra_agent    |       |            |              |                 |
+| db_agent       |       |            |              |                 |
+| network_agent  |       |            |              |                 |
+| security_agent |       |            |              |                 |
+
+### 6. ACTION ITEMS
+| # | Action | Owner | Deadline | Priority |
+
+### 7. TREND METRICS
+- [ ] Drift Score trend (rolling average)
+- [ ] Escalation Rate per domain
+- [ ] Spec &#8594; Validated average time
+- [ ] Amendment Rate trend
+- [ ] Governance Level distribution (mix L0–L3)
+</pre>
+
+<hr>
+
+<!-- ═══ S10 ═══ -->
+<h2 id="s10"><span class="num">10 —</span>Hard Locks — absolute prohibitions</h2>
+<p>Hard Locks are categories of actions that <strong>an agent must never perform without explicit real-time human approval</strong>. These locks are implemented in the governance engine — they are not part of the Intent Spec, agents cannot override them, curators cannot delegate them.</p>
+
+<div class="card card-red">
+  <h4 style="color:#ff6b6b">&#128308; 10.1 Universal Hard Locks — apply to all domains, without exception</h4>
+  <table>
+    <tr><th>Category</th><th>Specific prohibitions</th></tr>
+    <tr><td style="color:#ff6b6b"><strong>Credentials &amp; Secrets</strong></td><td>Handling private keys/passwords/API keys in plain-text · Writing secrets to logs or DB without encryption · Rotating prod credentials without rollback plan</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Destructive DB operations</strong></td><td>DELETE without WHERE on production DB · DROP TABLE/DATABASE in production · TRUNCATE prod tables · Overwriting production backups</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Identity &amp; Access</strong></td><td>Any IAM/permissions change without human approval · Creating or deleting admin/root account · SSH key in authorized_keys on prod server</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Critical infrastructure</strong></td><td>Change to core routing tables or BGP · Change to prod firewall rules (allow or deny) · Shutdown/restart of critical prod server without change window</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>External communication</strong></td><td>Email/notification to &gt;10 recipients · Webhook to external system with PII · Communication implying organizational commitment</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Payments &amp; Compliance</strong></td><td>Handling payment logic or billing data · Exporting PII without GDPR audit trail · Deleting data subject to retention policy</td></tr>
+  </table>
+</div>
+
+<h3>10.2 Domain-specific Hard Locks</h3>
+<pre>
+&#128308; INFRASTRUCTURE:
+  &#9500;&#9472;&#9472; Restore from backup to production
+  &#9500;&#9472;&#9472; Server decommission without data backup verification
+  &#9492;&#9472;&#9472; Change to production SSL/TLS configuration without downtime coordination
+
+&#128308; DATABASE:
+  &#9500;&#9472;&#9472; Backup restore to production DB
+  &#9500;&#9472;&#9472; Any UPDATE without WHERE on prod table &gt; 10K rows
+  &#9492;&#9472;&#9472; Change to DB replication configuration
+
+&#128308; NETWORK:
+  &#9500;&#9472;&#9472; Change or deletion of DNS records for prod domains (A, MX, NS)
+  &#9500;&#9472;&#9472; Change to core switch configuration
+  &#9492;&#9472;&#9472; Any VPN configuration change affecting prod traffic
+
+&#128308; SECURITY:
+  &#9500;&#9472;&#9472; Incident response containment (system isolation, IP blocking)
+  &#9500;&#9472;&#9472; Deletion or modification of audit logs
+  &#9492;&#9472;&#9472; Any exploit attempt or penetration (even authorized pen test)
+</pre>
+
+<h3>10.3 What happens when a Hard Lock is detected</h3>
+<ol>
+  <li>Agent immediately stops execution</li>
+  <li>Spec transitions to <code>ESCALATED:hard_lock</code> state</li>
+  <li>Governance Steward receives immediate notification (not async Drift Signal)</li>
+  <li>Incident is written to a separate Hard Lock Incident Log</li>
+  <li>Spec CANNOT continue without explicit Intent Architect approval</li>
+  <li>Hard Lock incident is ALWAYS reviewed at the next Trace Audit</li>
+</ol>
+
+<hr>
+
+<!-- ═══ S11 ═══ -->
+<h2 id="s11"><span class="num">11 —</span>Adapting to Team Size</h2>
+
+<h3>Solo developer with agents</h3>
+<div class="card card-cyan">
+  <p><strong>Intent Architect = Governance Steward = Agent Curator = YOU</strong></p>
+  <p>Adjustments: L2 tasks — you give consent yourself before execution (but still before, not after). Trace Audit: 1x monthly, personal review of drift logs. Drift Dashboard: terminal output / simple CLI. Hard Locks apply unchanged.</p>
+</div>
+
+<h3>Small team (2–4 people)</h3>
+<div class="card card-cyan">
+  <p>1 Intent Architect (senior / tech lead) · 1–2 Agent Curators (full-stack, ops) · Governance Steward rotates or is a shared role</p>
+  <p>Adjustments: Any Curator can validate L1 tasks. L2 tasks require Intent Architect approval. Weekly Spec Backlog Review (30 min) replaces sprint planning.</p>
+</div>
+
+<h3>Medium team (5–15 people)</h3>
+<div class="card card-cyan">
+  <p>1–2 Intent Architects (per domain: Dev IA + Ops IA) · 1 Governance Steward (dedicated role) · 3–10 Agent Curators (specialized per domain)</p>
+  <p>Recommendations: Separate spec backlog per domain. Domain-specific Trace Audits (Dev, Ops) + cross-domain quarterly. Governance Steward has access to all drift dashboards.</p>
+</div>
+
+<hr>
+
+<!-- ═══ S12 ═══ -->
+<h2 id="s12"><span class="num">12 —</span>Relationship to Existing Methodologies</h2>
+<p>GALDUR is not a revolution, it is a <strong>selective synthesis</strong>:</p>
+<table>
+  <tr><th>Methodology</th><th>What GALDUR adopts</th><th>What it discards</th></tr>
+  <tr><td><strong>Lean / Kanban</strong></td><td>Continuous flow, WIP limits, waste elimination</td><td>Board visualization for humans as executors</td></tr>
+  <tr><td><strong>Scrum</strong></td><td>Iterativeness, customer feedback, inspect &amp; adapt</td><td>Sprint cadence, velocity, ceremony overhead</td></tr>
+  <tr><td><strong>Waterfall</strong></td><td>Spec structure, explicit phases, audit trail</td><td>Sequential dependencies, rigid plan</td></tr>
+  <tr><td><strong>Domain-Driven Design</strong></td><td>Bounded contexts, ubiquitous language</td><td>Complex domain modeling overhead</td></tr>
+  <tr><td><strong>GitOps</strong></td><td>Infrastructure as code, versioning, audit trail</td><td>(adopts the entire concept)</td></tr>
+  <tr><td><strong>ITIL / ITSM</strong></td><td>Change management, Hard Locks philosophy</td><td>Ceremony overhead, ticket bureaucracy</td></tr>
+  <tr><td><strong>SRE</strong></td><td>SLO/SLI thinking, blameless postmortem</td><td>(postmortem → Trace Audit)</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ S13 ═══ -->
+<h2 id="s13"><span class="num">13 —</span>Appendices — Templates</h2>
+
+<h3>A. Intent Spec — Dev variant (simplified)</h3>
+<pre>
+id: IS-YYYY-NNN
+domain: dev
+title: ""
+status: draft
+intent: ""
+outcome: []
+scope:
+  in_scope: []
+  out_of_scope: []
+constraints: []
+context: ""
+governance:
+  level: supervised
+  escalate_on: [schema_changes, new_external_dependency, security_sensitive]
+  escalation_to: ""
+  timeout_hours: 4
+tasks: []
+validation:
+  reviewer: ""
+  checklist:
+    - "Outcome conditions met?"
+    - "No constraint violated?"
+    - "Drift report read?"
+drift_log: []
+</pre>
+
+<h3>B. Intent Spec — Ops variant (extended)</h3>
+<pre>
+id: IS-YYYY-NNN
+domain: infra | db | network | security
+title: ""
+status: draft
+intent: ""
+outcome: []
+scope:
+  in_scope: []
+  out_of_scope: []
+constraints: []
+environment:
+  target: production | staging | dev
+  systems: []
+  change_window: ""
+  notification_required: false
+risk_assessment:
+  blast_radius: low | medium | high | critical
+  reversibility: easy | partial | hard | irreversible
+  estimated_downtime: none | seconds | minutes | hours
+  rollback_plan: ""
+context: ""
+governance:
+  level: collaborative      # Ops default is higher than Dev
+  escalate_on: [production_impact, blast_radius_expansion,
+                security_sensitive, irreversible_action]
+  escalation_to: ""
+  timeout_hours: 2          # shorter timeout for Ops
+  change_window_required: false
+tasks:
+  - id: IS-NNN-T1
+    title: ""
+    type: infrastructure | database | network | security
+    agent_role: infra_agent | db_agent | network_agent | security_agent
+    pre_conditions: []
+    acceptance: ""
+    rollback: ""            # MANDATORY for all Ops tasks
+validation:
+  reviewer: ""
+  checklist:
+    - "Outcome conditions met?"
+    - "No constraint violated?"
+    - "Rollback plan verified?"
+    - "Monitoring alerts active?"
+    - "Change window observed?"
+post_actions:
+  notify: []
+  monitoring_period: "24h"
+drift_log: []
+</pre>
+
+<h3>C. Governance Level — quick reference card</h3>
+<pre>
+L0 AUTONOMOUS    &#8594; Agent executes &#8594; Drift Signal async
+L1 SUPERVISED    &#8594; Agent executes &#8594; Validation Gate before deploy
+L2 COLLABORATIVE &#8594; Agent plans &#8594; Human approves &#8594; Agent executes
+L3 MANUAL        &#8594; Human executes &#8594; Agent assists
+
+CANNOT BE REDUCED (per domain):
+  Dev:  DB destructive, Auth, Crypto, Payments, External communication
+  Ops:  Prod firewall, IAM changes, Prod data delete, Backup restore
+  Net:  DNS production, Core routing, VPN prod config
+  Sec:  Incident containment, Audit log manipulation
+</pre>
+
+<hr>
+
+<!-- ═══ ADDENDUM I — SCALE ═══ -->
+<h2 id="scale"><span class="num">ADDENDUM I —</span>GALDUR @ Scale — comparison with SAFe</h2>
+
+<h3>S1. Why SAFe was created and what it solves</h3>
+<p>SAFe (Scaled Agile Framework, Dean Leffingwell, 2011) addresses three fundamental problems of scaling Agile: <strong>Alignment</strong> (how to ensure dozens of teams pull in the same direction), <strong>Dependencies</strong> (how to synchronize work between teams), and <strong>Strategic Continuity</strong> (how to translate business strategy into the work of hundreds of developers).</p>
+<p>SAFe responds with a four-level hierarchy: Portfolio → Large Solution → Program (ART) → Team. The key synchronization mechanism is <strong>PI Planning</strong> — a two-day mass event where 50–125 people plan 8–12 weeks ahead.</p>
+
+<h3>S2. Critique of SAFe — where it fails</h3>
+<p><strong>Ceremony overhead is enormous.</strong> Organizations describe a state where 20 people work full-time just on PI planning. PI Planning requires coordination, facilitation, preparation, and follow-up that often takes longer than the actual 2-day event.</p>
+<p><strong>Illusion of agility, reality of waterfall.</strong> SAFe is criticized for giving organizations the illusion of Agile adoption while preserving the original processes. Long-term PI planning (8–12 weeks ahead) is structurally very close to waterfall. Marty Cagan of the Silicon Valley Product Group stated that he does not know any strong product company using SAFe.</p>
+<p><strong>Top-down command and control.</strong> Teams are forced into ways of working, cannot make their own decisions, and work is assigned to them without regard for their technical knowledge. This undermines exactly the autonomy that Agile promised.</p>
+<p><strong>Does not address AI agents at all.</strong> SAFe was designed for human teams. In 2025–26, as agents take over large portions of execution, SAFe has no model for governing work happening in agentic workflows.</p>
+
+<div class="diagram">
+  <div class="diagram-title">GALDUR vs. SAFe — 9 key comparisons</div>
+  <svg viewBox="0 0 820 400" width="100%" style="max-width:820px">
+    <rect x="0" y="0" width="265" height="400" rx="5" fill="rgba(245,200,66,.04)"/>
+    <rect x="275" y="0" width="270" height="400" rx="5" fill="rgba(255,255,255,.02)"/>
+    <rect x="555" y="0" width="265" height="400" rx="5" fill="rgba(0,212,255,.04)"/>
+    <text x="132" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#f5c842">SAFe</text>
+    <text x="410" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#6a80a0" letter-spacing="1">DIMENSION</text>
+    <text x="688" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#00d4ff">GALDUR</text>
+    <line x1="0" y1="38" x2="820" y2="38" stroke="#1e3050" stroke-width="1"/>
+    <g font-family="Source Sans 3,sans-serif" font-size="13">
+      <text x="132" y="68" text-anchor="middle" fill="#c8a830">Train (release train)</text>
+      <text x="410" y="68" text-anchor="middle" fill="#9aafcc" font-weight="600">Metaphor</text>
+      <text x="688" y="68" text-anchor="middle" fill="#00c4ee">Orchestra + conductor</text>
+      <line x1="0" y1="78" x2="820" y2="78" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="108" text-anchor="middle" fill="#c8a830">Meeting-heavy</text>
+      <text x="410" y="108" text-anchor="middle" fill="#9aafcc" font-weight="600">Coordination</text>
+      <text x="688" y="108" text-anchor="middle" fill="#00c4ee">Intent Spec sharing</text>
+      <line x1="0" y1="118" x2="820" y2="118" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="148" text-anchor="middle" fill="#c8a830">PI cadence 8–12 weeks</text>
+      <text x="410" y="148" text-anchor="middle" fill="#9aafcc" font-weight="600">Adaptation</text>
+      <text x="688" y="148" text-anchor="middle" fill="#00c4ee">Continuous, event-driven</text>
+      <line x1="0" y1="158" x2="820" y2="158" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="188" text-anchor="middle" fill="#c8a830">Hierarchy of levels</text>
+      <text x="410" y="188" text-anchor="middle" fill="#9aafcc" font-weight="600">Scaling</text>
+      <text x="688" y="188" text-anchor="middle" fill="#00c4ee">Spec sharing + layers</text>
+      <line x1="0" y1="198" x2="820" y2="198" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="228" text-anchor="middle" fill="#c8a830">Not addressed</text>
+      <text x="410" y="228" text-anchor="middle" fill="#9aafcc" font-weight="600">AI agents</text>
+      <text x="688" y="228" text-anchor="middle" fill="#00c4ee">First-class citizens</text>
+      <line x1="0" y1="238" x2="820" y2="238" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="268" text-anchor="middle" fill="#c8a830">Software delivery only</text>
+      <text x="410" y="268" text-anchor="middle" fill="#9aafcc" font-weight="600">Coverage</text>
+      <text x="688" y="268" text-anchor="middle" fill="#00c4ee">Dev + Ops + Infra + Robots</text>
+      <line x1="0" y1="278" x2="820" y2="278" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="308" text-anchor="middle" fill="#c8a830">~900 person-h/quarter</text>
+      <text x="410" y="308" text-anchor="middle" fill="#9aafcc" font-weight="600">Ceremony overhead</text>
+      <text x="688" y="308" text-anchor="middle" fill="#00c4ee">~150 person-h/quarter</text>
+      <line x1="0" y1="318" x2="820" y2="318" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="348" text-anchor="middle" fill="#c8a830">8–18 months rollout</text>
+      <text x="410" y="348" text-anchor="middle" fill="#9aafcc" font-weight="600">Deployment</text>
+      <text x="688" y="348" text-anchor="middle" fill="#00c4ee">Incremental, 1 Crew</text>
+      <line x1="0" y1="358" x2="820" y2="358" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="388" text-anchor="middle" fill="#c8a830">PI Planning: 2 days</text>
+      <text x="410" y="388" text-anchor="middle" fill="#9aafcc" font-weight="600">Large planning</text>
+      <text x="688" y="388" text-anchor="middle" fill="#00c4ee">Intent Broadcast: async</text>
+    </g>
+  </svg>
+</div>
+
+<h3>S4. How GALDUR scales — layer model</h3>
+<p>The key insight for scaling: <strong>in GALDUR, coordination overhead does not grow linearly with headcount</strong>, because coordination happens through specs, not meetings. The better specs are written, the less coordination people need to do actively.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Organizational layers of GALDUR @ Enterprise</div>
+  <svg viewBox="0 0 760 340" width="100%" style="max-width:760px">
+    <defs>
+      <linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f5c842" stop-opacity=".2"/><stop offset="100%" stop-color="#f5c842" stop-opacity=".04"/></linearGradient>
+      <linearGradient id="og" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#b06dff" stop-opacity=".15"/><stop offset="100%" stop-color="#b06dff" stop-opacity=".03"/></linearGradient>
+      <linearGradient id="dg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00d4ff" stop-opacity=".12"/><stop offset="100%" stop-color="#00d4ff" stop-opacity=".02"/></linearGradient>
+      <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00e896" stop-opacity=".12"/><stop offset="100%" stop-color="#00e896" stop-opacity=".02"/></linearGradient>
+    </defs>
+    <rect x="20" y="20" width="720" height="62" rx="6" fill="url(#pg)" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="40" y="44" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">PORTFOLIO LAYER</text>
+    <text x="40" y="62" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Strategic Intent Map · Investment Domains · Hard Budgets · ~5–10 people · quarterly</text>
+    <rect x="20" y="95" width="720" height="62" rx="6" fill="url(#og)" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="40" y="119" font-family="JetBrains Mono,monospace" font-size="11" fill="#b06dff">ORGANIZATION LAYER</text>
+    <text x="40" y="137" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">2–6 Intent Domains · Governance Council · cross-domain synchronization · ~20–60 people</text>
+    <rect x="20" y="170" width="720" height="62" rx="6" fill="url(#dg)" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="40" y="194" font-family="JetBrains Mono,monospace" font-size="11" fill="#00d4ff">INTENT DOMAIN LAYER</text>
+    <text x="40" y="212" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">1 Domain Arch · 1–2 Stewards · 3–8 Curators · dedicated agent pool · ~10–50 equiv.</text>
+    <rect x="20" y="245" width="720" height="76" rx="6" fill="url(#cg)" stroke="#00e896" stroke-width="2"/>
+    <text x="40" y="269" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">CREW LAYER — base unit</text>
+    <text x="40" y="289" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">1 Intent Architect · 1 Governance Steward · 2–5 Curators · agent pool per domain</text>
+    <text x="40" y="308" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Capable of delivering 80% of work without dependency on another Crew · ~5–15 people</text>
+  </svg>
+</div>
+
+<h3>S6. Synchronization without PI Planning</h3>
+<p>SAFe PI Planning addresses three things: alignment, dependency mapping and commitment. GALDUR addresses each of these differently.</p>
+<p><strong>Instead of Alignment: Domain Intent Broadcast</strong> — a structured YAML document issued quarterly by the Domain Intent Architect. Contains priorities, capacity guidance, cross-domain dependencies and deprioritized items. Time required: 2–4 hours of preparation, async distribution. Vs. 2 days of PI Planning.</p>
+<p><strong>Instead of Dependency Mapping:</strong> Dependencies are explicitly encoded in Intent Specs through the <code>depends_on</code> and <code>blocks</code> fields. The governance engine automatically blocks spec activation if its dependencies are not met, and generates a <strong>Dependency Dashboard</strong> in real time.</p>
+<p><strong>Instead of Commitment:</strong> SAFe creates commitment through social pressure at PI Planning. GALDUR replaces it with structural accountability — every spec has an explicit owner, every drift is logged, Trace Audit data is shared at domain and portfolio level.</p>
+
+<h3>S9. Advantages of GALDUR over SAFe</h3>
+<ul>
+  <li><strong>Drastically lower ceremony overhead</strong> — ~150 vs. ~900 person-hours per quarter</li>
+  <li><strong>Native AI agent support</strong> — first-class citizens with governance levels from the ground up</li>
+  <li><strong>Covers the entire technical organization</strong> — Dev + Ops + Infra + Security + Robots</li>
+  <li><strong>Organic adoption</strong> — starts with one Crew, not a big-bang rollout</li>
+  <li><strong>Specs as communication medium</strong> — context is in the artifact, not in people's heads</li>
+  <li><strong>Governance is distributed</strong> — in specs and the engine, not centralized in roles</li>
+  <li><strong>Product-led culture</strong> — Intent-first naturally supports outcome thinking</li>
+</ul>
+
+<h3>S10. Disadvantages and risks of GALDUR at scale</h3>
+<ul>
+  <li><strong>Spec writing is a hard discipline</strong> — the entire methodology stands or falls on spec quality; a bad spec will cause visible drift without meeting compensation</li>
+  <li><strong>Non-existent tooling ecosystem</strong> — SAFe has Jira Align, certifications, consultants; GALDUR has nothing yet</li>
+  <li><strong>Difficult to justify to traditional management</strong> — lacks brand recognition and a certification program</li>
+  <li><strong>Spec backlog can explode</strong> — without WIP discipline, hundreds of Suspended/Draft specs accumulate; requires an explicit spec hygiene policy</li>
+  <li><strong>AI governance is new territory</strong> — fintech/healthcare regulations with agents (DORA, GDPR) is an emerging discipline</li>
+</ul>
+
+<h3>S11. Migration strategy from SAFe to GALDUR</h3>
+<p><strong>Phase 1 (months 1–3): Pilot Crew</strong> — Choose one team, dissatisfied with SAFe ceremony overhead, technically strong. Run in parallel with SAFe — still fulfills SAFe obligations, but internally works the GALDUR way. Metrics: ceremony overhead, drift rate, time from intent to validated feature.</p>
+<p><strong>Phase 2 (months 3–9): Domain pilot</strong> — Expand to the entire Intent Domain. Adds the Domain Intent Architect role, cross-Crew dependency management, Domain Trace Audits. At portfolio level still SAFe rhythm — inside the domain GALDUR.</p>
+<p><strong>Phase 3 (months 9–18): Portfolio transition</strong> — Governance Council replaces ARTs, Strategic Intent Map replaces Portfolio Kanban, PI Planning formally ended.</p>
+
+<h3>What to preserve from SAFe</h3>
+<table>
+  <tr><th>SAFe concept</th><th>GALDUR equivalent</th><th>Keep?</th></tr>
+  <tr><td>WSJF prioritization</td><td>Works per spec and per Epic</td><td>&#10003; Keep</td></tr>
+  <tr><td>Lean budgeting per domain</td><td>Strategic Intent Map</td><td>&#10003; Keep</td></tr>
+  <tr><td>Communities of Practice</td><td>—</td><td>&#10003; Keep unchanged</td></tr>
+  <tr><td>Continuous Delivery pipeline</td><td>—</td><td>&#10003; Keep unchanged</td></tr>
+  <tr><td>PI Planning</td><td>Domain Intent Broadcast</td><td>&#10007; Replace</td></tr>
+  <tr><td>ART / Release Train</td><td>Intent Domain</td><td>&#8635; Transform</td></tr>
+  <tr><td>LACE</td><td>Governance Council</td><td>&#8635; Transform</td></tr>
+  <tr><td>Scrum ceremonies</td><td>Trace Audit + Drift Dashboard</td><td>&#10007; Replace</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ ROBOTS ═══ -->
+<h2 id="robots"><span class="num">ADDENDUM II/R —</span>Robotic Dimension — Physical AI</h2>
+
+<h3>R1. Why robots belong in GALDUR</h3>
+<p>The description of GALDUR so far covers digital agents. But the methodology must also address <strong>physical agents</strong> — robots that perform work in the real world. As physical AI systems mature, organizations are deploying heterogeneous robot fleets from multiple vendors, each with proprietary protocols. Early proof-of-concept results from robotic initiatives show up to 50% reduction in unplanned downtime and 25% improvement in productivity.</p>
+<p>The physical world adds dimensions that the digital world does not have: <strong>bodily presence, safety, irreversibility of physical actions and coexistence with humans in space.</strong></p>
+
+<div class="diagram">
+  <div class="diagram-title">Taxonomy of physical agents in GALDUR — 5 levels</div>
+  <svg viewBox="0 0 820 320" width="100%" style="max-width:820px">
+    <defs><linearGradient id="rg" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#00e896" stop-opacity=".15"/><stop offset="100%" stop-color="#ff6b6b" stop-opacity=".15"/></linearGradient></defs>
+    <rect x="0" y="0" width="820" height="320" rx="6" fill="url(#rg)"/>
+    <rect x="20" y="14" width="780" height="52" rx="5" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <rect x="20" y="14" width="88" height="52" rx="5" fill="rgba(0,232,150,.12)"/>
+    <text x="64" y="36" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">TIER 1 · L0–L1</text>
+    <text x="64" y="52" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">AMR/AGV</text>
+    <text x="200" y="37" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Autonomous Mobile Robots (AMR/AGV)</text>
+    <text x="200" y="56" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Movement in space · transport · navigation · warehouses, logistics, manufacturing · Hard Lock: person detection always active</text>
+    <rect x="20" y="78" width="780" height="52" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <rect x="20" y="78" width="88" height="52" rx="5" fill="rgba(245,200,66,.1)"/>
+    <text x="64" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">TIER 2 · L1–L2</text>
+    <text x="64" y="116" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">Cobot</text>
+    <text x="200" y="101" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#f5c842">Collaborative Robots (Cobot)</text>
+    <text x="200" y="120" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Working closely with humans · assembly, assistance · Hard Lock: safety perimeter + force limit always</text>
+    <rect x="20" y="142" width="780" height="52" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <rect x="20" y="142" width="88" height="52" rx="5" fill="rgba(0,212,255,.08)"/>
+    <text x="64" y="164" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">TIER 3 · L1/L3</text>
+    <text x="64" y="180" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">Fixed</text>
+    <text x="200" y="165" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00d4ff">Industrial Robots (Fixed)</text>
+    <text x="200" y="184" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Isolated cells · high precision · welders, laser machines · Parameters L1, new configuration L3</text>
+    <rect x="20" y="206" width="780" height="52" rx="5" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <rect x="20" y="206" width="88" height="52" rx="5" fill="rgba(176,109,255,.08)"/>
+    <text x="64" y="228" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">TIER 4 · L2–L3</text>
+    <text x="64" y="244" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">Humanoid</text>
+    <text x="200" y="229" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#b06dff">Humanoid Robots</text>
+    <text x="200" y="248" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">General physical work · adaptable · Figure, Agility Digit, Boston Dynamics Atlas (2025: majority of actions L2–L3)</text>
+    <rect x="20" y="270" width="780" height="44" rx="5" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <rect x="20" y="270" width="88" height="44" rx="5" fill="rgba(255,107,107,.08)"/>
+    <text x="64" y="290" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">TIER 5 · L2–L3</text>
+    <text x="64" y="306" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">Spec.</text>
+    <text x="200" y="291" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#ff6b6b">Specialized Physical Agents</text>
+    <text x="200" y="308" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Drones (inspection, delivery) · surgical robots · underwater vehicles · farmbots · domain-specific L2–L3</text>
+  </svg>
+</div>
+
+<h3>R3. Physical Hard Locks — absolute categories</h3>
+<div class="card card-red">
+  <p><strong>Physical Hard Locks supersede all others</strong> — they cannot be overridden in software. They are implemented in the robot's hardware as well as the orchestration software:</p>
+  <ul>
+    <li>Robot must not move if a person is detected in the defined safety zone without explicit override</li>
+    <li>Force limit must not be exceeded (hardware limit)</li>
+    <li>Emergency stop must always be functional and accessible</li>
+    <li>Loss of communication = immediate safe stop (fail-safe)</li>
+    <li>Handling biological/chemical/radioactive materials requires L3 + certified protocol</li>
+    <li>Reconfiguration of safety parameters: always L3 + audit record</li>
+    <li>Physical robot must not restrict a person's movement or exit from the space (anti-trapping)</li>
+  </ul>
+</div>
+
+<h3>R7. Digital twin as an interface between intent and the physical world</h3>
+<p>Digital twin enables <strong>simulation before execution</strong> — the robot "plays out" the Intent Spec in a virtual environment, the governance engine validates the result before launching in the real world. In the GALDUR model: a physical Intent Spec has a mandatory field <code>digital_twin_simulation: required | optional | n/a</code>. For L2+ tasks of physical agents, simulation is mandatory before approval.</p>
+
+<hr>
+
+<!-- ═══ HUMAN DIMENSION ═══ -->
+<h2 id="human"><span class="num">ADDENDUM II/H —</span>Human Dimension</h2>
+
+<h3>H1. The problem methodologies ignore</h3>
+<p>GALDUR so far has described roles as functional entities. But people are not roles. People are beings with social needs, emotions, ambitions, fear of relevance, need for recognition, friendly bonds and individual productivity rhythms. <strong>A methodology that ignores this will end up like SAFe — technically correct, humanly unbearable.</strong></p>
+<p>The research is clear: a moderate level of automation maintains sufficient worker engagement in the decision-making process, thereby continuously supporting their autonomy and competencies. Empirical research in the psychology of automation suggests that maintaining active worker involvement, even partial, helps sustain self-determined motivation, reduces feelings of monotony and prevents automation-induced disengagement. And at the same time: Human-AI teams show lower cohesion and identification than purely human teams.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Five human needs and GALDUR's structural responses</div>
+  <svg viewBox="0 0 820 380" width="100%" style="max-width:820px">
+    <circle cx="410" cy="190" r="52" fill="#0c1628" stroke="#00d4ff" stroke-width="2"/>
+    <text x="410" y="184" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00d4ff">PEOPLE</text>
+    <text x="410" y="202" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">in GALDUR</text>
+    <rect x="320" y="14" width="180" height="72" rx="7" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="410" y="36" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#f5c842">Autonomy</text>
+    <text x="410" y="54" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">I have influence over my work</text>
+    <text x="410" y="72" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Intent Spec written by human</text>
+    <line x1="410" y1="86" x2="410" y2="138" stroke="#f5c842" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="608" y="58" width="174" height="72" rx="7" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="695" y="80" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00e896">Competence</text>
+    <text x="695" y="98" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">I am good at what I do</text>
+    <text x="695" y="116" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Curator = domain expert</text>
+    <line x1="616" y1="104" x2="463" y2="158" stroke="#00e896" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="608" y="248" width="174" height="72" rx="7" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="695" y="270" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#b06dff">Belonging</text>
+    <text x="695" y="288" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">I belong somewhere</text>
+    <text x="695" y="306" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Domain Day · Weekly Sync</text>
+    <line x1="616" y1="268" x2="463" y2="224" stroke="#b06dff" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="38" y="248" width="174" height="72" rx="7" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="125" y="270" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00d4ff">Meaning</text>
+    <text x="125" y="288" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">What I do has meaning</text>
+    <text x="125" y="306" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Portfolio Intent Map public</text>
+    <line x1="204" y1="268" x2="360" y2="224" stroke="#00d4ff" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="38" y="58" width="174" height="72" rx="7" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="125" y="80" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#ff6b6b">Fairness</text>
+    <text x="125" y="98" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Rules apply to everyone</text>
+    <text x="125" y="116" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Drift log is blameless</text>
+    <line x1="204" y1="106" x2="360" y2="160" stroke="#ff6b6b" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <text x="410" y="368" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">Self-Determination Theory (Deci &amp; Ryan) · Edmondson Psychological Safety</text>
+  </svg>
+</div>
+
+<h3>H2. Five human needs — GALDUR's structural responses</h3>
+
+<h4>Autonomy — I have influence over my work</h4>
+<p>The greatest risk of the agentic world: a human becomes a passive validator of outputs they had no influence over. GALDUR responds: Intent Spec is written by a human (not an agent), Curator can propose alternative decompositions and different governance levels, no agent may initiate work without a crystallized spec.</p>
+
+<h4>Competence — I am good at what I do</h4>
+<p>The threat: agents produce outputs faster and sometimes at better quality than a human, which can erode the sense of professional value. GALDUR responds: Curator is explicitly the domain expert who evaluates agent output from a position of knowledge the agent lacks (business context, organizational memory, relationship intelligence). Trace Audits value human pattern recognition. The Intent Architect role is creative and strategic.</p>
+
+<h4>Belonging — I belong somewhere</h4>
+<p>GALDUR introduces structural social mechanisms: <strong>Trace Audit as a social event</strong> (last 15 minutes is open floor with no agenda) · <strong>Intent Crystallization Session</strong> (creative act without agents) · <strong>Weekly Human Sync</strong> (30 min, NOT about specs, NOT about agents — about people) · <strong>Domain Day quarterly</strong> (full day for people: demos, learnings, informal time).</p>
+
+<h4>Meaning — what I do has meaning</h4>
+<p>Each Curator is assigned a domain responsibility — is the guardian of quality for the entire domain. Intent Spec explicitly contains a <code>intent</code> section describing why — everyone working on the spec knows the bigger picture. Portfolio Intent Map is publicly visible to all team members.</p>
+
+<h4>Fairness — rules apply to everyone, my contribution is visible</h4>
+<p>Drift log is transparent — we see where a spec failed, not where a person failed. Hard Locks apply to all agents, all domains. Trace Audit metrics are shared. Every decision has a trace in the Amendment process.</p>
+
+<h3>H3. Psychological safety in GALDUR context</h3>
+<p>In Human-AI teams there is a risk: a team member knows the agent output is wrong, but feels pressure to approve it because "AI did it quickly". GALDUR guarantees:</p>
+<ul>
+  <li><strong>Curator has veto without justification</strong> — "something doesn't seem right to me" is a legitimate reason for revision; an agent never argues back</li>
+  <li><strong>Escalation is rewarded</strong> — Trace Audit explicitly tracks "escalations that prevented incidents" as positive metrics</li>
+  <li><strong>Drift log is blameless</strong> — "curator X has a high rejection rate" = "specs in domain X need refinement", not an evaluation of the person</li>
+  <li><strong>Hard Lock incident is not a scandal</strong> — postmortem is about improving the system, not finding someone to blame</li>
+</ul>
+
+<h3>H4. Career trajectories in the GALDUR world</h3>
+<table>
+  <tr><th>Level</th><th>Role</th><th>Key competency</th></tr>
+  <tr><td>Entry</td><td>Agent Curator (junior)</td><td>Domain knowledge, spec reading, drift pattern recognition</td></tr>
+  <tr><td>Mid</td><td>Agent Curator (senior) / Governance Steward</td><td>Cross-domain understanding, escalation judgment, spec writing</td></tr>
+  <tr><td>Senior</td><td>Intent Architect</td><td>Strategic intent formulation, constraint design, architecture</td></tr>
+  <tr><td>Principal</td><td>Domain Intent Architect</td><td>Cross-domain orchestration, portfolio management</td></tr>
+  <tr><td>Leadership</td><td>Chief Intent Officer / CTO</td><td>Strategic Intent Map, Hard Lock policy, governance evolution</td></tr>
+</table>
+<p><strong>Key change from the traditional model:</strong> a person's value grows with their ability to define and bound work — not with the speed at which they execute it.</p>
+
+<h3>H5. Onboarding into a GALDUR team</h3>
+<div class="card card-purple">
+  <p><strong>Week 1:</strong> Read the 10 most recent validated Intent Specs in the domain. Attend a Trace Audit as an observer. Do not validate anything — just watch and ask questions.</p>
+  <p><strong>Week 2:</strong> Shadow a senior Curator during 5 Validation Gates. Discuss every decision: why approve, why reject. Write down your own observations.</p>
+  <p><strong>Week 3:</strong> Supervised validation — validate yourself, but consult every decision with the senior. Propose 3 things that could be improved in the specs.</p>
+  <p><strong>Week 4:</strong> Independent work for L0–L1 tasks. Mentor available for consultation.</p>
+  <p><strong>Onboarding output:</strong> The new member understands three things: what a good spec is, how to recognize quality agent output, when to escalate. And one human thing: they know who to turn to.</p>
+</div>
+
+<h3>H6. "Moral crumple zones" — who bears responsibility?</h3>
+<p>In Human-AI systems, responsibility for an AI error is transferred to the nearest human in the hierarchy — even if the actual decision was made by an agent. In GALDUR context: the curator approved the specification, the agent performed a destructive operation, the curator bears responsibility.</p>
+<p><strong>GALDUR responds:</strong> Responsibility is shared, not transferred — Curator is responsible for the quality of the Validation Gate, Intent Architect for the quality of specs and constraints. The audit trail documents decisions, not culprits. Hard Locks protect not only the system but also the Curator — an agent will never perform an action for which the Curator would bear disproportionate responsibility. Blameless postmortem is mandatory: "where did the system fail?" not "who failed?"</p>
+
+<hr>
+
+<!-- ═══ FINANCE ═══ -->
+<h2 id="finance"><span class="num">ADDENDUM II/F —</span>Financial Dimension</h2>
+
+<h3>F1. The core tension: agent time vs. linear financial time</h3>
+<p>Agents work asynchronously, in parallel, in burst modes. Finance and management live in linearly flowing time — quarters, fiscal year, investor milestones, vendor payment cycles. This tension is real. 63% of finance teams have problems with forecasts beyond a six-month horizon when using traditional methods.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Three-horizon financial model of GALDUR</div>
+  <svg viewBox="0 0 820 260" width="100%" style="max-width:820px">
+    <defs>
+      <linearGradient id="f1g" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#00e896" stop-opacity=".2"/><stop offset="100%" stop-color="#00e896" stop-opacity=".04"/></linearGradient>
+      <linearGradient id="f2g" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#f5c842" stop-opacity=".2"/><stop offset="100%" stop-color="#f5c842" stop-opacity=".04"/></linearGradient>
+      <linearGradient id="f3g" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#b06dff" stop-opacity=".2"/><stop offset="100%" stop-color="#b06dff" stop-opacity=".04"/></linearGradient>
+    </defs>
+    <line x1="40" y1="220" x2="780" y2="220" stroke="#1e3050" stroke-width="1.5"/>
+    <text x="40" y="238" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0" text-anchor="middle">Today</text>
+    <text x="280" y="238" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0" text-anchor="middle">+4 weeks</text>
+    <text x="520" y="238" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0" text-anchor="middle">+3 months</text>
+    <text x="780" y="238" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0" text-anchor="middle">+18 months</text>
+    <!-- F1 -->
+    <rect x="40" y="20" width="240" height="188" rx="7" fill="url(#f1g)" stroke="#00e896" stroke-width="2"/>
+    <text x="160" y="46" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">HORIZON F1</text>
+    <text x="160" y="64" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Execution Window</text>
+    <text x="160" y="82" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">0 – 4 weeks</text>
+    <line x1="60" y1="94" x2="260" y2="94" stroke="#1e3050" stroke-width=".5"/>
+    <text x="160" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Active Intent Specs</text>
+    <text x="160" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Per-spec cost tracking</text>
+    <text x="160" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Real-time Drift Dashboard</text>
+    <text x="160" y="172" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Owner: Governance Steward</text>
+    <text x="160" y="194" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">Update: continuous</text>
+    <!-- F2 -->
+    <rect x="300" y="20" width="240" height="188" rx="7" fill="url(#f2g)" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="420" y="46" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">HORIZON F2</text>
+    <text x="420" y="64" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Planning Window</text>
+    <text x="420" y="82" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">1 – 3 months</text>
+    <line x1="320" y1="94" x2="520" y2="94" stroke="#1e3050" stroke-width=".5"/>
+    <text x="420" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Crystallized + Draft specs</text>
+    <text x="420" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Epic-level planning</text>
+    <text x="420" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Rolling forecast (3 scenarios)</text>
+    <text x="420" y="172" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Owner: Domain Architect</text>
+    <text x="420" y="194" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">Update: weekly</text>
+    <!-- F3 -->
+    <rect x="560" y="20" width="220" height="188" rx="7" fill="url(#f3g)" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="670" y="46" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#b06dff">HORIZON F3</text>
+    <text x="670" y="64" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Strategic Window</text>
+    <text x="670" y="82" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">3 – 18 months</text>
+    <line x1="580" y1="94" x2="760" y2="94" stroke="#1e3050" stroke-width=".5"/>
+    <text x="670" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Strategic Intent Map</text>
+    <text x="670" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Domain capacity budget</text>
+    <text x="670" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Board / Investor reporting</text>
+    <text x="670" y="172" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Owner: Portfolio / CFO</text>
+    <text x="670" y="194" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">Update: quarterly</text>
+  </svg>
+</div>
+
+<h3>F3. Intent-based milestones — not calendar-based</h3>
+<p>Traditional milestones are calendar-based ("by March 31 we will deliver feature X"). GALDUR introduces <strong>Intent-based milestones</strong> — a milestone is met when all linked specs are validated, not when a date passes. Confidence level is automatically calculated from drift metrics of active specs (<code>weighted_spec_completion * (1 - avg_drift_score)</code>).</p>
+
+<h3>F4. Per-Spec Cost Model</h3>
+<p>Every Intent Spec has an assigned financial dimension: <code>human_hours</code>, <code>agent_compute_units</code>, <code>infra_cost</code> and <code>total_estimated</code>. The governance engine continuously tracks actual vs. estimated. This way the portfolio layer can see in real time where money goes — without time tracking, project reporting or manual controlling.</p>
+
+<h3>F5. Rolling Forecast instead of annual budget</h3>
+<p>GALDUR naturally implements the rolling forecast approach: initiatives are funded in stages — each with clear continuation criteria tied to results. This makes it easier to stop or redirect work without every cancellation being perceived as failure.</p>
+
+<h3>F6. Agent Compute Budget — a new accounting category</h3>
+<p>Traditional accounting: salaries, hardware, software licenses, cloud. An agentic organization needs a new category: <strong>agent compute budget</strong>. Every spec has a <code>max_agent_budget</code> (hard cap) — the governance engine stops the agent upon reaching 80% of budget and escalates (throttling alert) before the limit is exceeded.</p>
+
+<h3>F7. Business Value Framework per spec</h3>
+<p>Every Intent Spec can (for F2+, recommended) contain: <code>value_type</code> (revenue_enabling / cost_reduction / risk_mitigation / compliance / capability_building), <code>estimated_annual_value_eur</code>, <code>value_realization_date</code> and <code>measurement_method</code>. This enables ROI calculation per spec: <strong>(Business Value − Total Cost) / Total Cost × 100</strong>.</p>
+
+<h3>F10. Potentially transformative concepts (not yet widespread)</h3>
+<p><strong>Outcome-based agent pricing</strong> — payment for validated result, not for tokens and compute. Specialized agent firms are beginning to offer this experimentally — a natural extension of the GALDUR cost model.</p>
+<p><strong>Agent capacity as a tradeable asset</strong> — an organization with mature agent governance and good Intent Specs has assets that can be leased (Crew-as-a-service), sold as "validated agent workflow", or invested in a joint venture.</p>
+<p><strong>Financial digital twin</strong> — a virtual model of the entire financial behavior of the organization, updated in real time from the Drift Dashboard, spec completion data and cost tracking. CFO can run "what if" analyses: "what will happen to Q3 milestones if I shift 30% of capacity from domain A to domain B?"</p>
+
+<hr>
+
+<!-- ═══ EXAMPLES ═══ -->
+<h2 id="examples"><span class="num">ADDENDUM III —</span>Real-World Deployment Examples</h2>
+
+<div class="blockquote">
+  Agents think. Robots do. Humans lead. Finance keeps time.
+</div>
+
+<h3>Metaphor: the restaurant kitchen</h3>
+<p>The most comprehensible analogy for management: a GALDUR team is like a kitchen in a large restaurant.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Kitchen as a model of the GALDUR team</div>
+  <svg viewBox="0 0 820 200" width="100%" style="max-width:820px">
+    <rect x="20" y="24" width="175" height="140" rx="8" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="107" y="55" text-anchor="middle" font-size="30">&#128104;&#8205;&#127859;</text>
+    <text x="107" y="82" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#f5c842">Head Chef</text>
+    <text x="107" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">= Intent Architect</text>
+    <text x="107" y="120" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Recipes · menu ·</text>
+    <text x="107" y="136" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">intent and standard</text>
+    <text x="107" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">= Intent Spec</text>
+    <rect x="215" y="24" width="175" height="140" rx="8" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="302" y="55" text-anchor="middle" font-size="30">&#129333;</text>
+    <text x="302" y="82" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00e896">Sous-chef</text>
+    <text x="302" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">= Agent Curator</text>
+    <text x="302" y="120" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Controls sections ·</text>
+    <text x="302" y="136" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">evaluates output</text>
+    <text x="302" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">= Validation Gate</text>
+    <rect x="410" y="24" width="175" height="140" rx="8" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="497" y="55" text-anchor="middle" font-size="30">&#128203;</text>
+    <text x="497" y="82" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#b06dff">Operations Manager</text>
+    <text x="497" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">= Gov. Steward</text>
+    <text x="497" y="120" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Smooth operation ·</text>
+    <text x="497" y="136" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">solves problems</text>
+    <text x="497" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">= Drift Dashboard</text>
+    <rect x="605" y="24" width="195" height="140" rx="8" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="702" y="55" text-anchor="middle" font-size="30">&#129302;</text>
+    <text x="702" y="82" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00d4ff">Station Cooks</text>
+    <text x="702" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">= Agents</text>
+    <text x="702" y="120" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Fast, precise ·</text>
+    <text x="702" y="136" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">following the recipe</text>
+    <text x="702" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">= Spec execution</text>
+  </svg>
+</div>
+
+<p><strong>The Head Chef</strong> (Intent Architect) determines what is cooked and how — creates recipes, decides on the menu, knows what the guest wants. Does not cook every dish themselves. <strong>Sous-chefs</strong> (Agent Curators) oversee kitchen sections — check whether the result looks right. <strong>Station cooks</strong> (Agents) prepare specific courses — quickly, precisely, according to the recipe. They cannot invent a new dish, but with a good recipe they can cook hundreds of portions without error. <strong>The Operations Manager</strong> (Governance Steward) ensures the kitchen functions as a whole.</p>
+<p>Recipes are Intent Specs. Food safety rules are Hard Locks. Tasting processes are Validation Gates.</p>
+
+<h3>Example 1: Small software agency (8 people)</h3>
+<div class="card card-cyan">
+  <p><strong>Situation:</strong> Developers spend 40% of their time on routine things — writing tests, documentation, simple bugs. They cannot keep up with the creative and architectural work that clients pay them for.</p>
+  <p><strong>GALDUR deployment (simplified):</strong></p>
+  <ul>
+    <li>L0 agents: unit tests for completed code, documentation updates, simple bugs</li>
+    <li>Governance rule: if agent encounters DB structure or authentication &#8594; stops and notifies the developer</li>
+    <li>Morning 10-minute Drift Dashboard replaced the daily standup</li>
+  </ul>
+  <p><strong>Result after 3 months:</strong> Each developer saved 6 hours per week. The team handled 2 additional projects per quarter without new hires. The tester shifted from manual clicking to designing test scenarios.</p>
+</div>
+
+<h3>Example 2: Fintech startup (50 people)</h3>
+<div class="card card-cyan">
+  <p><strong>Situation:</strong> DevOps engineer spends 70% of time on repetitive operational tasks. Only a few hours per week remain for architectural decisions.</p>
+  <table>
+    <tr><th>What agents took over</th><th>What stayed with humans</th></tr>
+    <tr><td>Routine server monitoring 24/7</td><td>Any production change</td></tr>
+    <tr><td>SSL certificate rotation</td><td>Firewall rules (4-eyes principle)</td></tr>
+    <tr><td>Weekly backups + integrity verification</td><td>Production backups (L3)</td></tr>
+    <tr><td>OS patches on dev and staging</td><td>New system access grants</td></tr>
+    <tr><td>DB performance anomaly detection + waiting for approval</td><td>Architectural decisions</td></tr>
+  </table>
+  <p><strong>Financial result:</strong> Agent capacity &#8776; 1.5 extra DevOps engineers. Cost: ~$360/month. Saved time: ~120 senior hours/month. ROI positive from month 2.</p>
+</div>
+
+<h3>Example 3: Manufacturing corporation (2,000 people) — phased deployment</h3>
+
+<div class="diagram">
+  <div class="diagram-title">Three phases of corporate GALDUR deployment</div>
+  <svg viewBox="0 0 820 180" width="100%" style="max-width:820px">
+    <rect x="20" y="20" width="240" height="140" rx="7" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="140" y="48" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00d4ff">PHASE 1 · months 1–6</text>
+    <text x="140" y="68" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Pilot Crew</text>
+    <text x="140" y="90" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">IT Support domain</text>
+    <text x="140" y="108" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Monitoring · Ticket triage</text>
+    <text x="140" y="130" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">&#8722;30% routine load</text>
+    <text x="140" y="148" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">&#8722;58% time per ticket</text>
+    <polygon points="270,90 290,80 290,100" fill="#6a80a0" opacity=".6"/>
+    <line x1="260" y1="90" x2="290" y2="90" stroke="#6a80a0" stroke-width="1.5" opacity=".6"/>
+    <rect x="290" y="20" width="240" height="140" rx="7" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="410" y="48" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">PHASE 2 · months 7–18</text>
+    <text x="410" y="68" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Domain Pilot</text>
+    <text x="410" y="90" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Dev Domain added</text>
+    <text x="410" y="108" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">"Digital task brief"</text>
+    <text x="410" y="130" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Simple feature: 2 wks&#8594;1 day</text>
+    <text x="410" y="148" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Complex feature: 6 wks&#8594;2–3 wks</text>
+    <polygon points="540,90 560,80 560,100" fill="#6a80a0" opacity=".6"/>
+    <line x1="530" y1="90" x2="560" y2="90" stroke="#6a80a0" stroke-width="1.5" opacity=".6"/>
+    <rect x="560" y="20" width="240" height="140" rx="7" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="680" y="48" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">PHASE 3 · months 18–36</text>
+    <text x="680" y="68" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Production Systems</text>
+    <text x="680" y="90" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">AMR robots in manufacturing</text>
+    <text x="680" y="108" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Operators = Curators</text>
+    <text x="680" y="130" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Digital Twin simulation</text>
+    <text x="680" y="148" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">before every L2+ spec</text>
+  </svg>
+</div>
+
+<p><strong>For corporate leadership:</strong></p>
+<ul>
+  <li><strong>COO:</strong> Production never stopped due to an IT issue. Time from IT request approval to deployment: 60% shorter on average. Complete audit trail of every system change.</li>
+  <li><strong>CFO:</strong> Investment in pilot phase: ~$110K. Saved IT team capacity: approx. 8 FTE equivalent annually. ROI positive from month 4 of phase 2.</li>
+  <li><strong>HR:</strong> No layoffs — people transitioned to more meaningful work. 40% reduction in IT team overtime. 3 senior technicians who were considering leaving stayed.</li>
+</ul>
+
+<h3>Example 4: AI-first agency (12 people) — new business model</h3>
+<div class="card card-gold">
+  <p><strong>Model:</strong> 12 people do the work that would traditionally require 50. Agents handle 80% of execution. Humans define, communicate with clients and are accountable for the result.</p>
+  <table>
+    <tr><th>Project</th><th>Traditional</th><th>AI-first agency</th></tr>
+    <tr><td>Customer data analysis</td><td>3 analysts, 6 weeks, $20K</td><td>1 analyst, 6 days, $4K</td></tr>
+    <tr><td>Software feature</td><td>Team of 3, 3 sprints</td><td>1 Curator, Intent Cycle 2–5 days</td></tr>
+    <tr><td>Infrastructure project</td><td>DevOps team, 4 weeks</td><td>1 Steward + agents, 1 week</td></tr>
+  </table>
+  <p>The client pays for human judgment, domain expertise and accountability for the result — not for hours at the keyboard.</p>
+</div>
+
+<h3>Day by day — what it looks like</h3>
+<p><strong>Morning of an Intent Architect:</strong> Opens Drift Dashboard. Green items (done, logged) reviewed in 5 minutes. Yellow (awaiting decision) resolved in 30 minutes before the rest of the team arrives. Red (requires attention today) addressed immediately. 9:00 — Intent Crystallization session with product person: 25 minutes, review spec together. 9:30 — review of agent output: notices an edge case, adds refinement to spec, agent fills in test. 10:00 — DB index problem: reads agent analysis of three possible causes, based on own experience selects the most likely one, approves the approach. Rest of day: architectural decisions, customer call, mentoring a junior.</p>
+<p><strong>Day of a Governance Steward:</strong> Monday morning — green: 47 servers patched, 3 certs renewed, backup OK. Yellow: new firewall rule awaiting approval, monitoring threshold adjustment. Red: disk I/O anomaly on one server, growing prod DB latency. Steward spends the first hour on red items, delegates yellow to Curator Martin. Rest of day: facilitates Intent Crystallization (45 min), runs monthly Trace Audit (90 min), handles one agent escalation.</p>
+
+<h3>Three most common management questions</h3>
+<table>
+  <tr><th>Question</th><th>Answer</th></tr>
+  <tr><td><strong>"What if an agent makes a mistake?"</strong></td><td>It will — just like a new employee. Three layers of protection: (1) agent stops at riskier actions, (2) everything goes through human review before deployment, (3) Hard Locks physically block the most dangerous actions. Mistakes happen — in GALDUR they are caught before causing damage.</td></tr>
+  <tr><td><strong>"Will we lose people?"</strong></td><td>No — we will shift them. Analogy: the arrival of computers did not eliminate accountants, it shifted them from adding numbers to financial analysis. We need fewer people for execution and more people with good judgment. A shift in hiring profile, not mass layoffs.</td></tr>
+  <tr><td><strong>"How long does implementation take?"</strong></td><td>Small team (5–15 people): first results 4–8 weeks, full deployment 3–6 months. Medium-sized company: pilot 2–3 months, full deployment 12–18 months. Corporation (500+ people): pilot 3–6 months, gradual expansion 2–4 years. Recommendation: do not start with a revolution — choose one team, demonstrate value, then expand.</td></tr>
+</table>
+
+<h3>Comparison: how work changes</h3>
+<div class="diagram">
+  <div class="diagram-title">Before and after GALDUR — concrete changes in day-to-day work</div>
+  <svg viewBox="0 0 820 300" width="100%" style="max-width:820px">
+    <rect x="0" y="0" width="820" height="300" rx="6" fill="#060d1a"/>
+    <rect x="0" y="0" width="260" height="36" rx="3" fill="rgba(245,200,66,.1)"/>
+    <rect x="270" y="0" width="260" height="36" rx="3" fill="rgba(0,212,255,.06)"/>
+    <rect x="540" y="0" width="280" height="36" rx="3" fill="rgba(0,232,150,.08)"/>
+    <text x="130" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">SITUATION</text>
+    <text x="400" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#ff6b6b">BEFORE GALDUR</text>
+    <text x="680" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">AFTER GALDUR</text>
+    <g font-family="Source Sans 3,sans-serif" font-size="13">
+      <line x1="0" y1="40" x2="820" y2="40" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="62" fill="#9aafcc">Routine bug fix</text>
+      <text x="270" y="62" fill="#ff6b6b">Developer: 3 hours</text>
+      <text x="540" y="62" fill="#00e896">Agent 45 min + 15 min review</text>
+      <line x1="0" y1="70" x2="820" y2="70" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="92" fill="#9aafcc">Update 50 servers</text>
+      <text x="270" y="92" fill="#ff6b6b">Sysadmin: all day</text>
+      <text x="540" y="92" fill="#00e896">Agent overnight + 30 min review</text>
+      <line x1="0" y1="100" x2="820" y2="100" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="122" fill="#9aafcc">Customer data analysis</text>
+      <text x="270" y="122" fill="#ff6b6b">Analyst: 3 weeks</text>
+      <text x="540" y="122" fill="#00e896">Agent: 3 days + 1 day review</text>
+      <line x1="0" y1="130" x2="820" y2="130" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="152" fill="#9aafcc">IT sprint planning</text>
+      <text x="270" y="152" fill="#ff6b6b">Scrum meeting: 4 hours</text>
+      <text x="540" y="152" fill="#00e896">Intent Crystallization: 45 min</text>
+      <line x1="0" y1="160" x2="820" y2="160" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="182" fill="#9aafcc">"What's happening in systems?"</text>
+      <text x="270" y="182" fill="#ff6b6b">Manual monitoring, standup</text>
+      <text x="540" y="182" fill="#00e896">Drift Dashboard, async, 10 min</text>
+      <line x1="0" y1="190" x2="820" y2="190" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="212" fill="#9aafcc">Production incident</text>
+      <text x="270" y="212" fill="#ff6b6b">Crisis call, chaos</text>
+      <text x="540" y="212" fill="#00e896">Agent detects &#8594; Steward &#8594; Curator</text>
+      <line x1="0" y1="220" x2="820" y2="220" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="242" fill="#9aafcc">Onboarding new feature</text>
+      <text x="270" y="242" fill="#ff6b6b">2-week sprint, demo</text>
+      <text x="540" y="242" fill="#00e896">Intent Cycle: 2–5 days, Validation Gate</text>
+      <line x1="0" y1="250" x2="820" y2="250" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="272" fill="#9aafcc">DB migration in production</text>
+      <text x="270" y="272" fill="#ff6b6b">DBA + developer + meeting</text>
+      <text x="540" y="272" fill="#00e896">Agent plan &#8594; L2 approval &#8594; execution</text>
+      <line x1="0" y1="280" x2="820" y2="280" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="298" fill="#9aafcc">Cert rotation 20 servers</text>
+      <text x="270" y="298" fill="#ff6b6b">Sysadmin: half a day</text>
+      <text x="540" y="298" fill="#00e896">Agent: automatic + report</text>
+    </g>
+  </svg>
+</div>
+
+<hr>
+
+<!-- ═══ ADDENDUM IV — KNOWLEDGE DOMAINS ═══ -->
+<h2 id="knowledge"><span class="num">ADDENDUM IV —</span>Knowledge Domains — Sales, Marketing, Legal, Finance</h2>
+
+<h3>Why knowledge work needs governance just like IT</h3>
+<div class="blockquote" style="border-color:var(--green);background:linear-gradient(90deg,rgba(0,232,150,.05) 0%,transparent 100%);margin-bottom:32px">
+  The decision is human. The execution is agentic.<br>
+  Governance is the bridge between them.<br>
+  The more precise the intent, the better the result.
+</div>
+
+<p>GALDUR in its base form covers Dev and Ops domains. But in a hybrid company — where agents work across the entire organization — the same principles fully apply to sales, marketing, legal and finance. The risks are different, but the structure of the problem is identical:</p>
+<ul>
+  <li>Agent produces outputs quickly — but quality and approval depend on humans</li>
+  <li>Some actions are <strong>irreversible</strong> — a sent customer email, a signed contract, a published post</li>
+  <li>The blast radius of an uncontrolled action can be enormous — legal commitment, reputational damage, regulatory issue</li>
+  <li>Without explicit governance, agent autonomy becomes a risk, not an advantage</li>
+</ul>
+<p>Key insight: <strong>knowledge work has a higher share of L2–L3 tasks</strong> than IT. The reason is that knowledge work outputs are directly visible to customers, partners or regulators — and a mistake cannot be "rolled back" like a database migration.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Extended GALDUR coverage domains — hybrid company</div>
+  <svg viewBox="0 0 820 412" width="100%" style="max-width:820px">
+    <defs>
+      <radialGradient id="hgk" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#00d4ff" stop-opacity=".1"/><stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/></radialGradient>
+    </defs>
+    <ellipse cx="410" cy="200" rx="180" ry="130" fill="url(#hgk)"/>
+    <circle cx="410" cy="200" r="52" fill="#0c1628" stroke="#00d4ff" stroke-width="2"/>
+    <text x="410" y="194" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00d4ff">GALDUR</text>
+    <text x="410" y="212" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">governance</text>
+    <!-- IT domains (existing) -->
+    <rect x="300" y="30" width="120" height="52" rx="6" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="360" y="52" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">Software Dev</text>
+    <text x="360" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">existing</text>
+    <line x1="360" y1="82" x2="385" y2="148" stroke="#f5c842" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="540" y="56" width="120" height="52" rx="6" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="600" y="78" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">Infra / Ops</text>
+    <text x="600" y="94" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">existing</text>
+    <line x1="548" y1="100" x2="462" y2="168" stroke="#f5c842" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="540" y="296" width="120" height="52" rx="6" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="600" y="318" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">Security / DB</text>
+    <text x="600" y="334" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">existing</text>
+    <line x1="548" y1="304" x2="462" y2="232" stroke="#f5c842" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <!-- NEW knowledge domains -->
+    <rect x="160" y="56" width="120" height="60" rx="6" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <text x="220" y="78" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Sales</text>
+    <text x="220" y="96" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">CRM · proposals</text>
+    <text x="220" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e896">NEW &#8595;</text>
+    <line x1="272" y1="100" x2="362" y2="168" stroke="#00e896" stroke-width="1.5" stroke-dasharray="3,3" opacity=".6"/>
+    <rect x="30" y="180" width="120" height="60" rx="6" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <text x="90" y="202" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Marketing</text>
+    <text x="90" y="220" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">content · campaigns</text>
+    <text x="90" y="234" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e896">NEW &#8595;</text>
+    <line x1="150" y1="210" x2="358" y2="210" stroke="#00e896" stroke-width="1.5" stroke-dasharray="3,3" opacity=".6"/>
+    <rect x="160" y="296" width="120" height="60" rx="6" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <text x="220" y="318" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Legal</text>
+    <text x="220" y="336" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">contracts · compliance</text>
+    <text x="220" y="350" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e896">NEW &#8595;</text>
+    <line x1="272" y1="310" x2="362" y2="242" stroke="#00e896" stroke-width="1.5" stroke-dasharray="3,3" opacity=".6"/>
+    <rect x="300" y="330" width="120" height="60" rx="6" fill="#0c1628" stroke="#b06dff" stroke-width="2"/>
+    <text x="360" y="352" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#b06dff">Finance</text>
+    <text x="360" y="370" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">reporting · models</text>
+    <text x="360" y="384" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#b06dff">NEW &#8595;</text>
+    <line x1="360" y1="330" x2="410" y2="252" stroke="#b06dff" stroke-width="1.5" stroke-dasharray="3,3" opacity=".6"/>
+    <!-- Legend -->
+    <line x1="0" y1="378" x2="820" y2="378" stroke="#1e3050" stroke-width=".5"/>
+    <rect x="180" y="386" width="16" height="10" rx="2" fill="none" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="202" y="397" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">IT domains (Addenda I–III) — existing</text>
+    <rect x="480" y="386" width="16" height="10" rx="2" fill="none" stroke="#00e896" stroke-width="2"/>
+    <text x="502" y="397" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">Knowledge domains (Addendum IV) — new</text>
+  </svg>
+</div>
+
+<h3>How roles change in non-tech context</h3>
+<p>GALDUR roles remain — only their specific content changes. The Intent Architect does not need to be a technical person. The Curator does not need to know code. What remains the same: <strong>humans hold intent, agents execute, governance decides the degree of autonomy.</strong></p>
+
+<div class="diagram">
+  <div class="diagram-title">GALDUR roles in a hybrid company — role assignment examples</div>
+  <svg viewBox="0 0 820 240" width="100%" style="max-width:820px">
+    <!-- Headers -->
+    <rect x="0" y="0" width="820" height="32" fill="#0c1628" rx="4"/>
+    <text x="80" y="21" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#6a80a0">DOMAIN</text>
+    <text x="250" y="21" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">INTENT ARCHITECT</text>
+    <text x="450" y="21" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">AGENT CURATOR</text>
+    <text x="650" y="21" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#b06dff">GOV. STEWARD</text>
+    <line x1="0" y1="32" x2="820" y2="32" stroke="#1e3050" stroke-width="1"/>
+    <g font-family="Source Sans 3,sans-serif" font-size="13">
+      <text x="80" y="60" text-anchor="middle" fill="#9aafcc" font-weight="600">IT / Dev</text>
+      <text x="250" y="60" text-anchor="middle" fill="#f5c842">Tech Lead / Architect</text>
+      <text x="450" y="60" text-anchor="middle" fill="#00e896">Developer / SysAdmin</text>
+      <text x="650" y="60" text-anchor="middle" fill="#b06dff">Scrum Master / DevOps</text>
+      <line x1="0" y1="70" x2="820" y2="70" stroke="#1e3050" stroke-width=".5"/>
+      <text x="80" y="98" text-anchor="middle" fill="#9aafcc" font-weight="600">Sales</text>
+      <text x="250" y="98" text-anchor="middle" fill="#f5c842">Sales Director / KAM</text>
+      <text x="450" y="98" text-anchor="middle" fill="#00e896">Sales Representative</text>
+      <text x="650" y="98" text-anchor="middle" fill="#b06dff">Head of Sales / COO</text>
+      <line x1="0" y1="108" x2="820" y2="108" stroke="#1e3050" stroke-width=".5"/>
+      <text x="80" y="136" text-anchor="middle" fill="#9aafcc" font-weight="600">Marketing</text>
+      <text x="250" y="136" text-anchor="middle" fill="#f5c842">CMO / Brand Manager</text>
+      <text x="450" y="136" text-anchor="middle" fill="#00e896">Copywriter / Social Manager</text>
+      <text x="650" y="136" text-anchor="middle" fill="#b06dff">Head of Marketing / COO</text>
+      <line x1="0" y1="146" x2="820" y2="146" stroke="#1e3050" stroke-width=".5"/>
+      <text x="80" y="174" text-anchor="middle" fill="#9aafcc" font-weight="600">Legal</text>
+      <text x="250" y="174" text-anchor="middle" fill="#f5c842">General Counsel / Lawyer</text>
+      <text x="450" y="174" text-anchor="middle" fill="#00e896">Paralegal / Junior Lawyer</text>
+      <text x="650" y="174" text-anchor="middle" fill="#b06dff">COO / Compliance Officer</text>
+      <line x1="0" y1="184" x2="820" y2="184" stroke="#1e3050" stroke-width=".5"/>
+      <text x="80" y="212" text-anchor="middle" fill="#9aafcc" font-weight="600">Finance</text>
+      <text x="250" y="212" text-anchor="middle" fill="#f5c842">CFO / Finance Manager</text>
+      <text x="450" y="212" text-anchor="middle" fill="#00e896">Controller / Accountant</text>
+      <text x="650" y="212" text-anchor="middle" fill="#b06dff">COO / CFO</text>
+    </g>
+    <text x="410" y="232" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">In a small company (2–5 people), one person can hold multiple roles — Intent Architect + Curator for their domain</text>
+  </svg>
+</div>
+
+<hr>
+
+<h2 id="k-sales"><span class="num">IV.1 —</span>Governance Matrix — Sales and CRM</h2>
+<p>Sales agents work with sensitive customer data, prepare proposals and communicate on behalf of the company. Key principle: <strong>everything that can bind the company to a commitment or go directly to the customer requires at minimum L2</strong>.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Sales domain — typical agent activities and their risk</div>
+  <svg viewBox="0 0 820 200" width="100%" style="max-width:820px">
+    <defs>
+      <linearGradient id="riskgrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00e896" stop-opacity=".3"/>
+        <stop offset="50%" stop-color="#f5c842" stop-opacity=".3"/>
+        <stop offset="100%" stop-color="#ff6b6b" stop-opacity=".3"/>
+      </linearGradient>
+    </defs>
+    <rect x="0" y="60" width="820" height="30" fill="url(#riskgrad)" rx="4"/>
+    <text x="130" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">LOW RISK</text>
+    <text x="410" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">MEDIUM RISK</text>
+    <text x="690" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">HIGH RISK</text>
+    <!-- Activity dots -->
+    <circle cx="60" cy="140" r="28" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="60" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#00e896">CRM</text>
+    <text x="60" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">analysis</text>
+    <text x="60" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">L0</text>
+    <circle cx="155" cy="140" r="28" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="155" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#00e896">Lead</text>
+    <text x="155" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">scoring</text>
+    <text x="155" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">L0</text>
+    <circle cx="290" cy="140" r="28" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="290" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#f5c842">Draft</text>
+    <text x="290" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">proposal</text>
+    <text x="290" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">L1</text>
+    <circle cx="390" cy="140" r="28" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="390" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#f5c842">Internal</text>
+    <text x="390" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">email</text>
+    <text x="390" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">L1</text>
+    <circle cx="510" cy="140" r="28" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="510" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#b06dff">Email to</text>
+    <text x="510" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">customer</text>
+    <text x="510" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">L2</text>
+    <circle cx="620" cy="140" r="28" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="620" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#ff6b6b">Sending</text>
+    <text x="620" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">contract</text>
+    <text x="620" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">L3</text>
+    <circle cx="720" cy="140" r="28" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="720" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#ff6b6b">Accepting</text>
+    <text x="720" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">commitment</text>
+    <text x="720" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">HARD</text>
+  </svg>
+</div>
+
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Note / Trigger</th></tr>
+  <tr><td>CRM data analysis, pipeline reports</td><td class="l0">L0</td><td>read-only always L0</td></tr>
+  <tr><td>Lead scoring, customer segmentation</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Preparing proposal draft / pricing</td><td class="l1">L1</td><td>Validation Gate before sending to customer</td></tr>
+  <tr><td>Email template personalization (internal)</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>CRM record update</td><td class="l1">L1</td><td>commitment records → L2</td></tr>
+  <tr><td>Sending email to customer (1 recipient)</td><td class="l2">L2</td><td>agent plans → salesperson approves</td></tr>
+  <tr><td>Bulk email (&gt;5 recipients)</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced</span></td></tr>
+  <tr><td>Contract preparation (draft)</td><td class="l2">L2</td><td>legal review mandatory</td></tr>
+  <tr><td>Sending contract to customer</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Accepting order / commitment on behalf of company</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Discount policy — applying discount &gt;10%</td><td class="l2">L2</td><td>Intent Architect approval</td></tr>
+  <tr><td>Forecast / pipeline analysis</td><td class="l0">L0</td><td>—</td></tr>
+</table>
+
+<div class="card card-cyan">
+  <h4>Example: Sales agent in practice</h4>
+  <p><strong>Situation:</strong> Customer sends an inquiry. Sales agent can: analyze customer history (L0), prepare a proposal draft based on pricing (L1, curator checks prices and terms), and suggest the text of a cover email (L1). Sending the email and any communication containing pricing terms or delivery dates requires explicit salesperson approval (L2).</p>
+  <p><strong>What agent must never do:</strong> Send a proposal directly to the customer without approval. Accept an order. Confirm a delivery date as binding. Offer a discount outside approved ranges.</p>
+</div>
+
+<hr>
+
+<h2 id="k-marketing"><span class="num">IV.2 —</span>Governance Matrix — Marketing and Content</h2>
+<p>Marketing has a specific risk: <strong>content goes out under the company's name</strong> and is immediately visible. A content error can damage brand, reputation or trigger legal issues (copyright, advertising regulations). At the same time, marketing benefits from a high frequency of L0 tasks — draft preparation, analysis, research — where agents add enormous value.</p>
+
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Note / Trigger</th></tr>
+  <tr><td>Competitor research, trend analysis</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Keyword research, SEO analysis</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Blog post / article draft</td><td class="l1">L1</td><td>human review before publication</td></tr>
+  <tr><td>Social media post draft</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Email newsletter preparation (draft)</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Publication on owned channels (blog, web)</td><td class="l2">L2</td><td>agent proposes → curator approves → publish</td></tr>
+  <tr><td>Newsletter sending (&gt;100 recipients)</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced</span></td></tr>
+  <tr><td>Social media post (company account)</td><td class="l2">L2</td><td>brand voice approval mandatory</td></tr>
+  <tr><td>Launching paid campaign (PPC, social ads)</td><td class="l2">L2</td><td>budget + creative approval</td></tr>
+  <tr><td>Campaign budget change &gt;20%</td><td class="l2">L2</td><td>CFO or CMO approval</td></tr>
+  <tr><td>Press release / PR communication</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Crisis communication (response to negative PR)</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Communication on behalf of C-level (quote, statement)</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+</table>
+
+<div class="card card-cyan">
+  <h4>Example: Content agent in a marketing agency</h4>
+  <p><strong>Situation:</strong> Client has approved a monthly content plan. Each week the agent prepares drafts of 4 social media posts and 1 blog article (all L1). Copywriter / Curator reviews, adjusts tone of voice, approves or sends back for revision. After approval, agent prepares scheduling in the scheduling tool (L1) — but the actual publishing is triggered by the curator (L2).</p>
+  <p><strong>Result:</strong> A team of 2 people produces content like a team of 6. Curator spends time on quality gate and brand voice, not generating first drafts.</p>
+</div>
+
+<hr>
+
+<h2 id="k-legal"><span class="num">IV.3 —</span>Governance Matrix — Legal and Compliance</h2>
+<p>The legal domain has the highest share of L2–L3 tasks of all knowledge domains. The reason is simple: <strong>a legal error can have irreversible consequences</strong> — a commitment, a dispute, a regulatory fine, reputational damage. At the same time, agents add enormous value in L0 work: contract analysis, case law research, compliance checks — these represent hundreds of saved hours.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Legal domain — Intent Spec flow from analysis to contract</div>
+  <svg viewBox="0 0 820 160" width="100%" style="max-width:820px">
+    <defs>
+      <marker id="al" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#00d4ff" opacity=".7"/></marker>
+    </defs>
+    <rect x="10" y="40" width="130" height="80" rx="7" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="75" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">L0</text>
+    <text x="75" y="86" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#fff">Analysis</text>
+    <text x="75" y="102" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">of contract</text>
+    <line x1="140" y1="80" x2="168" y2="80" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#al)"/>
+    <rect x="168" y="40" width="130" height="80" rx="7" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="233" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">L1</text>
+    <text x="233" y="86" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#fff">Draft</text>
+    <text x="233" y="102" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">amendments</text>
+    <line x1="298" y1="80" x2="326" y2="80" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#al)"/>
+    <rect x="326" y="40" width="130" height="80" rx="7" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="391" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">L2</text>
+    <text x="391" y="86" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#fff">Review</text>
+    <text x="391" y="102" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">by lawyer</text>
+    <line x1="456" y1="80" x2="484" y2="80" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#al)"/>
+    <rect x="484" y="40" width="130" height="80" rx="7" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="549" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">L3</text>
+    <text x="549" y="86" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#fff">Sending</text>
+    <text x="549" y="102" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">to counterparty</text>
+    <line x1="614" y1="80" x2="642" y2="80" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#al)"/>
+    <rect x="642" y="40" width="130" height="80" rx="7" fill="#0c1628" stroke="#ff6b6b" stroke-width="2"/>
+    <text x="707" y="62" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">L3 HARD</text>
+    <text x="707" y="82" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#fff">Signing /</text>
+    <text x="707" y="98" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">acceptance</text>
+    <!-- Labels -->
+    <text x="75" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">agent reads</text>
+    <text x="233" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">agent proposes</text>
+    <text x="391" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">lawyer approves</text>
+    <text x="549" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">human sends</text>
+    <text x="707" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff6b6b">always human</text>
+  </svg>
+</div>
+
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Note / Trigger</th></tr>
+  <tr><td>Contract analysis / review (reading)</td><td class="l0">L0</td><td>output = risk summary and recommendations</td></tr>
+  <tr><td>Case law, legal regulation research</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Compliance monitoring (tracking changes)</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Legal document / addendum draft</td><td class="l1">L1</td><td>lawyer always reviews before use</td></tr>
+  <tr><td>Legal correspondence preparation (draft)</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>GDPR compliance check, data mapping</td><td class="l1">L1</td><td>DPO review for new data categories</td></tr>
+  <tr><td>Finalization of contract document</td><td class="l2">L2</td><td>lawyer approves every version</td></tr>
+  <tr><td>Communication with counterparty (legal context)</td><td class="l2">L2</td><td><span class="hard">HARD: cannot be reduced</span></td></tr>
+  <tr><td>Regulatory filing preparation</td><td class="l2">L2</td><td>compliance officer review mandatory</td></tr>
+  <tr><td>Sending contract to counterparty</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Signing or accepting a commitment</td><td class="l3">L3</td><td><span class="hard">HARD: always manual, authorized person</span></td></tr>
+  <tr><td>Regulatory filing</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Legal advice provided to external client</td><td class="l3">L3</td><td><span class="hard">HARD: always manual, lawyer's responsibility</span></td></tr>
+</table>
+
+<hr>
+
+<h2 id="k-finance"><span class="num">IV.4 —</span>Governance Matrix — Finance and Controlling</h2>
+<p>Finance agents are valuable for analysis, reporting and modeling — where they are fast and accurate. Governance is critical here especially for <strong>any action that moves money or financially commits the company</strong>. The absolute rule applies: an agent never initiates a payment.</p>
+
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Note / Trigger</th></tr>
+  <tr><td>Financial reporting, background preparation</td><td class="l0">L0</td><td>read / aggregate always L0</td></tr>
+  <tr><td>Cashflow analysis, ratio calculations</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Budget modeling, scenarios</td><td class="l0">L0</td><td>output = basis for decision, not the decision</td></tr>
+  <tr><td>Invoice preparation (draft)</td><td class="l1">L1</td><td>controller review before sending</td></tr>
+  <tr><td>Financial statement preparation (draft)</td><td class="l1">L1</td><td>CFO / accountant finalizes</td></tr>
+  <tr><td>Forecast, rolling estimate update</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Sending invoice to customer</td><td class="l2">L2</td><td>controller approves before sending</td></tr>
+  <tr><td>Budget allocation / resource reallocation</td><td class="l2">L2</td><td>CFO approval mandatory</td></tr>
+  <tr><td>Investor / board reporting (draft)</td><td class="l2">L2</td><td>CEO + CFO review mandatory</td></tr>
+  <tr><td>Payment order preparation (draft)</td><td class="l2">L2</td><td>output = proposal, not a bank instruction</td></tr>
+  <tr><td>Sending payment order to bank</td><td class="l3">L3</td><td><span class="hard">HARD: always manual, 4-eyes principle</span></td></tr>
+  <tr><td>Any payment (any amount)</td><td class="l3">L3</td><td><span class="hard">HARD: always manual</span></td></tr>
+  <tr><td>Signing financial contract / commitment</td><td class="l3">L3</td><td><span class="hard">HARD: always manual, authorized person</span></td></tr>
+  <tr><td>Access to banking systems</td><td class="l3">L3</td><td><span class="hard">HARD: agent must not have direct access</span></td></tr>
+</table>
+
+<hr>
+
+<h2 id="k-hardlocks"><span class="num">IV.5 —</span>Hard Locks for Knowledge Domains</h2>
+<p>Supplement to Universal Hard Locks (section 10). Applies to all knowledge domains without exception:</p>
+
+<div class="card card-red">
+  <h4 style="color:#ff6b6b">&#128308; Hard Locks — knowledge domains (supplement to Universal)</h4>
+  <table>
+    <tr><th>Category</th><th>Specific prohibitions</th></tr>
+    <tr><td style="color:#ff6b6b"><strong>Binding communication</strong></td><td>Any communication addressed to an external party (customer, partner, regulator) that contains prices, deadlines, terms or commitments — without explicit human approval</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Legal acts</strong></td><td>Signing, accepting or rejecting a contract · Sending a contract to a counterparty · Legal declaration or acknowledgment of obligation · Any regulatory filing</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Financial movements</strong></td><td>Initiating any payment of any amount · Access to banking or payment systems · Promise of payment or deferral of obligation to a third party</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Public statements</strong></td><td>Press release · Crisis communication · Communication containing financial results or forecasts · Statement on behalf of C-level without their direct approval</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>HR and personnel</strong></td><td>Any communication with (potential) employees regarding offers, rejections, terminations or conditions of employment</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Confidential third-party data</strong></td><td>Access to or processing of confidential data of customers, partners or vendors without explicit authorization in the Intent Spec</td></tr>
+  </table>
+</div>
+
+<hr>
+
+<h2 id="k-hybridfirm"><span class="num">IV.6 —</span>GALDUR in a Hybrid Company — what it looks like</h2>
+<p>A hybrid company deploys agents across IT, sales, marketing and finance. This brings new governance challenges — but the same framework works for all domains.</p>
+
+<div class="diagram">
+  <div class="diagram-title">A hybrid company day with GALDUR — overview of autonomous flows</div>
+  <svg viewBox="0 0 820 340" width="100%" style="max-width:820px">
+    <!-- Background lanes -->
+    <rect x="0" y="0" width="820" height="340" fill="#060d1a" rx="6"/>
+    <rect x="0" y="0" width="820" height="56" fill="rgba(0,232,150,.05)" rx="3"/>
+    <rect x="0" y="60" width="820" height="56" fill="rgba(0,212,255,.05)" rx="3"/>
+    <rect x="0" y="120" width="820" height="56" fill="rgba(176,109,255,.05)" rx="3"/>
+    <rect x="0" y="180" width="820" height="56" fill="rgba(245,200,66,.05)" rx="3"/>
+    <!-- Lane labels -->
+    <text x="64" y="33" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">SALES</text>
+    <text x="64" y="93" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">MARKETING</text>
+    <text x="64" y="153" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">LEGAL</text>
+    <text x="64" y="213" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">FINANCE</text>
+    <!-- Sales activities -->
+    <rect x="130" y="8" width="100" height="40" rx="5" fill="#0c1628" stroke="#00e896" stroke-width="1"/>
+    <text x="180" y="25" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#00e896">CRM analysis</text>
+    <text x="180" y="40" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L0 · auto</text>
+    <rect x="250" y="8" width="110" height="40" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1"/>
+    <text x="305" y="25" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#f5c842">Draft proposal</text>
+    <text x="305" y="40" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L1 · review</text>
+    <rect x="380" y="8" width="120" height="40" rx="5" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="440" y="25" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#b06dff">Email to customer</text>
+    <text x="440" y="40" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#b06dff">L2 · approval ✓</text>
+    <!-- Marketing activities -->
+    <rect x="130" y="68" width="100" height="40" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1"/>
+    <text x="180" y="85" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#00d4ff">Blog draft</text>
+    <text x="180" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L1 · review</text>
+    <rect x="250" y="68" width="100" height="40" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1"/>
+    <text x="300" y="85" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#00d4ff">Social posts</text>
+    <text x="300" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L1 · review</text>
+    <rect x="370" y="68" width="130" height="40" rx="5" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="435" y="85" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#b06dff">Web publication</text>
+    <text x="435" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#b06dff">L2 · approval ✓</text>
+    <!-- Legal activities -->
+    <rect x="130" y="128" width="120" height="40" rx="5" fill="#0c1628" stroke="#b06dff" stroke-width="1"/>
+    <text x="190" y="145" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#b06dff">Contract analysis</text>
+    <text x="190" y="160" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L0 · auto</text>
+    <rect x="270" y="128" width="110" height="40" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1"/>
+    <text x="325" y="145" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#f5c842">Draft addendum</text>
+    <text x="325" y="160" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L1 · review</text>
+    <rect x="400" y="128" width="80" height="40" rx="5" fill="#0c1628" stroke="#ff6b6b" stroke-width="2"/>
+    <text x="440" y="145" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#ff6b6b">Sending</text>
+    <text x="440" y="160" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff6b6b">L3 · manual</text>
+    <!-- Finance activities -->
+    <rect x="130" y="188" width="110" height="40" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1"/>
+    <text x="185" y="205" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#f5c842">Cashflow report</text>
+    <text x="185" y="220" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L0 · auto</text>
+    <rect x="260" y="188" width="100" height="40" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1"/>
+    <text x="310" y="205" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#f5c842">Invoice drafts</text>
+    <text x="310" y="220" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L1 · review</text>
+    <rect x="380" y="188" width="110" height="40" rx="5" fill="#0c1628" stroke="#ff6b6b" stroke-width="2"/>
+    <text x="435" y="205" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#ff6b6b">Payment</text>
+    <text x="435" y="220" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff6b6b">L3 · HARD LOCK</text>
+    <!-- Drift dashboard -->
+    <rect x="560" y="8" width="240" height="260" rx="7" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="680" y="30" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00d4ff">DRIFT DASHBOARD</text>
+    <text x="680" y="50" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">real-time · all domains</text>
+    <line x1="570" y1="58" x2="790" y2="58" stroke="#1e3050" stroke-width="1"/>
+    <circle cx="590" cy="80" r="5" fill="#00e896"/><text x="608" y="84" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Sales: 3 done</text>
+    <circle cx="590" cy="105" r="5" fill="#00e896"/><text x="608" y="109" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Marketing: 2 done</text>
+    <circle cx="590" cy="130" r="5" fill="#f5c842"/><text x="608" y="134" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Legal: awaiting approval</text>
+    <circle cx="590" cy="155" r="5" fill="#00e896"/><text x="608" y="159" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Finance: report ready</text>
+    <circle cx="590" cy="180" r="5" fill="#ff6b6b"/><text x="608" y="184" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">IT/Dev: 1 escalation</text>
+    <line x1="570" y1="198" x2="790" y2="198" stroke="#1e3050" stroke-width="1"/>
+    <text x="680" y="220" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">Governance Steward</text>
+    <text x="680" y="238" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">sees everything at once</text>
+    <text x="680" y="256" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">without domain silos</text>
+    <!-- Label day -->
+    <text x="340" y="295" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#6a80a0">One day, one company — agents working in parallel across four domains</text>
+    <text x="340" y="315" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">Governance Steward manages the full picture from one dashboard</text>
+  </svg>
+</div>
+
+<h3>Example: Hybrid company 15 people</h3>
+<div class="card card-gold">
+  <p><strong>Company:</strong> Legal-technology firm providing SaaS + legal consulting. 15 people, 6 domains active simultaneously: Dev, Ops, Sales, Marketing, Legal, Finance.</p>
+  <table>
+    <tr><th>What agents do autonomously (L0)</th><th>What requires approval (L1–L2)</th><th>What agent can never do (L3/HARD)</th></tr>
+    <tr><td>CRM analyses, pipeline reports · Cashflow dashboard · Blog drafts · Client contract analysis · Compliance monitoring · Security scanning</td><td>Customer proposals · Social media posts · Invoices · Staging deploys · Contract addenda · Financial forecasts</td><td>Sending contracts · Payments · Signatures · Press releases · Prod deploy · IAM changes</td></tr>
+  </table>
+  <p><strong>Result:</strong> 15 people cover the capacity of 35–40 FTE. Governance Steward (COO) sees the entire drift dashboard across all domains in a single view. Intent Architects are domain-separated (CTO, CSO, CMO), but share the same framework.</p>
+</div>
+
+<h3>Comparison: knowledge domains before and after GALDUR</h3>
+<div class="diagram">
+  <div class="diagram-title">Knowledge work — concrete changes with GALDUR</div>
+  <svg viewBox="0 0 820 260" width="100%" style="max-width:820px">
+    <rect x="0" y="0" width="820" height="260" rx="6" fill="#060d1a"/>
+    <rect x="0" y="0" width="260" height="36" rx="3" fill="rgba(245,200,66,.1)"/>
+    <rect x="270" y="0" width="260" height="36" rx="3" fill="rgba(0,212,255,.06)"/>
+    <rect x="540" y="0" width="280" height="36" rx="3" fill="rgba(0,232,150,.08)"/>
+    <text x="130" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">SITUATION</text>
+    <text x="400" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#ff6b6b">BEFORE GALDUR</text>
+    <text x="680" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">AFTER GALDUR</text>
+    <g font-family="Source Sans 3,sans-serif" font-size="13">
+      <line x1="0" y1="40" x2="820" y2="40" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="62" fill="#9aafcc">30-page contract analysis</text>
+      <text x="270" y="62" fill="#ff6b6b">Lawyer: 3–4 hours</text>
+      <text x="540" y="62" fill="#00e896">Agent: 15 min + 30 min review</text>
+      <line x1="0" y1="72" x2="820" y2="72" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="94" fill="#9aafcc">Custom proposal preparation</text>
+      <text x="270" y="94" fill="#ff6b6b">Salesperson: 2 hours</text>
+      <text x="540" y="94" fill="#00e896">Agent draft: 10 min + 20 min review</text>
+      <line x1="0" y1="104" x2="820" y2="104" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="126" fill="#9aafcc">Monthly financial reporting</text>
+      <text x="270" y="126" fill="#ff6b6b">Controller: 1–2 days</text>
+      <text x="540" y="126" fill="#00e896">Agent: 2 hours + 30 min finalization</text>
+      <line x1="0" y1="136" x2="820" y2="136" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="158" fill="#9aafcc">Content plan + 4 posts/week</text>
+      <text x="270" y="158" fill="#ff6b6b">Copywriter: all week</text>
+      <text x="540" y="158" fill="#00e896">Agent drafts + 3 hrs review/week</text>
+      <line x1="0" y1="168" x2="820" y2="168" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="190" fill="#9aafcc">New legislation compliance check</text>
+      <text x="270" y="190" fill="#ff6b6b">Lawyer: week of research</text>
+      <text x="540" y="190" fill="#00e896">Agent: 1 hour + review of impacts</text>
+      <line x1="0" y1="200" x2="820" y2="200" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="222" fill="#9aafcc">Pipeline forecast (Q-end)</text>
+      <text x="270" y="222" fill="#ff6b6b">Sales + Finance: 3–4 hours</text>
+      <text x="540" y="222" fill="#00e896">Agent model + 45 min review</text>
+      <line x1="0" y1="232" x2="820" y2="232" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="252" fill="#9aafcc">Sending contract to counterparty</text>
+      <text x="270" y="252" fill="#ff6b6b">Lawyer: sends it themselves</text>
+      <text x="540" y="252" fill="#00e896">L3 HARD — always human (same as before)</text>
+    </g>
+  </svg>
+</div>
+
+<div class="notice">
+  <strong>Key insight for knowledge domains:</strong> Hard Locks in sales, legal and finance are not new restrictions. They are things that humans always did — and GALDUR formalizes that this stays the same. What changes is everything else: preparation, analysis, drafts, reporting. There agents take over routine and people are left with time for what requires real judgment.
+</div>
+
+<!-- Closing -->
+<div class="card card-cyan" style="text-align:center;padding:44px 32px;margin-top:56px">
+  <h2 style="border:none;margin-top:0;font-size:28px;color:#fff">GALDUR is not about replacing people</h2>
+  <p style="font-size:17px;max-width:640px;margin:16px auto;color:var(--text)">It is about moving from a model where your best people spend 60% of their time on work below their level — to a model where they do the work you pay them for:</p>
+  <p style="font-size:20px;color:var(--cyan);font-family:'Playfair Display',serif;margin:16px 0"><strong>decisions · creativity · relationships · strategy</strong></p>
+  <p style="color:var(--muted);font-size:14px;margin-top:20px;font-family:'JetBrains Mono',monospace">GALDUR Methodology v0.9-draft · Living Document · Vladimir + Claude · April 2026</p>
+</div>
+
+</div>
+
+<script>
+function setTheme(theme){
+  document.documentElement.setAttribute('data-theme',theme);
+  localStorage.setItem('g-theme',theme);
+  document.querySelectorAll('.theme-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.themeBtn===theme);
+  });
+  applyHeadingFix();
+}
+function initThemeButtons(){
+  var cur=document.documentElement.getAttribute('data-theme')||'galdur';
+  document.querySelectorAll('.theme-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.themeBtn===cur);
+  });
+}
+function applyHeadingFix(){
+  var theme=document.documentElement.getAttribute('data-theme');
+  var style=document.getElementById('heading-fix');
+  if(!style){style=document.createElement('style');style.id='heading-fix';document.head.appendChild(style);}
+  if(theme==='light'){
+    style.textContent='h2{color:var(--heading)!important}h3{color:var(--cyan)!important}strong{color:var(--heading)}.hero h1{background:linear-gradient(135deg,var(--heading) 30%,var(--cyan) 70%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}';
+  }else{style.textContent='';}
+}
+initThemeButtons();
+applyHeadingFix();
+</script>
+
+</body>
+</html>

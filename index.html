@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="cs" data-theme="galdur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="GALDUR — Metodika řízení agentního vývoje a operací pro hybridní týmy lidí a AI.">
+<title>GALDUR — Metodika pro hybridní týmy lidí a AI</title>
+
+<!-- Theme init before paint — prevents flash -->
+<script>
+(function(){
+  var t=localStorage.getItem('g-theme');
+  if(t){document.documentElement.setAttribute('data-theme',t);}
+  else if(window.matchMedia('(prefers-color-scheme: light)').matches){
+    document.documentElement.setAttribute('data-theme','light');
+  }
+})();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ═══ THEMES ═══ */
+:root,[data-theme="galdur"]{
+  --bg:#060d1a;--bg2:#0c1628;--bg3:#111f36;--bg4:#192840;
+  --cyan:#00d4ff;--cyan-dim:#0099bb;
+  --gold:#f5c842;--gold-dim:#c49d2a;
+  --green:#00e896;--red:#ff6b6b;--purple:#b06dff;
+  --text:#dde8f5;--muted:#6a80a0;--border:#1e3050;
+  --heading:#ffffff;
+  --glow-c:rgba(0,212,255,.15);--glow-g:rgba(245,200,66,.15);
+  --nav-bg:rgba(6,13,26,.92);
+  --grid-c:var(--border);--grid-op:.25;
+  --badge-bg:rgba(0,212,255,.06);--badge-border:var(--cyan-dim);
+  --pnum-bg:rgba(0,212,255,.08);--pnum-border:rgba(0,212,255,.2);
+  --hero-grad:linear-gradient(135deg,#fff 30%,var(--cyan) 65%,var(--gold) 100%);
+  --input-color:var(--text);
+}
+[data-theme="dark"]{
+  --bg:#080808;--bg2:#101010;--bg3:#181818;--bg4:#202020;
+  --cyan:#00d4ff;--cyan-dim:#0099bb;
+  --gold:#f5c842;--gold-dim:#c49d2a;
+  --green:#00e896;--red:#ff6b6b;--purple:#b06dff;
+  --text:#dde8f5;--muted:#5a6878;--border:#222222;
+  --heading:#ffffff;
+  --glow-c:rgba(0,212,255,.12);--glow-g:rgba(245,200,66,.12);
+  --nav-bg:rgba(8,8,8,.95);
+  --grid-c:#1e1e1e;--grid-op:.5;
+  --badge-bg:rgba(0,212,255,.06);--badge-border:var(--cyan-dim);
+  --pnum-bg:rgba(0,212,255,.08);--pnum-border:rgba(0,212,255,.2);
+  --hero-grad:linear-gradient(135deg,#fff 30%,var(--cyan) 65%,var(--gold) 100%);
+  --input-color:var(--text);
+}
+[data-theme="light"]{
+  --bg:#f0f4f9;--bg2:#ffffff;--bg3:#e4eaf4;--bg4:#d8e2f0;
+  --cyan:#0066cc;--cyan-dim:#004fa3;
+  --gold:#8a6200;--gold-dim:#6a4900;
+  --green:#006633;--red:#c0392b;--purple:#5533bb;
+  --text:#1e2d40;--muted:#5a6f8a;--border:#c4d0e0;
+  --heading:#1e2d40;
+  --glow-c:rgba(0,102,204,.1);--glow-g:rgba(138,98,0,.1);
+  --nav-bg:rgba(240,244,249,.95);
+  --grid-c:#c4d0e0;--grid-op:.5;
+  --badge-bg:rgba(0,102,204,.06);--badge-border:var(--cyan-dim);
+  --pnum-bg:rgba(0,102,204,.07);--pnum-border:rgba(0,102,204,.2);
+  --hero-grad:linear-gradient(135deg,var(--heading) 30%,var(--cyan) 65%,var(--gold) 100%);
+  --input-color:var(--text);
+}
+
+/* ═══ BASE ═══ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Source Sans 3',sans-serif;
+  font-size:17px;line-height:1.75;overflow-x:hidden;
+  transition:background .3s,color .3s;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--grid-c) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid-c) 1px,transparent 1px);
+  background-size:48px 48px;opacity:var(--grid-op);
+}
+strong{color:var(--heading)}
+
+/* ═══ NAV ═══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:var(--nav-bg);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 28px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;transition:background .3s,border-color .3s;
+}
+.nav-logo{
+  font-family:'Playfair Display',serif;font-weight:900;font-size:22px;
+  color:var(--heading);text-decoration:none;letter-spacing:-.5px;
+  transition:color .3s;flex-shrink:0;
+}
+.nav-logo span{color:var(--cyan)}
+.nav-links{display:flex;align-items:center;gap:20px;list-style:none}
+.nav-links a{
+  color:var(--muted);text-decoration:none;font-size:14px;
+  font-weight:600;letter-spacing:.4px;transition:color .2s;
+}
+.nav-links a:hover{color:var(--cyan)}
+
+.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+
+/* Language */
+.lang-toggle{display:flex;align-items:center;gap:2px}
+.lang-btn{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);font-family:'JetBrains Mono',monospace;
+  font-size:12px;letter-spacing:1px;padding:4px 7px;
+  border-radius:3px;transition:all .2s;
+}
+.lang-btn.active{color:var(--cyan);background:var(--pnum-bg)}
+.lang-sep{color:var(--border);font-size:12px;font-family:'JetBrains Mono',monospace}
+
+/* Theme dots */
+.theme-toggle{display:flex;align-items:center;gap:5px;padding:0 4px}
+.theme-btn{
+  width:22px;height:22px;border-radius:50%;
+  border:2px solid transparent;background:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .2s;padding:0;
+}
+.theme-btn.active{border-color:var(--muted)}
+.theme-dot{width:12px;height:12px;border-radius:50%;display:block}
+.tdot-galdur{background:#060d1a;border:2px solid #00d4ff;box-shadow:0 0 4px rgba(0,212,255,.5)}
+.tdot-dark{background:#141414;border:2px solid #444}
+.tdot-light{background:#f0f4f9;border:2px solid #c49d2a;box-shadow:0 0 4px rgba(245,200,66,.4)}
+
+.nav-cta{
+  background:transparent;border:1px solid var(--cyan-dim);
+  color:var(--cyan)!important;padding:6px 14px;border-radius:4px;
+  font-family:'JetBrains Mono',monospace;font-size:11px!important;
+  letter-spacing:1px;text-transform:uppercase;transition:all .2s!important;
+  text-decoration:none;white-space:nowrap;
+}
+.nav-cta:hover{background:var(--pnum-bg)!important}
+
+/* ═══ LAYOUT ═══ */
+.container{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 32px}
+section{padding:100px 0}
+.section-label{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:12px;display:block;
+}
+.section-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,4vw,42px);font-weight:700;
+  color:var(--heading);line-height:1.15;margin-bottom:16px;
+}
+.section-sub{
+  font-size:18px;color:var(--muted);max-width:620px;
+  margin-bottom:48px;font-weight:300;line-height:1.7;
+}
+
+/* ═══ HERO ═══ */
+#hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:120px 0 80px;border-bottom:1px solid var(--border);
+}
+.hero-inner{text-align:center;max-width:820px;margin:0 auto}
+.hero-badge{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--cyan);border:1px solid var(--badge-border);
+  padding:5px 16px;border-radius:2px;margin-bottom:32px;
+  background:var(--badge-bg);
+}
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(72px,14vw,130px);font-weight:900;
+  line-height:.9;letter-spacing:-4px;
+  background:var(--hero-grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:24px;
+}
+.hero-etymology{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:var(--muted);margin-bottom:28px;letter-spacing:.5px;
+}
+.hero-etymology strong{color:var(--cyan);-webkit-text-fill-color:var(--cyan)}
+.hero-motto{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(16px,2.5vw,21px);color:var(--gold);
+  margin-bottom:24px;line-height:1.6;
+}
+.hero-motto strong{color:inherit;-webkit-text-fill-color:inherit}
+.hero-desc{
+  font-size:18px;color:var(--muted);max-width:520px;
+  margin:0 auto 40px;font-weight:300;line-height:1.7;
+}
+.hero-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:64px}
+.btn-primary{
+  background:var(--cyan);color:#060d1a;
+  padding:14px 28px;border-radius:4px;text-decoration:none;
+  font-weight:700;font-size:15px;letter-spacing:.5px;
+  transition:all .2s;display:inline-block;
+}
+.btn-primary:hover{filter:brightness(1.12);transform:translateY(-2px);box-shadow:0 8px 28px var(--glow-c)}
+[data-theme="light"] .btn-primary{color:#ffffff}
+.btn-secondary{
+  background:transparent;color:var(--text);padding:13px 28px;
+  border-radius:4px;text-decoration:none;font-weight:600;
+  font-size:15px;border:1px solid var(--border);
+  transition:all .2s;display:inline-block;
+}
+.btn-secondary:hover{border-color:var(--muted);color:var(--heading);transform:translateY(-2px)}
+.hero-stats{
+  display:flex;gap:48px;justify-content:center;flex-wrap:wrap;
+  padding-top:40px;border-top:1px solid var(--border);
+}
+.stat{text-align:center}
+.stat-num{
+  font-family:'Playfair Display',serif;font-size:32px;
+  font-weight:900;color:var(--cyan);display:block;line-height:1;margin-bottom:6px;
+}
+.stat-label{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
+}
+
+/* ═══ WHY ═══ */
+#why{border-top:1px solid var(--border)}
+.why-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;margin-bottom:60px;
+}
+.why-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:28px;transition:all .25s;
+}
+.why-card:hover{border-color:var(--cyan-dim);box-shadow:0 0 28px var(--glow-c);transform:translateY(-2px)}
+.why-icon{font-size:28px;margin-bottom:16px;display:block}
+.why-card h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--heading);margin-bottom:10px}
+.why-card p{color:var(--muted);font-size:15px;line-height:1.65}
+.compare-label{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:16px;display:block;
+}
+.compare-table{width:100%;border-collapse:collapse;font-size:15px}
+.compare-table th{
+  padding:12px 20px;text-align:left;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:1.5px;text-transform:uppercase;
+  border-bottom:2px solid var(--border);background:var(--bg2);
+}
+.compare-table th:nth-child(1){color:var(--muted)}
+.compare-table th:nth-child(2){color:var(--cyan)}
+.compare-table th:nth-child(3){color:var(--muted)}
+.compare-table td{padding:12px 20px;border-bottom:1px solid var(--border);vertical-align:top}
+.compare-table tr:last-child td{border-bottom:none}
+.col-agile{color:var(--muted)}
+.col-galdur{color:var(--text);font-weight:600}
+.col-dim{color:var(--muted);font-size:14px}
+
+/* ═══ PRINCIPLES ═══ */
+#principles{border-top:1px solid var(--border)}
+.principles-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px;margin-bottom:80px;
+}
+.principle-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:24px;display:flex;gap:16px;transition:all .2s;
+}
+.principle-card:hover{border-color:var(--cyan-dim);box-shadow:0 0 20px var(--glow-c)}
+.principle-num{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);
+  background:var(--pnum-bg);border:1px solid var(--pnum-border);
+  border-radius:4px;padding:4px 8px;height:fit-content;
+  flex-shrink:0;letter-spacing:1px;margin-top:2px;
+}
+.principle-content h4{font-family:'Source Sans 3',sans-serif;font-size:16px;font-weight:700;color:var(--heading);margin-bottom:6px}
+.principle-content p{color:var(--muted);font-size:14px;line-height:1.6}
+.sub-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--heading);margin-bottom:12px}
+.governance-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;margin-bottom:80px;
+}
+.gov-card{border-radius:8px;padding:24px;border:1px solid}
+.gov-l0{background:rgba(0,232,150,.05);border-color:rgba(0,232,150,.25)}
+.gov-l1{background:rgba(245,200,66,.05);border-color:rgba(245,200,66,.25)}
+.gov-l2{background:rgba(176,109,255,.05);border-color:rgba(176,109,255,.25)}
+.gov-l3{background:rgba(255,107,107,.05);border-color:rgba(255,107,107,.25)}
+[data-theme="light"] .gov-l0{background:rgba(0,102,51,.04);border-color:rgba(0,102,51,.2)}
+[data-theme="light"] .gov-l1{background:rgba(138,98,0,.04);border-color:rgba(138,98,0,.2)}
+[data-theme="light"] .gov-l2{background:rgba(85,51,187,.04);border-color:rgba(85,51,187,.2)}
+[data-theme="light"] .gov-l3{background:rgba(192,57,43,.04);border-color:rgba(192,57,43,.2)}
+.gov-badge{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:block}
+.gov-l0 .gov-badge{color:var(--green)}
+.gov-l1 .gov-badge{color:var(--gold)}
+.gov-l2 .gov-badge{color:var(--purple)}
+.gov-l3 .gov-badge{color:var(--red)}
+.gov-name{font-size:18px;font-weight:700;color:var(--heading);margin-bottom:8px}
+.gov-desc{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.gov-touch{font-family:'JetBrains Mono',monospace;font-size:12px;padding:4px 10px;border-radius:3px;display:inline-block}
+.gov-l0 .gov-touch{background:rgba(0,232,150,.1);color:var(--green)}
+.gov-l1 .gov-touch{background:rgba(245,200,66,.1);color:var(--gold)}
+.gov-l2 .gov-touch{background:rgba(176,109,255,.1);color:var(--purple)}
+.gov-l3 .gov-touch{background:rgba(255,107,107,.1);color:var(--red)}
+.roles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.role-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:28px;transition:all .2s}
+.role-card:hover{border-color:var(--gold-dim);box-shadow:0 0 24px var(--glow-g)}
+.role-former{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);text-decoration:line-through;margin-bottom:6px;display:block;letter-spacing:.5px}
+.role-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--gold);margin-bottom:12px}
+.role-desc{color:var(--muted);font-size:15px;line-height:1.65}
+
+/* ═══ DOMAINS ═══ */
+#domains{border-top:1px solid var(--border)}
+.domains-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:56px}
+.domain-group{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:28px}
+.domain-group-title{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);
+}
+.domain-item{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:15px}
+.domain-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-cyan{background:var(--cyan)}
+.dot-gold{background:var(--gold)}
+.hybrid-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:block}
+.hybrid-table{width:100%;border-collapse:collapse;font-size:14px}
+.hybrid-table th{
+  padding:10px 16px;text-align:left;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:1px;text-transform:uppercase;
+  background:var(--bg3);border:1px solid var(--border);
+}
+.hybrid-table th:nth-child(1){color:var(--green)}
+.hybrid-table th:nth-child(2){color:var(--gold)}
+.hybrid-table th:nth-child(3){color:var(--red)}
+.hybrid-table td{padding:9px 16px;border:1px solid var(--border);color:var(--muted);vertical-align:top;line-height:1.55}
+.hybrid-table tr:nth-child(even) td{background:rgba(128,128,128,.03)}
+.hybrid-note{margin-top:16px;font-size:15px;color:var(--muted);font-style:italic}
+
+/* ═══ FOR WHO ═══ */
+#for-who{border-top:1px solid var(--border)}
+.audience-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.audience-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:28px;transition:all .25s}
+.audience-card:hover{border-color:var(--cyan-dim);box-shadow:0 0 28px var(--glow-c);transform:translateY(-2px)}
+.audience-icon{font-size:32px;margin-bottom:16px;display:block}
+.audience-card h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--heading);margin-bottom:10px}
+.audience-card p{color:var(--muted);font-size:14px;line-height:1.65}
+.audience-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.tag{font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 8px;border-radius:3px;background:var(--pnum-bg);color:var(--cyan);border:1px solid var(--pnum-border)}
+
+/* ═══ COMMUNITY ═══ */
+#community{border-top:1px solid var(--border)}
+.community-inner{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.community-features{list-style:none;margin-bottom:32px}
+.community-features li{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;font-size:16px}
+.feature-icon{width:30px;height:30px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:2px}
+.fi-cyan{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2)}
+.fi-gold{background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.2)}
+.fi-green{background:rgba(0,232,150,.1);border:1px solid rgba(0,232,150,.2)}
+.fi-soon{background:rgba(106,128,160,.08);border:1px solid rgba(106,128,160,.2)}
+[data-theme="light"] .fi-cyan{background:rgba(0,102,204,.08);border-color:rgba(0,102,204,.2)}
+[data-theme="light"] .fi-gold{background:rgba(138,98,0,.08);border-color:rgba(138,98,0,.2)}
+[data-theme="light"] .fi-green{background:rgba(0,102,51,.08);border-color:rgba(0,102,51,.2)}
+.feature-text strong{color:var(--heading);display:block;font-size:15px}
+.feature-text span{color:var(--muted);font-size:14px}
+.soon-badge{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+  border:1px solid var(--border);padding:2px 6px;border-radius:2px;
+  margin-left:8px;vertical-align:middle;letter-spacing:1px;
+}
+.signup-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:36px}
+.signup-box h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--heading);margin-bottom:8px}
+.signup-box>p{color:var(--muted);font-size:15px;margin-bottom:24px}
+.community-note{color:var(--muted);font-size:14px;line-height:1.7;margin:0 0 22px}
+.community-note a{color:var(--cyan);text-decoration:none}
+.community-note a:hover{text-decoration:underline}
+.community-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.community-actions .btn-secondary,.community-actions .btn-primary{padding:11px 18px;font-size:13px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.form-group input,.form-group select{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:4px;padding:10px 14px;color:var(--input-color);
+  font-family:'Source Sans 3',sans-serif;font-size:15px;
+  outline:none;transition:border-color .2s;appearance:none;
+}
+.form-group input:focus,.form-group select:focus{border-color:var(--cyan-dim)}
+.form-group select option{background:var(--bg3);color:var(--text)}
+.btn-form{
+  width:100%;background:var(--cyan);color:#060d1a;
+  border:none;padding:13px;border-radius:4px;
+  font-weight:700;font-size:15px;cursor:pointer;
+  transition:all .2s;margin-top:8px;
+}
+.btn-form:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 8px 28px var(--glow-c)}
+.btn-form:disabled{cursor:default;transform:none;box-shadow:none;filter:none}
+[data-theme="light"] .btn-form{color:#ffffff}
+
+/* ═══ DOWNLOAD ═══ */
+#download{border-top:1px solid var(--border)}
+.download-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px}
+.download-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:32px;transition:border-color .2s}
+.download-card:hover{border-color:var(--cyan-dim)}
+.download-lang{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:1px;color:var(--muted);margin-bottom:20px}
+.checkout-intake{display:grid;gap:12px;margin-bottom:20px}
+.checkout-intake .form-group{margin-bottom:0}
+.checkout-hint{color:var(--muted);font-size:12px;line-height:1.5;margin:-2px 0 4px}
+.download-tiers{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dl-tier{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.dl-tier-contributor{border-color:var(--gold-dim);background:linear-gradient(145deg,var(--bg3),rgba(245,200,66,.04));position:relative}
+.dl-badge{position:absolute;top:-10px;right:12px;background:var(--gold);color:#000;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 10px;border-radius:10px}
+.dl-tier-name{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--muted)}
+.dl-price{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--cyan);line-height:1}
+.dl-tier-contributor .dl-price{color:var(--gold)}
+.dl-currency{font-size:1rem;font-weight:400;color:var(--muted)}
+.dl-desc{font-size:13px;color:var(--muted);line-height:1.5;flex:1}
+.btn-download{background:var(--cyan);color:#000;border:none;padding:10px 16px;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;width:100%;margin-top:4px}
+.btn-download:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-download:disabled{cursor:default;transform:none;filter:none;opacity:.72}
+.btn-download-gold{background:var(--gold)}
+.checkout-status{min-height:20px;margin-top:14px;font-size:13px;line-height:1.5;color:var(--muted)}
+.checkout-status.error{color:var(--red)}
+.checkout-status.success{color:var(--green)}
+.dl-note{text-align:center;color:var(--muted);font-size:14px;margin-top:32px;padding:16px;border:1px solid var(--border);border-radius:8px;background:var(--bg2)}
+.dl-legal{text-align:center;color:var(--muted);font-size:12px;line-height:1.7;margin-top:14px}
+.dl-legal a{color:var(--cyan);text-decoration:none}
+.dl-legal a:hover{text-decoration:underline}
+@media(max-width:900px){.download-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.download-tiers{grid-template-columns:1fr}}
+
+/* ═══ FOOTER ═══ */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:56px 0 32px}
+.footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:40px}
+.footer-brand p{color:var(--muted);font-size:14px;line-height:1.7;margin-top:12px;max-width:260px}
+.operator-mark{display:flex;align-items:center;gap:14px;margin-top:18px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--bg2);max-width:320px}
+.operator-mark img{width:44px;height:auto;border-radius:8px;display:block;background:#f2f2f2}
+.operator-mark strong{display:block;font-size:13px;color:var(--heading);line-height:1.3}
+.operator-mark span{display:block;font-size:12px;color:var(--muted);line-height:1.45}
+.footer-col h4{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.footer-col ul{list-style:none}
+.footer-col li{margin-bottom:8px}
+.footer-col a{color:var(--muted);text-decoration:none;font-size:14px;transition:color .2s}
+.footer-col a:hover{color:var(--cyan)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid var(--border);flex-wrap:wrap;gap:12px}
+.footer-bottom p{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
+.footer-version{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);border:1px solid var(--border);padding:3px 10px;border-radius:2px}
+
+/* ═══ ANIMATION ═══ */
+.fade-in{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){.footer-inner{grid-template-columns:1fr 1fr;gap:32px}}
+@media(max-width:768px){
+  .community-inner,.domains-row{grid-template-columns:1fr}
+  .nav-links{display:none}
+}
+@media(max-width:640px){
+  nav{padding:0 16px}
+  .container{padding:0 16px}
+  section{padding:72px 0}
+  .hero-stats{gap:24px}
+}
+@media(max-width:480px){.footer-inner{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <a href="/" class="nav-logo">GAL<span>DUR</span></a>
+  <ul class="nav-links">
+    <li><a href="#why" data-i18n="nav.why">Proč GALDUR</a></li>
+    <li><a href="#principles" data-i18n="nav.principles">Metodika</a></li>
+    <li><a href="#domains" data-i18n="nav.domains">Domény</a></li>
+    <li><a href="#for-who" data-i18n="nav.forWho">Pro koho</a></li>
+    <li><a href="#community" data-i18n="nav.community">Komunita</a></li>
+    <li><a href="#download" data-i18n="nav.download">PDF</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="cs" onclick="setLang('cs')">CS</button>
+      <span class="lang-sep">/</span>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <div class="theme-toggle">
+      <button class="theme-btn" data-theme-btn="galdur" title="Galdur" onclick="setTheme('galdur')"><span class="theme-dot tdot-galdur"></span></button>
+      <button class="theme-btn" data-theme-btn="dark" title="Dark" onclick="setTheme('dark')"><span class="theme-dot tdot-dark"></span></button>
+      <button class="theme-btn" data-theme-btn="light" title="Light" onclick="setTheme('light')"><span class="theme-dot tdot-light"></span></button>
+    </div>
+    <a href="/docs/" class="nav-cta" data-i18n="nav.docs">Číst docs →</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-badge" data-i18n="hero.badge">Metodika · v0.9-draft · Living Document</div>
+      <h1 class="hero-title">GALDUR</h1>
+      <p class="hero-etymology" data-i18n-html="hero.etymology">Od staronorského <strong>galdr</strong> — magická zpěvná řeč, záměr formulovaný tak přesně, že se stává realitou</p>
+      <p class="hero-motto" data-i18n-html="hero.motto">"Galdr není zpěv pro pobavení.<br>Je to slovo, které tvoří realitu."</p>
+      <p class="hero-desc" data-i18n-html="hero.desc">Metodika řízení agentního vývoje a operací<br>pro hybridní týmy lidí a AI.</p>
+      <div class="hero-ctas">
+        <a href="/docs/" class="btn-primary" data-i18n="hero.cta1">Číst metodiku →</a>
+        <a href="#community" class="btn-secondary" data-i18n="hero.cta2">Přidat se ke komunitě</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">7</span><span class="stat-label" data-i18n="hero.s1">Principů</span></div>
+        <div class="stat"><span class="stat-num">L0–L3</span><span class="stat-label" data-i18n="hero.s2">Governance levels</span></div>
+        <div class="stat"><span class="stat-num">11</span><span class="stat-label" data-i18n="hero.s3">Domén</span></div>
+        <div class="stat"><span class="stat-num">−83%</span><span class="stat-label" data-i18n="hero.s4">Ceremony overhead vs SAFe</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROČ GALDUR ═══ -->
+<section id="why">
+  <div class="container">
+    <span class="section-label" data-i18n="why.label">Problém</span>
+    <h2 class="section-title" data-i18n-html="why.title">Tradiční metodiky selhávají<br>v agentním světě</h2>
+    <p class="section-sub" data-i18n="why.sub">Agile, Scrum a Waterfall byly navrženy pro lidský výkon. Jejich základní předpoklady se rozpadají v okamžiku, kdy do týmu vstoupí AI agenti.</p>
+    <div class="why-grid fade-in">
+      <div class="why-card"><span class="why-icon">⚡</span><h3 data-i18n="why.c1t">AI agenti nepotřebují standupy</h3><p data-i18n="why.c1d">Tradiční kadence jsou calendar-driven. Agenti jsou event-driven. Mismatch způsobuje friction bez přidané hodnoty.</p></div>
+      <div class="why-card"><span class="why-icon">📊</span><h3 data-i18n="why.c2t">Velocity je mrtvá metrika</h3><p data-i18n="why.c2d">Agenti napíší stovky řádků za minutu. Story points přestávají dávat smysl. Jedinou metrikou, která matter, je drift od intentu.</p></div>
+      <div class="why-card"><span class="why-icon">🔒</span><h3 data-i18n="why.c3t">Governance chybí</h3><p data-i18n="why.c3d">Bez jasných governance levels mají agenti příliš moc (způsobují škody) nebo příliš málo (jsou drahé autocomplete nástroje).</p></div>
+      <div class="why-card"><span class="why-icon">🚀</span><h3 data-i18n="why.c4t">Škálování záměru, ne lidí</h3><p data-i18n="why.c4d">Tradiční metodiky škálují přidáváním lidí. GALDUR škáluje přesností intentu — 15 lidí pokrývá kapacitu 35–40 FTE.</p></div>
+    </div>
+    <span class="compare-label" data-i18n="why.cmpLabel">Scrum vs. GALDUR — srovnání</span>
+    <div style="overflow-x:auto" class="fade-in">
+      <table class="compare-table">
+        <thead><tr>
+          <th data-i18n="why.th1">Scrum ceremonie</th>
+          <th data-i18n="why.th2">GALDUR ekvivalent</th>
+          <th data-i18n="why.th3">Kadence / Trvání</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="col-agile" data-i18n="why.r1a">Sprint Planning</td><td class="col-galdur">Intent Crystallization</td><td class="col-dim" data-i18n="why.r1c">Event-triggered · 20–45 min</td></tr>
+          <tr><td class="col-agile" data-i18n="why.r2a">Daily Standup</td><td class="col-galdur">Drift Dashboard</td><td class="col-dim" data-i18n="why.r2c">Kontinuální, async · 0 min (čte se)</td></tr>
+          <tr><td class="col-agile" data-i18n="why.r3a">Sprint Review</td><td class="col-galdur">Validation Gate</td><td class="col-dim" data-i18n="why.r3c">Event-triggered · 15–30 min</td></tr>
+          <tr><td class="col-agile" data-i18n="why.r4a">Retrospektiva</td><td class="col-galdur">Trace Audit</td><td class="col-dim" data-i18n="why.r4c">2–4 týdny · 60–90 min</td></tr>
+          <tr><td class="col-agile" data-i18n="why.r5a">Sprint (2 týdny)</td><td class="col-galdur">Intent Cycle</td><td class="col-dim" data-i18n="why.r5c">Completion-triggered · Variabilní</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRINCIPY + GOVERNANCE + ROLE ═══ -->
+<section id="principles">
+  <div class="container">
+    <span class="section-label" data-i18n="pr.label">Metodika</span>
+    <h2 class="section-title" data-i18n="pr.title">7 základních principů</h2>
+    <p class="section-sub" data-i18n="pr.sub">GALDUR je postaven na sedmi principech, které definují jak funguje spolupráce mezi lidskými architekty záměru a AI agenty.</p>
+    <div class="principles-grid fade-in">
+      <div class="principle-card"><span class="principle-num">P1</span><div class="principle-content"><h4 data-i18n="pr.p1t">Intent-first</h4><p data-i18n="pr.p1d">Práce nezačíná task listem, začíná srozumitelně definovaným intentem. Intent není prompt — je to kontrakt.</p></div></div>
+      <div class="principle-card"><span class="principle-num">P2</span><div class="principle-content"><h4 data-i18n="pr.p2t">Kontinuální flow</h4><p data-i18n="pr.p2d">Žádné fixní cadence. Práce plyne event-triggered governance gates, ne kalendářem.</p></div></div>
+      <div class="principle-card"><span class="principle-num">P3</span><div class="principle-content"><h4 data-i18n="pr.p3t">Vrstvená autonomie</h4><p data-i18n="pr.p3d">Každý task má explicitně přiřazený governance level (L0–L3) určující míru autonomie agenta.</p></div></div>
+      <div class="principle-card"><span class="principle-num">P4</span><div class="principle-content"><h4 data-i18n="pr.p4t">Deterministická orchestrace</h4><p data-i18n="pr.p4d">Agenti nerozhodují o workflow. Deterministický engine řídí přechody stavů.</p></div></div>
+      <div class="principle-card"><span class="principle-num">P5</span><div class="principle-content"><h4 data-i18n="pr.p5t">Spec jako živý artefakt</h4><p data-i18n="pr.p5d">Intent Spec je verzovaný, strojově čitelný dokument, který evoluje s prací.</p></div></div>
+      <div class="principle-card"><span class="principle-num">P6</span><div class="principle-content"><h4 data-i18n="pr.p6t">Drift jako primární metrika</h4><p data-i18n="pr.p6d">Ne velocity — drift. Jak moc se exekuce odchýlila od intentu?</p></div></div>
+      <div class="principle-card"><span class="principle-num">P7</span><div class="principle-content"><h4 data-i18n="pr.p7t">Hard Locks jsou neporušitelné</h4><p data-i18n="pr.p7d">Kategorie akcí, které agent nikdy nesmí provést bez explicitního lidského schválení.</p></div></div>
+    </div>
+
+    <h3 class="sub-title" data-i18n="gov.title">Governance Levels L0–L3</h3>
+    <p class="section-sub" style="margin-bottom:28px" data-i18n="gov.sub">Každý task dostane level, který určuje kde začíná a končí autonomie agenta.</p>
+    <div class="governance-grid fade-in">
+      <div class="gov-card gov-l0"><span class="gov-badge">L0 · Autonomous</span><div class="gov-name" data-i18n="gov.l0n">Plná autonomie</div><p class="gov-desc" data-i18n="gov.l0d">Agent exekuuje, loguje a pokračuje. Žádné čekání na schválení.</p><span class="gov-touch" data-i18n="gov.l0t">Drift Signal async</span></div>
+      <div class="gov-card gov-l1"><span class="gov-badge">L1 · Supervised</span><div class="gov-name" data-i18n="gov.l1n">Validation Gate</div><p class="gov-desc" data-i18n="gov.l1d">Výstup prochází Validation Gate před deploy. Curator reviewuje a schvaluje.</p><span class="gov-touch" data-i18n="gov.l1t">Curator reviewuje</span></div>
+      <div class="gov-card gov-l2"><span class="gov-badge">L2 · Collaborative</span><div class="gov-name" data-i18n="gov.l2n">Approval před exekucí</div><p class="gov-desc" data-i18n="gov.l2d">Agent plánuje, člověk schvaluje, pak teprve exekuce probíhá.</p><span class="gov-touch" data-i18n="gov.l2t">Approval před akcí</span></div>
+      <div class="gov-card gov-l3"><span class="gov-badge">L3 · Manual</span><div class="gov-name" data-i18n="gov.l3n">Člověk řídí</div><p class="gov-desc" data-i18n="gov.l3d">Člověk řídí každý krok, agent pouze asistuje. Pro kritické operace.</p><span class="gov-touch" data-i18n="gov.l3t">Každý krok explicitně</span></div>
+    </div>
+
+    <h3 class="sub-title" data-i18n="roles.title">Role v GALDUR týmu</h3>
+    <p class="section-sub" style="margin-bottom:28px" data-i18n="roles.sub">Tradiční role se transformují. Lidé přestávají být exekutory a stávají se architekty záměru.</p>
+    <div class="roles-grid fade-in">
+      <div class="role-card"><span class="role-former" data-i18n="roles.r1f">Tech Lead / Architect</span><div class="role-name" data-i18n="roles.r1n">Intent Architect</div><p class="role-desc" data-i18n="roles.r1d">Definuje Intent Specs, rozhoduje o architektuře. Netráví čas implementací — tráví čas kvalitou intentu a architektury hranic.</p></div>
+      <div class="role-card"><span class="role-former" data-i18n="roles.r2f">Scrum Master / Ops Manager</span><div class="role-name" data-i18n="roles.r2n">Governance Steward</div><p class="role-desc" data-i18n="roles.r2d">Řídí governance gates, eskalace, monitoruje drift metriky. Nekoordinuje lidi — koordinuje rozhraní mezi agenty a lidmi.</p></div>
+      <div class="role-card"><span class="role-former" data-i18n="roles.r3f">Developer / Sysadmin / DBA</span><div class="role-name" data-i18n="roles.r3n">Agent Curator</div><p class="role-desc" data-i18n="roles.r3d">Review agentních výstupů, refinement specs, řešení eskalací. Je quality gate a escalation handler pro celý tým.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DOMÉNY ═══ -->
+<section id="domains">
+  <div class="container">
+    <span class="section-label" data-i18n="dom.label">Pokrytí</span>
+    <h2 class="section-title" data-i18n-html="dom.title">11 domén,<br>jeden framework</h2>
+    <p class="section-sub" data-i18n="dom.sub">GALDUR pokrývá IT i byznysové domény. Jeden governance model pro celou firmu — od DevOps až po právní oddělení.</p>
+    <div class="domains-row fade-in">
+      <div class="domain-group">
+        <div class="domain-group-title" data-i18n="dom.itTitle">IT domény</div>
+        <div class="domain-item"><span class="domain-dot dot-cyan"></span><span data-i18n="dom.it1">Software Development — kód, testy, API, dokumentace</span></div>
+        <div class="domain-item"><span class="domain-dot dot-cyan"></span><span data-i18n="dom.it2">Infrastruktura — servery, VM, cloud</span></div>
+        <div class="domain-item"><span class="domain-dot dot-cyan"></span><span data-i18n="dom.it3">Databáze — migrace, zálohy, SQL</span></div>
+        <div class="domain-item"><span class="domain-dot dot-cyan"></span><span data-i18n="dom.it4">Síť &amp; Routing — DNS, VPN, firewall</span></div>
+        <div class="domain-item"><span class="domain-dot dot-cyan"></span><span data-i18n="dom.it5">Security — IAM, certifikáty, audit</span></div>
+        <div class="domain-item"><span class="domain-dot dot-cyan"></span><span data-i18n="dom.it6">Cloud Ops — scaling, cost, backup</span></div>
+        <div class="domain-item"><span class="domain-dot dot-cyan"></span><span data-i18n="dom.it7">Data Ops — ETL, GDPR, reporting</span></div>
+      </div>
+      <div class="domain-group">
+        <div class="domain-group-title" data-i18n="dom.bizTitle">Znalostní domény</div>
+        <div class="domain-item"><span class="domain-dot dot-gold"></span><span data-i18n="dom.biz1">Obchod / CRM — nabídky, zákazníci, smlouvy</span></div>
+        <div class="domain-item"><span class="domain-dot dot-gold"></span><span data-i18n="dom.biz2">Marketing — obsah, kampaně, social media</span></div>
+        <div class="domain-item"><span class="domain-dot dot-gold"></span><span data-i18n="dom.biz3">Právo / Compliance — smlouvy, regulace, filing</span></div>
+        <div class="domain-item"><span class="domain-dot dot-gold"></span><span data-i18n="dom.biz4">Finance / Controlling — reporting, faktury, platby</span></div>
+      </div>
+    </div>
+    <span class="hybrid-label" data-i18n="dom.hybridLabel">Den s GALDUR — hybridní firma (15 lidí, 6 aktivních domén)</span>
+    <div style="overflow-x:auto" class="fade-in">
+      <table class="hybrid-table">
+        <thead><tr>
+          <th data-i18n="dom.hth1">Agenti autonomně (L0)</th>
+          <th data-i18n="dom.hth2">Vyžaduje schválení (L1–L2)</th>
+          <th data-i18n="dom.hth3">Nikdy bez člověka (L3/HARD)</th>
+        </tr></thead>
+        <tbody>
+          <tr><td data-i18n="dom.h1a">CRM analýzy, pipeline reports</td><td data-i18n="dom.h1b">Nabídky zákazníkům</td><td data-i18n="dom.h1c">Odesílání smluv</td></tr>
+          <tr><td data-i18n="dom.h2a">Cashflow dashboard</td><td data-i18n="dom.h2b">Social media příspěvky</td><td data-i18n="dom.h2c">Platby</td></tr>
+          <tr><td data-i18n="dom.h3a">Blog drafty</td><td data-i18n="dom.h3b">Faktury</td><td data-i18n="dom.h3c">Podpisy</td></tr>
+          <tr><td data-i18n="dom.h4a">Analýza smluv klientů</td><td data-i18n="dom.h4b">Staging deploye</td><td data-i18n="dom.h4c">Press releases</td></tr>
+          <tr><td data-i18n="dom.h5a">Compliance monitoring</td><td data-i18n="dom.h5b">Finanční forecasts</td><td data-i18n="dom.h5c">Prod deploy</td></tr>
+          <tr><td data-i18n="dom.h6a">Security scanning</td><td data-i18n="dom.h6b">Addenda ke smlouvám</td><td data-i18n="dom.h6c">IAM změny</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hybrid-note fade-in" data-i18n="dom.note">Výsledek: 15 lidí pokrývá kapacitu 35–40 FTE. Governance Steward vidí drift dashboard přes všechny domény v jednom pohledu.</p>
+  </div>
+</section>
+
+<!-- ═══ PRO KOHO ═══ -->
+<section id="for-who">
+  <div class="container">
+    <span class="section-label" data-i18n="fw.label">Cílová skupina</span>
+    <h2 class="section-title" data-i18n="fw.title">GALDUR je pro vás, pokud...</h2>
+    <p class="section-sub" data-i18n="fw.sub">Metodika škáluje od jednoho vývojáře s agenty až po enterprise nasazení.</p>
+    <div class="audience-grid fade-in">
+      <div class="audience-card"><span class="audience-icon">🧑‍💻</span><h3 data-i18n="fw.c1t">Solo developer s agenty</h3><p data-i18n="fw.c1d">Pracuješ sám, ale orchestruješ více AI agentů najednou. Potřebuješ strukturu, která zabraňuje chaosu a drift incidents.</p><div class="audience-tags"><span class="tag">L0 autonomie</span><span class="tag">Intent Spec</span><span class="tag">Hard Locks</span></div></div>
+      <div class="audience-card"><span class="audience-icon">👥</span><h3 data-i18n="fw.c2t">Malý tým (2–4 lidi)</h3><p data-i18n="fw.c2d">Tým, kde každý člen hraje více rolí. GALDUR zajišťuje, že agenti neblokují práci lidí a naopak.</p><div class="audience-tags"><span class="tag">Governance Gates</span><span class="tag">Drift Dashboard</span></div></div>
+      <div class="audience-card"><span class="audience-icon">🏢</span><h3 data-i18n="fw.c3t">Střední firma / hybridní tým</h3><p data-i18n="fw.c3d">5–50 lidí, více domén najednou. Potřebuješ jednotný framework přes Dev, Ops, Obchod, Marketing i Finance.</p><div class="audience-tags"><span class="tag">Multi-domain</span><span class="tag">Role framework</span><span class="tag">Trace Audit</span></div></div>
+      <div class="audience-card"><span class="audience-icon">🏗️</span><h3 data-i18n="fw.c4t">Enterprise / škálování</h3><p data-i18n="fw.c4d">Alternativa k SAFe pro agentní týmy. −83% ceremony overhead, inkrementální nasazení bez big-bang rollout.</p><div class="audience-tags"><span class="tag">vs. SAFe</span><span class="tag">Compliance</span><span class="tag">Audit Trail</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DOWNLOAD / PDF ═══ -->
+<section id="download">
+  <div class="container">
+    <span class="section-label" data-i18n="dl.label">Stáhnout PDF</span>
+    <h2 class="section-title" data-i18n="dl.title">Metodika jako PDF</h2>
+    <p class="section-sub" data-i18n="dl.sub">Metodika GALDUR je zdarma ke čtení online. PDF verze je dostupná za symbolický příspěvek na rozvoj metodiky a budování komunity — ne za prodej obsahu.</p>
+    <div class="download-grid fade-in">
+      <div class="download-card" id="checkout-cs">
+        <div class="download-lang">🇨🇿 Česky</div>
+        <div class="checkout-intake">
+          <div class="form-group"><label data-i18n="dl.nameLabel">Jméno (volitelně)</label><input type="text" data-checkout-name data-i18n-ph="dl.namePh" placeholder="Jan Novák"></div>
+          <div class="form-group"><label data-i18n="dl.emailLabel">E-mail pro doručení PDF</label><input type="email" data-checkout-email data-i18n-ph="dl.emailPh" placeholder="jan@firma.cz" required></div>
+          <p class="checkout-hint" data-i18n="dl.formHint">Stripe po platbě pošle download link na tento e-mail.</p>
+        </div>
+        <div class="download-tiers">
+          <div class="dl-tier">
+            <div class="dl-tier-name" data-i18n="dl.stdName">Standard</div>
+            <div class="dl-price">5 <span class="dl-currency">EUR</span></div>
+            <div class="dl-desc" data-i18n="dl.stdDesc">GALDUR Metodika PDF v0.9 (CZ)</div>
+            <button type="button" class="btn-download" onclick="startCheckout(event,'standard','cs','checkout-cs')" data-i18n="dl.btnStd">Přispět a stáhnout →</button>
+          </div>
+          <div class="dl-tier dl-tier-contributor">
+            <div class="dl-badge" data-i18n="dl.contribBadge">Contributor</div>
+            <div class="dl-tier-name" data-i18n="dl.contribName">Supporter</div>
+            <div class="dl-price">10 <span class="dl-currency">EUR</span></div>
+            <div class="dl-desc" data-i18n="dl.contribDesc">PDF + Supporter badge v komunitě + jméno v Contributors listu</div>
+            <button type="button" class="btn-download btn-download-gold" onclick="startCheckout(event,'contributor','cs','checkout-cs')" data-i18n="dl.btnContrib">Přispět a stáhnout →</button>
+          </div>
+        </div>
+        <p class="checkout-status" data-checkout-status aria-live="polite"></p>
+      </div>
+      <div class="download-card" id="checkout-en">
+        <div class="download-lang">🇬🇧 English</div>
+        <div class="checkout-intake">
+          <div class="form-group"><label data-i18n="dl.nameLabel">Name (optional)</label><input type="text" data-checkout-name data-i18n-ph="dl.namePh" placeholder="John Smith"></div>
+          <div class="form-group"><label data-i18n="dl.emailLabel">Email for PDF delivery</label><input type="email" data-checkout-email data-i18n-ph="dl.emailPh" placeholder="john@company.com" required></div>
+          <p class="checkout-hint" data-i18n="dl.formHint">Stripe will send the download link to this email after payment.</p>
+        </div>
+        <div class="download-tiers">
+          <div class="dl-tier">
+            <div class="dl-tier-name" data-i18n="dl.stdName">Standard</div>
+            <div class="dl-price">5 <span class="dl-currency">EUR</span></div>
+            <div class="dl-desc" data-i18n="dl.stdDescEn">GALDUR Methodology PDF v0.9 (EN)</div>
+            <button type="button" class="btn-download" onclick="startCheckout(event,'standard','en','checkout-en')" data-i18n="dl.btnStdEn">Contribute &amp; Download →</button>
+          </div>
+          <div class="dl-tier dl-tier-contributor">
+            <div class="dl-badge" data-i18n="dl.contribBadge">Contributor</div>
+            <div class="dl-tier-name" data-i18n="dl.contribName">Supporter</div>
+            <div class="dl-price">10 <span class="dl-currency">EUR</span></div>
+            <div class="dl-desc" data-i18n="dl.contribDescEn">PDF + Supporter badge in community + name in Contributors list</div>
+            <button type="button" class="btn-download btn-download-gold" onclick="startCheckout(event,'contributor','en','checkout-en')" data-i18n="dl.btnContribEn">Contribute &amp; Download →</button>
+          </div>
+        </div>
+        <p class="checkout-status" data-checkout-status aria-live="polite"></p>
+      </div>
+    </div>
+    <p class="dl-note fade-in" data-i18n="dl.note">💡 Metodika samotná se nikdy nestane placenou. Příspěvek financuje překlady, nové verze a komunitní nástroje.</p>
+    <p class="dl-legal fade-in" data-i18n-html="dl.legal">Provozovatel: Yggnet Labs s.r.o., DIČ CZ24445541. Pokračováním souhlasíš s <a href="/legal/#terms">podmínkami digitálního downloadu</a> a <a href="/legal/#privacy">zpracováním údajů</a>. Pro potíže s doručením nebo refund otázky viz <a href="/legal/#refunds">refunds &amp; delivery</a>.</p>
+  </div>
+</section>
+
+<!-- ═══ KOMUNITA ═══ -->
+<section id="community">
+  <div class="container">
+    <span class="section-label" data-i18n="com.label">Komunita</span>
+    <h2 class="section-title" data-i18n="com.title">Připoj se ke komunitě</h2>
+    <div class="community-inner fade-in">
+      <div>
+        <p class="section-sub" style="margin-bottom:32px" data-i18n="com.sub">GALDUR je živý dokument. Komunita přispívá k metodice, sdílí case studies a pomáhá definovat budoucnost hybridních týmů.</p>
+        <ul class="community-features">
+          <li><div class="feature-icon fi-cyan">💬</div><div class="feature-text"><strong data-i18n="com.f1t">Searchable community flow</strong><span data-i18n="com.f1d">GitHub Discussions pro Q&A, case studies a nápady; public opening jde kurátorovaně</span></div></li>
+          <li><div class="feature-icon fi-gold">📖</div><div class="feature-text"><strong data-i18n="com.f2t">Template library</strong><span data-i18n="com.f2d">Stáhni Intent Spec a Trace Audit šablony teď hned; GitHub fork flow přijde s curated public release</span></div></li>
+          <li><div class="feature-icon fi-green">🤝</div><div class="feature-text"><strong data-i18n="com.f3t">Přispět k metodice</strong><span data-i18n="com.f3d">Diskuze pro nápady a case studies, issue-style intake pro chyby v metodice a templatech</span></div></li>
+          <li><div class="feature-icon fi-soon">🏅</div><div class="feature-text"><strong data-i18n="com.f4t">Certifikace</strong> <span class="soon-badge" data-i18n="com.soon">brzy</span><span data-i18n="com.f4d">Intent Architect · Governance Steward · Agent Curator</span></div></li>
+        </ul>
+        <p class="community-note" data-i18n-html="com.note">Komunitní GitHub surface má být kurátorovaný. Template library je už k dispozici na webu, veřejné GitHub Discussions a forkable repo se otevřou až s public-safe releasem.</p>
+        <div class="community-actions">
+          <a href="/community/" class="btn-secondary" data-i18n="com.ctaHub">Community hub →</a>
+          <a href="/templates/" class="btn-primary" data-i18n="com.ctaTemplates">Stáhnout šablony →</a>
+        </div>
+      </div>
+      <div class="signup-box">
+        <h3 data-i18n="com.st">Přidej se do early access</h3>
+        <p data-i18n="com.sd">Dostaneš přístup k metodice, šablonám a otevření public community kanálů jako první.</p>
+        <form onsubmit="handleSignup(event)">
+          <div class="form-group"><label data-i18n="com.fl1">Jméno</label><input type="text" data-i18n-ph="com.fp1" placeholder="Jan Novák" required></div>
+          <div class="form-group"><label data-i18n="com.fl2">E-mail</label><input type="email" data-i18n-ph="com.fp2" placeholder="jan@firma.cz" required></div>
+          <div class="form-group"><label data-i18n="com.fl3">Organizace</label><input type="text" data-i18n-ph="com.fp3" placeholder="Firma s.r.o."></div>
+          <div class="form-group">
+            <label data-i18n="com.fl4">Role</label>
+            <select>
+              <option value="" data-i18n="com.fo0">Vybrat roli...</option>
+              <option data-i18n="com.fo1">Intent Architect (Tech Lead / Architect)</option>
+              <option data-i18n="com.fo2">Governance Steward (Ops / Scrum Master)</option>
+              <option data-i18n="com.fo3">Agent Curator (Developer / Sysadmin)</option>
+              <option data-i18n="com.fo4">CEO / Founder</option>
+              <option data-i18n="com.fo5">Jiná</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-form" data-i18n="com.submit">Přidat se →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo">GAL<span>DUR</span></a>
+        <p data-i18n="ft.brand">Metodika řízení agentního vývoje a operací pro hybridní týmy lidí a AI. Living document, v0.9-draft.</p>
+        <div class="operator-mark">
+          <img src="/branding/yggnet_webmark.png" alt="Yggnet Labs logo">
+          <div>
+            <strong data-i18n="ft.operator">Provozuje Yggnet Labs s.r.o.</strong>
+            <span data-i18n="ft.operatorSub">Operator, billing a Stripe brand</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="ft.c1h">Metodika</h4>
+        <ul>
+          <li><a href="/docs/" data-i18n="ft.c1l1">Kompletní doc</a></li>
+          <li><a href="/docs/#principles" data-i18n="ft.c1l2">7 principů</a></li>
+          <li><a href="/docs/#governance" data-i18n="ft.c1l3">Governance L0–L3</a></li>
+          <li><a href="/docs/#intent-spec" data-i18n="ft.c1l4">Intent Spec šablona</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="ft.c2h">Komunita</h4>
+        <ul>
+          <li><a href="/community/" data-i18n="ft.c2l1">Community hub</a></li>
+          <li><a href="#community" data-i18n="ft.c2l2">Early access</a></li>
+          <li><a href="/templates/" data-i18n="ft.c2l3">Šablony</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="ft.c3h">Kontakt</h4>
+        <ul>
+          <li><a href="mailto:info@getgaldur.com">info@getgaldur.com</a></li>
+          <li><a href="/community/#github">GitHub</a></li>
+          <li><a href="/legal/#terms" data-i18n="ft.c3l1">Podmínky</a></li>
+          <li><a href="/legal/#privacy" data-i18n="ft.c3l2">Privacy</a></li>
+          <li><a href="/legal/#refunds" data-i18n="ft.c3l3">Refunds</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p data-i18n="ft.copy">© 2026 Yggnet Labs s.r.o. · getgaldur.com · All rights reserved</p>
+      <span class="footer-version">v0.9-draft</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ═══ TRANSLATIONS ═══ */
+const T = {
+  cs: {
+    'nav.why':'Proč GALDUR','nav.principles':'Metodika','nav.domains':'Domény',
+    'nav.forWho':'Pro koho','nav.community':'Komunita','nav.docs':'Číst docs →',
+    'hero.badge':'Metodika · v0.9-draft · Living Document',
+    'hero.etymology':'Od staronorského <strong>galdr</strong> — magická zpěvná řeč, záměr formulovaný tak přesně, že se stává realitou',
+    'hero.motto':'"Galdr není zpěv pro pobavení.<br>Je to slovo, které tvoří realitu."',
+    'hero.desc':'Metodika řízení agentního vývoje a operací<br>pro hybridní týmy lidí a AI.',
+    'hero.cta1':'Číst metodiku →','hero.cta2':'Přidat se ke komunitě',
+    'hero.s1':'Principů','hero.s2':'Governance levels','hero.s3':'Domén','hero.s4':'Ceremony overhead vs SAFe',
+    'why.label':'Problém',
+    'why.title':'Tradiční metodiky selhávají<br>v agentním světě',
+    'why.sub':'Agile, Scrum a Waterfall byly navrženy pro lidský výkon. Jejich základní předpoklady se rozpadají v okamžiku, kdy do týmu vstoupí AI agenti.',
+    'why.c1t':'AI agenti nepotřebují standupy','why.c1d':'Tradiční kadence jsou calendar-driven. Agenti jsou event-driven. Mismatch způsobuje friction bez přidané hodnoty.',
+    'why.c2t':'Velocity je mrtvá metrika','why.c2d':'Agenti napíší stovky řádků za minutu. Story points přestávají dávat smysl. Jedinou metrikou, která matter, je drift od intentu.',
+    'why.c3t':'Governance chybí','why.c3d':'Bez jasných governance levels mají agenti příliš moc (způsobují škody) nebo příliš málo (jsou drahé autocomplete nástroje).',
+    'why.c4t':'Škálování záměru, ne lidí','why.c4d':'Tradiční metodiky škálují přidáváním lidí. GALDUR škáluje přesností intentu — 15 lidí pokrývá kapacitu 35–40 FTE.',
+    'why.cmpLabel':'Scrum vs. GALDUR — srovnání',
+    'why.th1':'Scrum ceremonie','why.th2':'GALDUR ekvivalent','why.th3':'Kadence / Trvání',
+    'why.r1a':'Sprint Planning','why.r1c':'Event-triggered · 20–45 min',
+    'why.r2a':'Daily Standup','why.r2c':'Kontinuální, async · 0 min (čte se)',
+    'why.r3a':'Sprint Review','why.r3c':'Event-triggered · 15–30 min',
+    'why.r4a':'Retrospektiva','why.r4c':'2–4 týdny · 60–90 min',
+    'why.r5a':'Sprint (2 týdny)','why.r5c':'Completion-triggered · Variabilní',
+    'pr.label':'Metodika','pr.title':'7 základních principů',
+    'pr.sub':'GALDUR je postaven na sedmi principech, které definují jak funguje spolupráce mezi lidskými architekty záměru a AI agenty.',
+    'pr.p1t':'Intent-first','pr.p1d':'Práce nezačíná task listem, začíná srozumitelně definovaným intentem. Intent není prompt — je to kontrakt.',
+    'pr.p2t':'Kontinuální flow','pr.p2d':'Žádné fixní cadence. Práce plyne event-triggered governance gates, ne kalendářem.',
+    'pr.p3t':'Vrstvená autonomie','pr.p3d':'Každý task má explicitně přiřazený governance level (L0–L3) určující míru autonomie agenta.',
+    'pr.p4t':'Deterministická orchestrace','pr.p4d':'Agenti nerozhodují o workflow. Deterministický engine řídí přechody stavů.',
+    'pr.p5t':'Spec jako živý artefakt','pr.p5d':'Intent Spec je verzovaný, strojově čitelný dokument, který evoluje s prací.',
+    'pr.p6t':'Drift jako primární metrika','pr.p6d':'Ne velocity — drift. Jak moc se exekuce odchýlila od intentu?',
+    'pr.p7t':'Hard Locks jsou neporušitelné','pr.p7d':'Kategorie akcí, které agent nikdy nesmí provést bez explicitního lidského schválení.',
+    'gov.title':'Governance Levels L0–L3','gov.sub':'Každý task dostane level, který určuje kde začíná a končí autonomie agenta.',
+    'gov.l0n':'Plná autonomie','gov.l0d':'Agent exekuuje, loguje a pokračuje. Žádné čekání na schválení.','gov.l0t':'Drift Signal async',
+    'gov.l1n':'Validation Gate','gov.l1d':'Výstup prochází Validation Gate před deploy. Curator reviewuje a schvaluje.','gov.l1t':'Curator reviewuje',
+    'gov.l2n':'Approval před exekucí','gov.l2d':'Agent plánuje, člověk schvaluje, pak teprve exekuce probíhá.','gov.l2t':'Approval před akcí',
+    'gov.l3n':'Člověk řídí','gov.l3d':'Člověk řídí každý krok, agent pouze asistuje. Pro kritické operace.','gov.l3t':'Každý krok explicitně',
+    'roles.title':'Role v GALDUR týmu','roles.sub':'Tradiční role se transformují. Lidé přestávají být exekutory a stávají se architekty záměru.',
+    'roles.r1f':'Tech Lead / Architect','roles.r1n':'Intent Architect','roles.r1d':'Definuje Intent Specs, rozhoduje o architektuře. Netráví čas implementací — tráví čas kvalitou intentu a architektury hranic.',
+    'roles.r2f':'Scrum Master / Ops Manager','roles.r2n':'Governance Steward','roles.r2d':'Řídí governance gates, eskalace, monitoruje drift metriky. Nekoordinuje lidi — koordinuje rozhraní mezi agenty a lidmi.',
+    'roles.r3f':'Developer / Sysadmin / DBA','roles.r3n':'Agent Curator','roles.r3d':'Review agentních výstupů, refinement specs, řešení eskalací. Je quality gate a escalation handler pro celý tým.',
+    'dom.label':'Pokrytí','dom.title':'11 domén,<br>jeden framework',
+    'dom.sub':'GALDUR pokrývá IT i byznysové domény. Jeden governance model pro celou firmu — od DevOps až po právní oddělení.',
+    'dom.itTitle':'IT domény',
+    'dom.it1':'Software Development — kód, testy, API, dokumentace',
+    'dom.it2':'Infrastruktura — servery, VM, cloud',
+    'dom.it3':'Databáze — migrace, zálohy, SQL',
+    'dom.it4':'Síť & Routing — DNS, VPN, firewall',
+    'dom.it5':'Security — IAM, certifikáty, audit',
+    'dom.it6':'Cloud Ops — scaling, cost, backup',
+    'dom.it7':'Data Ops — ETL, GDPR, reporting',
+    'dom.bizTitle':'Znalostní domény',
+    'dom.biz1':'Obchod / CRM — nabídky, zákazníci, smlouvy',
+    'dom.biz2':'Marketing — obsah, kampaně, social media',
+    'dom.biz3':'Právo / Compliance — smlouvy, regulace, filing',
+    'dom.biz4':'Finance / Controlling — reporting, faktury, platby',
+    'dom.hybridLabel':'Den s GALDUR — hybridní firma (15 lidí, 6 aktivních domén)',
+    'dom.hth1':'Agenti autonomně (L0)','dom.hth2':'Vyžaduje schválení (L1–L2)','dom.hth3':'Nikdy bez člověka (L3/HARD)',
+    'dom.h1a':'CRM analýzy, pipeline reports','dom.h1b':'Nabídky zákazníkům','dom.h1c':'Odesílání smluv',
+    'dom.h2a':'Cashflow dashboard','dom.h2b':'Social media příspěvky','dom.h2c':'Platby',
+    'dom.h3a':'Blog drafty','dom.h3b':'Faktury','dom.h3c':'Podpisy',
+    'dom.h4a':'Analýza smluv klientů','dom.h4b':'Staging deploye','dom.h4c':'Press releases',
+    'dom.h5a':'Compliance monitoring','dom.h5b':'Finanční forecasts','dom.h5c':'Prod deploy',
+    'dom.h6a':'Security scanning','dom.h6b':'Addenda ke smlouvám','dom.h6c':'IAM změny',
+    'dom.note':'Výsledek: 15 lidí pokrývá kapacitu 35–40 FTE. Governance Steward vidí drift dashboard přes všechny domény v jednom pohledu.',
+    'fw.label':'Cílová skupina','fw.title':'GALDUR je pro vás, pokud...',
+    'fw.sub':'Metodika škáluje od jednoho vývojáře s agenty až po enterprise nasazení.',
+    'fw.c1t':'Solo developer s agenty','fw.c1d':'Pracuješ sám, ale orchestruješ více AI agentů najednou. Potřebuješ strukturu, která zabraňuje chaosu a drift incidents.',
+    'fw.c2t':'Malý tým (2–4 lidi)','fw.c2d':'Tým, kde každý člen hraje více rolí. GALDUR zajišťuje, že agenti neblokují práci lidí a naopak.',
+    'fw.c3t':'Střední firma / hybridní tým','fw.c3d':'5–50 lidí, více domén najednou. Potřebuješ jednotný framework přes Dev, Ops, Obchod, Marketing i Finance.',
+    'fw.c4t':'Enterprise / škálování','fw.c4d':'Alternativa k SAFe pro agentní týmy. −83% ceremony overhead, inkrementální nasazení bez big-bang rollout.',
+    'nav.download':'PDF',
+    'dl.label':'Stáhnout PDF','dl.title':'Metodika jako PDF',
+    'dl.sub':'Metodika GALDUR je zdarma ke čtení online. PDF je dostupné za symbolický příspěvek na rozvoj metodiky a budování komunity — ne za prodej obsahu.',
+    'dl.nameLabel':'Jméno (volitelně)','dl.namePh':'Jan Novák',
+    'dl.emailLabel':'E-mail pro doručení PDF','dl.emailPh':'jan@firma.cz',
+    'dl.formHint':'Stripe po platbě pošle download link na tento e-mail.',
+    'dl.stdName':'Standard','dl.stdDesc':'GALDUR Metodika PDF v0.9 (CZ)','dl.stdDescEn':'GALDUR Methodology PDF v0.9 (EN)',
+    'dl.contribBadge':'Contributor','dl.contribName':'Supporter',
+    'dl.contribDesc':'PDF + Supporter badge v komunitě + jméno v Contributors listu','dl.contribDescEn':'PDF + Supporter badge in community + name in Contributors list',
+    'dl.btnStd':'Přispět a stáhnout →','dl.btnStdEn':'Contribute & Download →',
+    'dl.btnContrib':'Přispět a stáhnout →','dl.btnContribEn':'Contribute & Download →',
+    'dl.loading':'Připravuji Stripe checkout…','dl.redirect':'Přesměrovávám na Stripe…',
+    'dl.errEmail':'Vyplň platný e-mail pro doručení PDF.','dl.errGeneric':'Platba momentálně není dostupná. Zkus to znovu.',
+    'dl.note':'💡 Metodika samotná se nikdy nestane placenou. Příspěvek financuje překlady, nové verze a komunitní nástroje.',
+    'dl.legal':'Provozovatel: Yggnet Labs s.r.o., DIČ CZ24445541. Pokračováním souhlasíš s <a href="/legal/#terms">podmínkami digitálního downloadu</a> a <a href="/legal/#privacy">zpracováním údajů</a>. Pro potíže s doručením nebo refund otázky viz <a href="/legal/#refunds">refunds &amp; delivery</a>.',
+    'com.label':'Komunita','com.title':'Připoj se ke komunitě',
+    'com.sub':'GALDUR je živý dokument. Komunita přispívá k metodice, sdílí case studies a pomáhá definovat budoucnost hybridních týmů.',
+    'com.f1t':'Searchable community flow','com.f1d':'GitHub Discussions pro Q&A, case studies a nápady; public opening jde kurátorovaně',
+    'com.f2t':'Template library','com.f2d':'Stáhni Intent Spec a Trace Audit šablony teď hned; GitHub fork flow přijde s curated public release',
+    'com.f3t':'Přispět k metodice','com.f3d':'Diskuze pro nápady a case studies, issue-style intake pro chyby v metodice a templatech',
+    'com.f4t':'Certifikace','com.soon':'brzy','com.f4d':'Intent Architect · Governance Steward · Agent Curator',
+    'com.note':'Komunitní GitHub surface má být kurátorovaný. Template library je už k dispozici na webu, veřejné GitHub Discussions a forkable repo se otevřou až s public-safe releasem.',
+    'com.ctaHub':'Community hub →','com.ctaTemplates':'Stáhnout šablony →',
+    'com.st':'Přidej se do early access','com.sd':'Dostaneš přístup k metodice, šablonám a otevření public community kanálů jako první.',
+    'com.fl1':'Jméno','com.fp1':'Jan Novák','com.fl2':'E-mail','com.fp2':'jan@firma.cz',
+    'com.fl3':'Organizace','com.fp3':'Firma s.r.o.','com.fl4':'Role',
+    'com.fo0':'Vybrat roli...','com.fo1':'Intent Architect (Tech Lead / Architect)',
+    'com.fo2':'Governance Steward (Ops / Scrum Master)','com.fo3':'Agent Curator (Developer / Sysadmin)',
+    'com.fo4':'CEO / Founder','com.fo5':'Jiná','com.submit':'Přidat se →',
+    'com.success':'✓ Přidán do early access',
+    'ft.brand':'Metodika řízení agentního vývoje a operací pro hybridní týmy lidí a AI. Living document, v0.9-draft.',
+    'ft.operator':'Provozuje Yggnet Labs s.r.o.','ft.operatorSub':'Operator, billing a Stripe brand',
+    'ft.c1h':'Metodika','ft.c1l1':'Kompletní doc','ft.c1l2':'7 principů','ft.c1l3':'Governance L0–L3','ft.c1l4':'Intent Spec šablona',
+    'ft.c2h':'Komunita','ft.c2l1':'Community hub','ft.c2l2':'Early access','ft.c2l3':'Šablony',
+    'ft.c3h':'Kontakt','ft.c3l1':'Podmínky','ft.c3l2':'Ochrana údajů','ft.c3l3':'Refunds & doručení','ft.copy':'© 2026 Yggnet Labs s.r.o. · getgaldur.com · All rights reserved',
+  },
+  en: {
+    'nav.why':'Why GALDUR','nav.principles':'Methodology','nav.domains':'Domains',
+    'nav.forWho':'For whom','nav.community':'Community','nav.docs':'Read docs →','nav.download':'PDF',
+    'dl.label':'Download PDF','dl.title':'Methodology as PDF',
+    'dl.sub':'The GALDUR methodology is free to read online. The PDF is available as a symbolic contribution to the development of the methodology and community building — not a content sale.',
+    'dl.nameLabel':'Name (optional)','dl.namePh':'John Smith',
+    'dl.emailLabel':'Email for PDF delivery','dl.emailPh':'john@company.com',
+    'dl.formHint':'Stripe will send the download link to this email after payment.',
+    'dl.stdName':'Standard','dl.stdDesc':'GALDUR Metodika PDF v0.9 (CZ)','dl.stdDescEn':'GALDUR Methodology PDF v0.9 (EN)',
+    'dl.contribBadge':'Contributor','dl.contribName':'Supporter',
+    'dl.contribDesc':'PDF + Supporter badge in community + name in Contributors list','dl.contribDescEn':'PDF + Supporter badge in community + name in Contributors list',
+    'dl.btnStd':'Contribute & Download →','dl.btnStdEn':'Contribute & Download →',
+    'dl.btnContrib':'Contribute & Download →','dl.btnContribEn':'Contribute & Download →',
+    'dl.loading':'Preparing Stripe checkout…','dl.redirect':'Redirecting to Stripe…',
+    'dl.errEmail':'Enter a valid email for PDF delivery.','dl.errGeneric':'Payment is currently unavailable. Please try again.',
+    'dl.note':'💡 The methodology itself will never become paid. Your contribution funds translations, new versions and community tools.',
+    'dl.legal':'Operator: Yggnet Labs s.r.o., VAT ID CZ24445541. By continuing you agree with the <a href="/legal/#terms">digital download terms</a> and <a href="/legal/#privacy">privacy processing notice</a>. For delivery issues or refund questions see <a href="/legal/#refunds">refunds &amp; delivery</a>.',
+    'hero.badge':'Methodology · v0.9-draft · Living Document',
+    'hero.etymology':'From Old Norse <strong>galdr</strong> — magical incantation, intent formulated so precisely it becomes reality',
+    'hero.motto':'"Galdr is not sung for entertainment.<br>It is the word that creates reality."',
+    'hero.desc':'Methodology for managing agentic development and operations<br>for hybrid teams of humans and AI.',
+    'hero.cta1':'Read methodology →','hero.cta2':'Join the community',
+    'hero.s1':'Principles','hero.s2':'Governance levels','hero.s3':'Domains','hero.s4':'Ceremony overhead vs SAFe',
+    'why.label':'Problem',
+    'why.title':'Traditional methodologies fail<br>in an agentic world',
+    'why.sub':'Agile, Scrum and Waterfall were designed for human performance. Their core assumptions break down when AI agents join the team.',
+    'why.c1t':'AI agents don\'t need standups','why.c1d':'Traditional cadences are calendar-driven. Agents are event-driven. The mismatch creates friction without added value.',
+    'why.c2t':'Velocity is a dead metric','why.c2d':'Agents write hundreds of lines per minute. Story points stop making sense. The only metric that matters is drift from intent.',
+    'why.c3t':'Governance is missing','why.c3d':'Without clear governance levels, agents have too much power (causing damage) or too little (becoming expensive autocomplete tools).',
+    'why.c4t':'Scale intent, not people','why.c4d':'Traditional methodologies scale by adding people. GALDUR scales through the precision of intent — 15 people cover 35–40 FTE capacity.',
+    'why.cmpLabel':'Scrum vs. GALDUR — comparison',
+    'why.th1':'Scrum ceremony','why.th2':'GALDUR equivalent','why.th3':'Cadence / Duration',
+    'why.r1a':'Sprint Planning','why.r1c':'Event-triggered · 20–45 min',
+    'why.r2a':'Daily Standup','why.r2c':'Continuous, async · 0 min (read)',
+    'why.r3a':'Sprint Review','why.r3c':'Event-triggered · 15–30 min',
+    'why.r4a':'Retrospective','why.r4c':'2–4 weeks · 60–90 min',
+    'why.r5a':'Sprint (2 weeks)','why.r5c':'Completion-triggered · Variable',
+    'pr.label':'Methodology','pr.title':'7 core principles',
+    'pr.sub':'GALDUR is built on seven principles that define how collaboration between human intent architects and AI agents works.',
+    'pr.p1t':'Intent-first','pr.p1d':'Work doesn\'t start with a task list — it starts with a clearly defined intent. Intent is not a prompt, it\'s a contract.',
+    'pr.p2t':'Continuous flow','pr.p2d':'No fixed cadences. Work flows through event-triggered governance gates, not a calendar.',
+    'pr.p3t':'Layered autonomy','pr.p3d':'Every task has an explicitly assigned governance level (L0–L3) determining the agent\'s degree of autonomy.',
+    'pr.p4t':'Deterministic orchestration','pr.p4d':'Agents don\'t decide on workflow. A deterministic engine controls state transitions.',
+    'pr.p5t':'Spec as a living artifact','pr.p5d':'Intent Spec is a versioned, machine-readable document that evolves with the work.',
+    'pr.p6t':'Drift as primary metric','pr.p6d':'Not velocity — drift. How far has execution deviated from intent?',
+    'pr.p7t':'Hard Locks are inviolable','pr.p7d':'Categories of actions an agent must never perform without explicit human approval.',
+    'gov.title':'Governance Levels L0–L3','gov.sub':'Every task receives a level that determines where the agent\'s autonomy begins and ends.',
+    'gov.l0n':'Full autonomy','gov.l0d':'Agent executes, logs and continues. No waiting for approval.','gov.l0t':'Drift Signal async',
+    'gov.l1n':'Validation Gate','gov.l1d':'Output passes through a Validation Gate before deploy. Curator reviews and approves.','gov.l1t':'Curator reviews',
+    'gov.l2n':'Approval before execution','gov.l2d':'Agent plans, human approves, then execution proceeds.','gov.l2t':'Approval before action',
+    'gov.l3n':'Human leads','gov.l3d':'Human controls every step, agent only assists. For critical operations.','gov.l3t':'Every step explicitly',
+    'roles.title':'Roles in a GALDUR team','roles.sub':'Traditional roles transform. People stop being executors and become intent architects.',
+    'roles.r1f':'Tech Lead / Architect','roles.r1n':'Intent Architect','roles.r1d':'Defines Intent Specs, decides on architecture. Doesn\'t spend time implementing — spends time on intent quality and boundary architecture.',
+    'roles.r2f':'Scrum Master / Ops Manager','roles.r2n':'Governance Steward','roles.r2d':'Manages governance gates, escalations, monitors drift metrics. Doesn\'t coordinate people — coordinates the interface between agents and humans.',
+    'roles.r3f':'Developer / Sysadmin / DBA','roles.r3n':'Agent Curator','roles.r3d':'Reviews agent outputs, refines specs, resolves escalations. Is the quality gate and escalation handler for the entire team.',
+    'dom.label':'Coverage','dom.title':'11 domains,<br>one framework',
+    'dom.sub':'GALDUR covers both IT and business domains. One governance model for the entire company — from DevOps to the legal department.',
+    'dom.itTitle':'IT domains',
+    'dom.it1':'Software Development — code, tests, API, documentation',
+    'dom.it2':'Infrastructure — servers, VMs, cloud',
+    'dom.it3':'Databases — migrations, backups, SQL',
+    'dom.it4':'Network & Routing — DNS, VPN, firewall',
+    'dom.it5':'Security — IAM, certificates, audit',
+    'dom.it6':'Cloud Ops — scaling, cost, backup',
+    'dom.it7':'Data Ops — ETL, GDPR, reporting',
+    'dom.bizTitle':'Knowledge domains',
+    'dom.biz1':'Sales / CRM — proposals, clients, contracts',
+    'dom.biz2':'Marketing — content, campaigns, social media',
+    'dom.biz3':'Legal / Compliance — contracts, regulations, filing',
+    'dom.biz4':'Finance / Controlling — reporting, invoices, payments',
+    'dom.hybridLabel':'A day with GALDUR — hybrid firm (15 people, 6 active domains)',
+    'dom.hth1':'Agents autonomously (L0)','dom.hth2':'Requires approval (L1–L2)','dom.hth3':'Never without human (L3/HARD)',
+    'dom.h1a':'CRM analytics, pipeline reports','dom.h1b':'Customer proposals','dom.h1c':'Sending contracts',
+    'dom.h2a':'Cashflow dashboard','dom.h2b':'Social media posts','dom.h2c':'Payments',
+    'dom.h3a':'Blog drafts','dom.h3b':'Invoices','dom.h3c':'Signatures',
+    'dom.h4a':'Client contract analysis','dom.h4b':'Staging deployments','dom.h4c':'Press releases',
+    'dom.h5a':'Compliance monitoring','dom.h5b':'Financial forecasts','dom.h5c':'Production deploy',
+    'dom.h6a':'Security scanning','dom.h6b':'Contract addenda','dom.h6c':'IAM changes',
+    'dom.note':'Result: 15 people cover the capacity of 35–40 FTE. The Governance Steward sees the drift dashboard across all domains in a single view.',
+    'fw.label':'Target audience','fw.title':'GALDUR is for you if...',
+    'fw.sub':'The methodology scales from a solo developer with agents to enterprise deployments.',
+    'fw.c1t':'Solo developer with agents','fw.c1d':'You work alone but orchestrate multiple AI agents at once. You need structure that prevents chaos and drift incidents.',
+    'fw.c2t':'Small team (2–4 people)','fw.c2d':'A team where every member plays multiple roles. GALDUR ensures agents don\'t block people\'s work and vice versa.',
+    'fw.c3t':'Mid-size company / hybrid team','fw.c3d':'5–50 people, multiple domains at once. You need a unified framework across Dev, Ops, Sales, Marketing and Finance.',
+    'fw.c4t':'Enterprise / scaling','fw.c4d':'Alternative to SAFe for agentic teams. −83% ceremony overhead, incremental adoption without big-bang rollout.',
+    'com.label':'Community','com.title':'Join the community',
+    'com.sub':'GALDUR is a living document. The community contributes to the methodology, shares case studies and helps define the future of hybrid teams.',
+    'com.f1t':'Searchable community flow','com.f1d':'GitHub Discussions for Q&A, case studies and ideas; the public opening is curated',
+    'com.f2t':'Template library','com.f2d':'Download Intent Spec and Trace Audit templates now; GitHub forking comes with the curated public release',
+    'com.f3t':'Contribute to the methodology','com.f3d':'Use discussions for ideas and case studies, issue-style intake for methodology/template bugs',
+    'com.f4t':'Certification','com.soon':'soon','com.f4d':'Intent Architect · Governance Steward · Agent Curator',
+    'com.note':'The GitHub community surface must stay curated. The template library is already available on the website; public GitHub Discussions and the forkable repo open only with a public-safe release.',
+    'com.ctaHub':'Community hub →','com.ctaTemplates':'Download templates →',
+    'com.st':'Join early access','com.sd':'Get first access to the methodology, templates and the opening of public community channels.',
+    'com.fl1':'Name','com.fp1':'John Smith','com.fl2':'Email','com.fp2':'john@company.com',
+    'com.fl3':'Organization','com.fp3':'Company Ltd.','com.fl4':'Role',
+    'com.fo0':'Select role...','com.fo1':'Intent Architect (Tech Lead / Architect)',
+    'com.fo2':'Governance Steward (Ops / Scrum Master)','com.fo3':'Agent Curator (Developer / Sysadmin)',
+    'com.fo4':'CEO / Founder','com.fo5':'Other','com.submit':'Join →',
+    'com.success':'✓ Added to early access',
+    'ft.brand':'Methodology for managing agentic development and operations for hybrid teams of humans and AI. Living document, v0.9-draft.',
+    'ft.operator':'Operated by Yggnet Labs s.r.o.','ft.operatorSub':'Operator, billing and Stripe brand',
+    'ft.c1h':'Methodology','ft.c1l1':'Complete docs','ft.c1l2':'7 principles','ft.c1l3':'Governance L0–L3','ft.c1l4':'Intent Spec template',
+    'ft.c2h':'Community','ft.c2l1':'Community hub','ft.c2l2':'Early access','ft.c2l3':'Templates',
+    'ft.c3h':'Contact','ft.c3l1':'Terms','ft.c3l2':'Privacy','ft.c3l3':'Refunds & delivery','ft.copy':'© 2026 Yggnet Labs s.r.o. · getgaldur.com · All rights reserved',
+  }
+};
+
+/* ═══ LANGUAGE ═══ */
+let currentLang = 'cs';
+
+function applyLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  localStorage.setItem('g-lang', lang);
+
+  // Update buttons
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+
+  const dict = T[lang];
+
+  // Text content
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (dict[k] !== undefined) el.textContent = dict[k];
+  });
+
+  // HTML content
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const k = el.dataset.i18nHtml;
+    if (dict[k] !== undefined) el.innerHTML = dict[k];
+  });
+
+  // Placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const k = el.dataset.i18nPh;
+    if (dict[k] !== undefined) el.placeholder = dict[k];
+  });
+
+  // Select option text
+  document.querySelectorAll('select option[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (dict[k] !== undefined) el.textContent = dict[k];
+  });
+}
+
+function setLang(lang) { applyLang(lang); }
+
+function initLang() {
+  const stored = localStorage.getItem('g-lang');
+  if (stored) { applyLang(stored); return; }
+  const bl = (navigator.language || 'cs').toLowerCase();
+  applyLang(bl.startsWith('cs') || bl.startsWith('sk') ? 'cs' : 'en');
+}
+
+/* ═══ THEME ═══ */
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('g-theme', theme);
+  document.querySelectorAll('.theme-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.themeBtn === theme);
+  });
+}
+
+function initThemeButtons() {
+  const cur = document.documentElement.getAttribute('data-theme') || 'galdur';
+  document.querySelectorAll('.theme-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.themeBtn === cur);
+  });
+}
+
+/* ═══ SCROLL ═══ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 90) cur = s.id; });
+  navLinks.forEach(a => { a.style.color = a.getAttribute('href') === '#'+cur ? 'var(--cyan)' : ''; });
+}, { passive: true });
+
+/* ═══ FORM — register ═══ */
+async function handleSignup(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('.btn-form');
+  const inputs = form.querySelectorAll('input,select');
+  const data = {
+    name: inputs[0].value,
+    email: inputs[1].value,
+    organization: inputs[2].value,
+    role: inputs[3].value,
+    language: currentLang
+  };
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const r = await fetch('/api/register', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    });
+    if (r.ok) {
+      btn.textContent = T[currentLang]['com.success'] || '✓ Done';
+      btn.style.background = 'var(--green)';
+    } else {
+      const err = await r.json();
+      btn.textContent = err.error || 'Error';
+      btn.style.background = 'var(--red)';
+      btn.disabled = false;
+    }
+  } catch {
+    btn.textContent = currentLang === 'cs' ? 'Chyba spojení' : 'Connection error';
+    btn.style.background = 'var(--red)';
+    btn.disabled = false;
+  }
+}
+
+/* ═══ CHECKOUT ═══ */
+function checkoutText(key) {
+  return (T[currentLang] && T[currentLang][key]) || key;
+}
+
+function setCheckoutStatus(container, type, message) {
+  const status = container.querySelector('[data-checkout-status]');
+  if (!status) return;
+  status.textContent = message || '';
+  status.className = 'checkout-status' + (type ? ' ' + type : '');
+}
+
+async function startCheckout(e, tier, lang, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const nameInput = container.querySelector('[data-checkout-name]');
+  const emailInput = container.querySelector('[data-checkout-email]');
+  const buttons = container.querySelectorAll('.btn-download');
+  const btn = e && e.currentTarget ? e.currentTarget : null;
+
+  setCheckoutStatus(container, '', '');
+
+  if (!emailInput || !emailInput.reportValidity()) {
+    setCheckoutStatus(container, 'error', checkoutText('dl.errEmail'));
+    if (emailInput) emailInput.focus();
+    return;
+  }
+
+  buttons.forEach(button => { button.disabled = true; });
+  if (btn) {
+    btn.dataset.originalText = btn.textContent;
+    btn.textContent = checkoutText('dl.loading');
+  }
+
+  setCheckoutStatus(container, '', checkoutText('dl.redirect'));
+
+  try {
+    const r = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name: nameInput ? nameInput.value.trim() : '',
+        email: emailInput.value.trim(),
+        tier,
+        language: lang
+      })
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || !d.url) {
+      throw new Error(d.error || checkoutText('dl.errGeneric'));
+    }
+    setCheckoutStatus(container, 'success', checkoutText('dl.redirect'));
+    window.location.href = d.url;
+  } catch (err) {
+    setCheckoutStatus(container, 'error', err.message || checkoutText('dl.errGeneric'));
+  } finally {
+    buttons.forEach(button => { button.disabled = false; });
+    if (btn && btn.dataset.originalText) {
+      btn.textContent = btn.dataset.originalText;
+    }
+  }
+}
+
+/* ═══ INIT ═══ */
+initThemeButtons();
+initLang();
+</script>
+
+</body>
+</html>

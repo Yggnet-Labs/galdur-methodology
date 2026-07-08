@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+<html lang="cs" data-theme="galdur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="GALDUR — Kompletní metodika řízení agentního vývoje a operací v0.9">
+<title>GALDUR Docs — Kompletní metodika v0.9</title>
+<script>
+(function(){
+  var t=localStorage.getItem('g-theme');
+  if(t){document.documentElement.setAttribute('data-theme',t);}
+  else if(window.matchMedia('(prefers-color-scheme: light)').matches){
+    document.documentElement.setAttribute('data-theme','light');
+  }
+})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* ═══ THEMES ═══ */
+  :root,[data-theme="galdur"]{
+    --bg:#060d1a;--bg2:#0c1628;--bg3:#111f36;--bg4:#192840;
+    --cyan:#00d4ff;--cyan-dim:#0099bb;--gold:#f5c842;--gold-dim:#c49d2a;
+    --green:#00e896;--green-dim:#00a86b;--red:#ff6b6b;--purple:#b06dff;
+    --text:#dde8f5;--muted:#6a80a0;--border:#1e3050;
+    --heading:#ffffff;
+    --glow-c:rgba(0,212,255,0.15);--glow-g:rgba(245,200,66,0.15);
+    --nav-bg:rgba(6,13,26,.92);--grid-c:var(--border);--grid-op:.3;
+    --pnum-bg:rgba(0,212,255,.08);--pnum-border:rgba(0,212,255,.2);
+  }
+  [data-theme="dark"]{
+    --bg:#080808;--bg2:#101010;--bg3:#181818;--bg4:#202020;
+    --cyan:#00d4ff;--cyan-dim:#0099bb;--gold:#f5c842;--gold-dim:#c49d2a;
+    --green:#00e896;--green-dim:#00a86b;--red:#ff6b6b;--purple:#b06dff;
+    --text:#dde8f5;--muted:#5a6878;--border:#222222;
+    --heading:#ffffff;
+    --glow-c:rgba(0,212,255,.12);--glow-g:rgba(245,200,66,.12);
+    --nav-bg:rgba(8,8,8,.95);--grid-c:#1e1e1e;--grid-op:.5;
+    --pnum-bg:rgba(0,212,255,.08);--pnum-border:rgba(0,212,255,.2);
+  }
+  [data-theme="light"]{
+    --bg:#f0f4f9;--bg2:#ffffff;--bg3:#e4eaf4;--bg4:#d8e2f0;
+    --cyan:#0066cc;--cyan-dim:#004fa3;--gold:#8a6200;--gold-dim:#6a4900;
+    --green:#006633;--green-dim:#004d26;--red:#c0392b;--purple:#5533bb;
+    --text:#1e2d40;--muted:#5a6f8a;--border:#c4d0e0;
+    --heading:#1e2d40;
+    --glow-c:rgba(0,102,204,.1);--glow-g:rgba(138,98,0,.1);
+    --nav-bg:rgba(240,244,249,.95);--grid-c:#c4d0e0;--grid-op:.5;
+    --pnum-bg:rgba(0,102,204,.07);--pnum-border:rgba(0,102,204,.2);
+  }
+
+  /* ═══ BASE ═══ */
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:17px;line-height:1.78;overflow-x:hidden;transition:background .3s,color .3s}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--grid-c) 1px,transparent 1px),linear-gradient(90deg,var(--grid-c) 1px,transparent 1px);background-size:48px 48px;opacity:var(--grid-op)}
+
+  /* ═══ NAV ═══ */
+  .docs-nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:var(--nav-bg);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding:0 28px;height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;transition:background .3s,border-color .3s;
+  }
+  .docs-nav-left{display:flex;align-items:center;gap:20px}
+  .nav-logo{font-family:'Playfair Display',serif;font-weight:900;font-size:22px;color:var(--heading);text-decoration:none;letter-spacing:-.5px;transition:color .3s;flex-shrink:0}
+  .nav-logo span{color:var(--cyan)}
+  .nav-breadcrumb{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .nav-breadcrumb a{color:var(--muted);text-decoration:none;transition:color .2s}
+  .nav-breadcrumb a:hover{color:var(--cyan)}
+  .nav-breadcrumb-sep{color:var(--border)}
+  .nav-breadcrumb-cur{color:var(--cyan)}
+  .nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+  .lang-toggle{display:flex;align-items:center;gap:2px}
+  .lang-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;padding:4px 7px;border-radius:3px;transition:all .2s}
+  .lang-btn.active{color:var(--cyan);background:var(--pnum-bg)}
+  .lang-sep-ch{color:var(--border);font-size:12px;font-family:'JetBrains Mono',monospace}
+  .theme-toggle{display:flex;align-items:center;gap:5px;padding:0 4px}
+  .theme-btn{width:22px;height:22px;border-radius:50%;border:2px solid transparent;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s;padding:0}
+  .theme-btn.active{border-color:var(--muted)}
+  .theme-dot{width:12px;height:12px;border-radius:50%;display:block}
+  .tdot-galdur{background:#060d1a;border:2px solid #00d4ff;box-shadow:0 0 4px rgba(0,212,255,.5)}
+  .tdot-dark{background:#141414;border:2px solid #444}
+  .tdot-light{background:#f0f4f9;border:2px solid #c49d2a;box-shadow:0 0 4px rgba(245,200,66,.4)}
+  .nav-home-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;transition:all .2s;text-decoration:none;white-space:nowrap}
+  .nav-home-btn:hover{border-color:var(--muted);color:var(--heading)}
+  @media(max-width:640px){.nav-breadcrumb{display:none}.docs-nav{padding:0 16px}}
+
+  /* ═══ CONTENT ═══ */
+  .wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:80px 32px 100px}
+  .hero{text-align:center;padding:80px 0 60px;border-bottom:1px solid var(--border);margin-bottom:60px}
+  .hero-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);border:1px solid var(--cyan-dim);padding:4px 14px;border-radius:2px;margin-bottom:28px;background:rgba(0,212,255,.06)}
+  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(52px,8vw,88px);font-weight:900;line-height:1;letter-spacing:-2px;background:linear-gradient(135deg,#fff 30%,var(--cyan) 70%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px}
+  .hero-sub{font-size:20px;color:var(--muted);max-width:560px;margin:0 auto 32px;font-weight:300}
+  .hero-meta{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
+  .hero-meta span{display:flex;align-items:center;gap:6px}
+  .hero-meta span::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);display:inline-block}
+  .blockquote{border-left:3px solid var(--gold);margin:40px 0;padding:16px 24px;background:linear-gradient(90deg,rgba(245,200,66,.05) 0%,transparent 100%);font-style:italic;font-size:18px;color:var(--gold);border-radius:0 4px 4px 0}
+  h2{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:#fff;margin:64px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  h2 .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);display:block;margin-bottom:4px;letter-spacing:2px;text-transform:uppercase}
+  h3{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--cyan);margin:36px 0 14px}
+  h4{font-size:15px;font-weight:700;color:var(--gold);margin:24px 0 8px;text-transform:uppercase;letter-spacing:1px}
+  p{margin-bottom:16px;color:var(--text)}
+  ul,ol{margin:12px 0 16px 26px}
+  li{margin-bottom:7px}
+  strong{color:#fff;font-weight:700}
+  em{color:var(--gold);font-style:italic}
+  code{font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg3);color:var(--cyan);padding:2px 7px;border-radius:3px;border:1px solid var(--border)}
+  pre{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:20px 24px;overflow-x:auto;margin:20px 0;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#a8c0d8;white-space:pre-wrap;word-break:break-word}
+  table{width:100%;border-collapse:collapse;margin:20px 0;font-size:15px}
+  th{background:var(--bg3);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:10px 14px;border:1px solid var(--border);text-align:left}
+  td{padding:9px 14px;border:1px solid var(--border);color:var(--text);vertical-align:top}
+  tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+  tr:hover td{background:rgba(0,212,255,.04)}
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin:20px 0}
+  .card-cyan{border-color:var(--cyan-dim);box-shadow:0 0 24px var(--glow-c)}
+  .card-gold{border-color:var(--gold-dim);box-shadow:0 0 24px var(--glow-g)}
+  .card-red{border-color:#7a2020;background:rgba(255,50,50,.04)}
+  .card-purple{border-color:#6040a0;background:rgba(176,109,255,.04)}
+  .diagram{margin:40px 0;text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:28px 16px;overflow:hidden}
+  .diagram-title{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--muted);margin-bottom:22px}
+  .toc{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:28px 32px;margin:40px 0}
+  .toc-h{font-family:'JetBrains Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:var(--cyan);margin-bottom:14px}
+  .toc ol{margin-left:18px;column-count:2;column-gap:32px}
+  .toc li{margin-bottom:5px;font-size:15px;break-inside:avoid}
+  .toc a{color:var(--muted);text-decoration:none}
+  .toc a:hover{color:var(--cyan)}
+  hr{border:none;border-top:1px solid var(--border);margin:48px 0}
+  .notice{background:rgba(0,232,150,.05);border:1px solid rgba(0,232,150,.25);border-radius:6px;padding:16px 20px;margin:20px 0;font-size:15px;color:#80d0a0}
+  .warning{background:rgba(255,107,107,.05);border:1px solid rgba(255,107,107,.25);border-radius:6px;padding:16px 20px;margin:20px 0;font-size:15px;color:#e08080}
+  .gm-table td:nth-child(2){font-family:'JetBrains Mono',monospace;font-weight:700;text-align:center;font-size:14px}
+  .l0{color:var(--green)}
+  .l1{color:var(--gold)}
+  .l2{color:var(--purple)}
+  .l3{color:var(--red)}
+  .hard{color:var(--red);font-size:11px;font-family:'JetBrains Mono',monospace}
+  @media(max-width:640px){.toc ol{column-count:1}pre{font-size:11px}}
+  @media print{body::before{display:none}.diagram{break-inside:avoid}h2{break-before:page}}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="docs-nav">
+  <div class="docs-nav-left">
+    <a href="/" class="nav-logo">GAL<span>DUR</span></a>
+    <div class="nav-breadcrumb">
+      <a href="/" data-i18n="bc.home">Domů</a>
+      <span class="nav-breadcrumb-sep">›</span>
+      <span class="nav-breadcrumb-cur" data-i18n="bc.docs">Dokumentace</span>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <span class="lang-btn active">CS</span>
+      <span class="lang-sep-ch">/</span>
+      <a href="/docs/en/" class="lang-btn">EN</a>
+    </div>
+    <div class="theme-toggle">
+      <button class="theme-btn" data-theme-btn="galdur" title="Galdur" onclick="setTheme('galdur')"><span class="theme-dot tdot-galdur"></span></button>
+      <button class="theme-btn" data-theme-btn="dark" title="Dark" onclick="setTheme('dark')"><span class="theme-dot tdot-dark"></span></button>
+      <button class="theme-btn" data-theme-btn="light" title="Light" onclick="setTheme('light')"><span class="theme-dot tdot-light"></span></button>
+    </div>
+    <a href="/" class="nav-home-btn" data-i18n="bc.back">← Zpět na web</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-badge">Metodika · v0.9-draft · Living Document</div>
+  <h1>GALDUR</h1>
+  <p style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:12px;letter-spacing:1px">Od staronorského <strong style="color:var(--cyan)">galdr</strong> — magická zpěvná řeč, záměr formulovaný tak přesně, že se stává realitou</p>
+  <p class="hero-sub">Metodika řízení agentního vývoje a operací pro hybridní týmy lidí a AI</p>
+  <div class="hero-meta">
+    <span>Vladimír + Claude</span>
+    <span>April 2026</span>
+    <span>Dev · Ops · Infra · Roboti · Finance</span>
+  </div>
+</div>
+
+<div class="diagram">
+  <div class="diagram-title">Ekosystém GALDUR — metafora orchestru</div>
+  <svg viewBox="0 0 900 420" width="100%" style="max-width:860px">
+    <defs>
+      <radialGradient id="hg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#00d4ff" stop-opacity=".12"/><stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/></radialGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#00d4ff" opacity=".6"/></marker>
+    </defs>
+    <ellipse cx="450" cy="210" rx="220" ry="160" fill="url(#hg)"/>
+    <circle cx="450" cy="210" r="70" fill="#0c1628" stroke="#00d4ff" stroke-width="2" filter="url(#glow)"/>
+    <text x="450" y="200" text-anchor="middle" font-family="Playfair Display,serif" font-size="20" font-weight="900" fill="#fff">GALDUR</text>
+    <text x="450" y="220" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" letter-spacing="2">GOVERNANCE ENGINE</text>
+    <circle cx="450" cy="70" r="44" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="450" y="65" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">INTENT</text>
+    <text x="450" y="82" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">ARCHITECT</text>
+    <line x1="450" y1="114" x2="450" y2="140" stroke="#f5c842" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)" opacity=".7"/>
+    <text x="476" y="132" font-family="JetBrains Mono,monospace" font-size="9" fill="#f5c842" opacity=".7">Intent Spec</text>
+    <circle cx="720" cy="100" r="44" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="720" y="95" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#b06dff">GOVERNANCE</text>
+    <text x="720" y="112" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#b06dff">STEWARD</text>
+    <line x1="678" y1="120" x2="525" y2="175" stroke="#b06dff" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)" opacity=".6"/>
+    <text x="614" y="140" font-family="JetBrains Mono,monospace" font-size="9" fill="#b06dff" opacity=".7">Gates &amp; Drift</text>
+    <circle cx="720" cy="320" r="44" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="720" y="315" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#00e896">AGENT</text>
+    <text x="720" y="332" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#00e896">CURATOR</text>
+    <line x1="678" y1="300" x2="525" y2="245" stroke="#00e896" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)" opacity=".6"/>
+    <text x="614" y="283" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e896" opacity=".7">Validation</text>
+    <rect x="322" y="340" width="72" height="46" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.2"/>
+    <text x="358" y="358" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">coding</text>
+    <text x="358" y="374" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">agent</text>
+    <rect x="414" y="340" width="72" height="46" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.2"/>
+    <text x="450" y="358" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">infra</text>
+    <text x="450" y="374" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">agent</text>
+    <rect x="506" y="340" width="72" height="46" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.2"/>
+    <text x="542" y="358" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">db/net</text>
+    <text x="542" y="374" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">agent</text>
+    <line x1="422" y1="278" x2="365" y2="340" stroke="#00d4ff" stroke-width="1.2" stroke-dasharray="3,3" opacity=".5"/>
+    <line x1="450" y1="280" x2="450" y2="340" stroke="#00d4ff" stroke-width="1.2" stroke-dasharray="3,3" opacity=".5"/>
+    <line x1="478" y1="278" x2="535" y2="340" stroke="#00d4ff" stroke-width="1.2" stroke-dasharray="3,3" opacity=".5"/>
+    <text x="450" y="412" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0" letter-spacing="2">AGENTI — EXEKUCE</text>
+    <circle cx="180" cy="100" r="44" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="180" y="95" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#ff6b6b">FYZIČTÍ</text>
+    <text x="180" y="112" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#ff6b6b">AGENTI</text>
+    <line x1="222" y1="120" x2="378" y2="175" stroke="#ff6b6b" stroke-width="1.5" stroke-dasharray="4,3" opacity=".6" marker-end="url(#arr)"/>
+    <text x="283" y="140" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff6b6b" opacity=".7">Physical Spec</text>
+    <circle cx="180" cy="320" r="44" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="180" y="315" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">LIDÉ</text>
+    <text x="180" y="332" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">&amp; TÝMY</text>
+    <line x1="222" y1="300" x2="378" y2="245" stroke="#f5c842" stroke-width="1.5" stroke-dasharray="4,3" opacity=".6" marker-end="url(#arr)"/>
+    <text x="283" y="282" font-family="JetBrains Mono,monospace" font-size="9" fill="#f5c842" opacity=".7">Eskalace / Review</text>
+  </svg>
+</div>
+
+<div class="blockquote">
+  Galdr není zpěv pro pobavení.<br>
+  Je to slovo, které tvoří realitu.<br>
+  Kdo dokáže přesně formulovat záměr, ten řídí výsledek.
+</div>
+
+<div class="toc">
+  <div class="toc-h">Obsah dokumentu</div>
+  <ol>
+    <li><a href="#s1">Kontext a motivace</a></li>
+    <li><a href="#s2">Základní principy</a></li>
+    <li><a href="#s3">Domény pokrytí</a></li>
+    <li><a href="#s4">Role v GALDUR týmu</a></li>
+    <li><a href="#s5">Intent Spec — živý artefakt</a></li>
+    <li><a href="#s6">Governance Levels L0–L3</a></li>
+    <li><a href="#s7">Governance matice Dev &amp; Ops</a></li>
+    <li><a href="#s8">Operační cyklus</a></li>
+    <li><a href="#s9">Trace Audit</a></li>
+    <li><a href="#s10">Hard Locks</a></li>
+    <li><a href="#s11">Adaptace na velikost týmu</a></li>
+    <li><a href="#s12">Vztah k existujícím metodikám</a></li>
+    <li><a href="#s13">Přílohy — šablony</a></li>
+    <li><a href="#scale">GALDUR @ Scale — SAFe</a></li>
+    <li><a href="#robots">Robotická dimenze</a></li>
+    <li><a href="#human">Lidská dimenze</a></li>
+    <li><a href="#finance">Finanční dimenze</a></li>
+    <li><a href="#examples">Příklady nasazení</a></li>
+    <li><a href="#knowledge">Znalostní domény — Addendum IV</a></li>
+    <li><a href="#k-obchod">Governance — Obchod</a></li>
+    <li><a href="#k-marketing">Governance — Marketing</a></li>
+    <li><a href="#k-pravo">Governance — Právo</a></li>
+    <li><a href="#k-finance">Governance — Finance</a></li>
+  </ol>
+</div>
+
+<hr>
+
+<!-- ═══ S1 ═══ -->
+<h2 id="s1"><span class="num">01 —</span>Kontext a motivace</h2>
+
+<h3>Proč stávající metodiky selhávají</h3>
+<p>Tradiční metodiky řízení — ať Waterfall nebo Agile ve svých různých podobách (Scrum, Kanban, SAFe) — byly navrženy pro <strong>lidský výkon</strong>. Jejich základní předpoklad: práci dělají lidé, koordinace vyžaduje čas, a rychlost je omezena lidskou kapacitou.</p>
+<p>Tento předpoklad se rozpadá v okamžiku, kdy do týmu vstoupí AI agenti schopní:</p>
+<ul>
+  <li>Napsat, otestovat a zdokumentovat funkci za minuty, ne hodiny</li>
+  <li>Spravovat server, aplikovat patch a ověřit stav infrastruktury bez spánku</li>
+  <li>Paralelně pracovat na desítkách tasků současně</li>
+  <li>Produkovat prototypy rychleji, než se tým stihne sejít na planning</li>
+</ul>
+
+<div class="diagram">
+  <div class="diagram-title">Scrum předpoklady vs. realita s agenty</div>
+  <svg viewBox="0 0 820 280" width="100%" style="max-width:820px">
+    <defs>
+      <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f5c842" stop-opacity=".15"/><stop offset="100%" stop-color="#f5c842" stop-opacity="0"/></linearGradient>
+      <linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00d4ff" stop-opacity="0"/><stop offset="100%" stop-color="#00d4ff" stop-opacity=".15"/></linearGradient>
+    </defs>
+    <rect x="0" y="0" width="280" height="280" fill="url(#lg1)" rx="6"/>
+    <rect x="290" y="0" width="240" height="280" fill="#0c1628" rx="6" opacity=".5"/>
+    <rect x="540" y="0" width="280" height="280" fill="url(#lg2)" rx="6"/>
+    <text x="140" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842" letter-spacing="2">SCRUM PŘEDPOKLAD</text>
+    <text x="410" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#6a80a0" letter-spacing="1">ELEMENT</text>
+    <text x="680" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00d4ff" letter-spacing="2">REALITA S AGENTY</text>
+    <line x1="0" y1="38" x2="820" y2="38" stroke="#1e3050" stroke-width="1"/>
+    <g font-family="Source Sans 3,sans-serif" font-size="14">
+      <text x="140" y="70" text-anchor="middle" fill="#c8a830">Lidé potřebují čas</text>
+      <text x="410" y="70" text-anchor="middle" fill="#9aafcc" font-weight="600">2týdenní sprint</text>
+      <text x="680" y="70" text-anchor="middle" fill="#00c4ee">Agenti exekuují v hodinách</text>
+      <line x1="0" y1="82" x2="820" y2="82" stroke="#1e3050" stroke-width=".5"/>
+      <text x="140" y="114" text-anchor="middle" fill="#c8a830">Koordinace lidí</text>
+      <text x="410" y="114" text-anchor="middle" fill="#9aafcc" font-weight="600">Daily standup</text>
+      <text x="680" y="114" text-anchor="middle" fill="#00c4ee">Agenti standup nepotřebují</text>
+      <line x1="0" y1="126" x2="820" y2="126" stroke="#1e3050" stroke-width=".5"/>
+      <text x="140" y="158" text-anchor="middle" fill="#c8a830">Plánujeme, co stihneme</text>
+      <text x="410" y="158" text-anchor="middle" fill="#9aafcc" font-weight="600">Sprint planning</text>
+      <text x="680" y="158" text-anchor="middle" fill="#00c4ee">Hotové dřív než plán skončí</text>
+      <line x1="0" y1="170" x2="820" y2="170" stroke="#1e3050" stroke-width=".5"/>
+      <text x="140" y="202" text-anchor="middle" fill="#c8a830">Měří lidský výkon</text>
+      <text x="410" y="202" text-anchor="middle" fill="#9aafcc" font-weight="600">Velocity</text>
+      <text x="680" y="202" text-anchor="middle" fill="#00c4ee">S agenty bez smyslu</text>
+      <line x1="0" y1="214" x2="820" y2="214" stroke="#1e3050" stroke-width=".5"/>
+      <text x="140" y="252" text-anchor="middle" fill="#c8a830">Jak se cítil tým?</text>
+      <text x="410" y="252" text-anchor="middle" fill="#9aafcc" font-weight="600">Retrospektiva</text>
+      <text x="680" y="252" text-anchor="middle" fill="#00c4ee">Relevantní otázky jsou jiné</text>
+    </g>
+  </svg>
+</div>
+
+<p><strong>Konkrétní selhání Waterfalu:</strong> Waterfall předpokládá sekvenční fáze a stabilní požadavky. Agenti produkují iterativně, paralelně a průběžně — sekvenční fázování je pro ně přirozená brzda.</p>
+
+<h3>Co se skutečně změnilo</h3>
+<p>Posun není jen v rychlosti. Mění se <strong>povaha lidské práce</strong> v technickém týmu. Dříve: Lidé = Exekutoři, agenti asistují. Nyní: Lidé = Architekti, agenti exekuují.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Fundamentální posun — role lidí v agentním světě</div>
+  <svg viewBox="0 0 760 180" width="100%" style="max-width:760px">
+    <defs><linearGradient id="shg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f5c842"/><stop offset="100%" stop-color="#00d4ff"/></linearGradient></defs>
+    <rect x="20" y="30" width="200" height="120" rx="8" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="120" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842" letter-spacing="2">DŘÍVE</text>
+    <text x="120" y="90" text-anchor="middle" font-family="Playfair Display,serif" font-size="26" font-weight="700" fill="#fff">Lidé</text>
+    <text x="120" y="112" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="14" fill="#9aafcc">= Exekutoři</text>
+    <text x="120" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#6a80a0">AI asistuje</text>
+    <line x1="240" y1="90" x2="510" y2="90" stroke="url(#shg)" stroke-width="2.5"/>
+    <polygon points="510,84 524,90 510,96" fill="#00d4ff"/>
+    <text x="375" y="78" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">POSUN HODNOTY</text>
+    <text x="375" y="116" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#6a80a0">Intent · Governance · Strategie</text>
+    <rect x="540" y="30" width="200" height="120" rx="8" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="640" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff" letter-spacing="2">NYNÍ</text>
+    <text x="640" y="90" text-anchor="middle" font-family="Playfair Display,serif" font-size="26" font-weight="700" fill="#fff">Lidé</text>
+    <text x="640" y="112" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="14" fill="#9aafcc">= Architekti</text>
+    <text x="640" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#00d4ff">Agenti exekuují</text>
+  </svg>
+</div>
+
+<p>Lidská hodnota se přesouvá od implementace k: definici intentu (co chceme a proč), architektuře guardrailů (co nesmí nastat), governance (kontrola, validace, eskalace) a strategickým rozhodnutím (pivoty, priority, rizika).</p>
+<p>GALDUR je metodika, která tuto novou realitu strukturuje.</p>
+
+<div class="blockquote" style="border-color:var(--cyan);background:linear-gradient(90deg,rgba(0,212,255,.05) 0%,transparent 100%)">
+  Lidé nehýbají světem svýma rukama.<br>
+  Hýbají jím přesností svých záměrů.
+</div>
+
+<hr>
+
+<!-- ═══ S2 ═══ -->
+<h2 id="s2"><span class="num">02 —</span>Základní principy</h2>
+
+<div class="diagram">
+  <div class="diagram-title">7 základních principů GALDUR</div>
+  <svg viewBox="0 0 820 340" width="100%" style="max-width:820px">
+    <polygon points="410,20 460,48 460,104 410,132 360,104 360,48" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="410" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">P1</text>
+    <text x="410" y="88" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Intent-first</text>
+    <text x="410" y="104" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">Spec = kontrakt</text>
+    <polygon points="280,20 330,48 330,104 280,132 230,104 230,48" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="280" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">P2</text>
+    <text x="280" y="88" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Kontinuální</text>
+    <text x="280" y="104" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">flow, ne sprint</text>
+    <polygon points="540,20 590,48 590,104 540,132 490,104 490,48" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="540" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">P3</text>
+    <text x="540" y="88" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Vrstvená</text>
+    <text x="540" y="104" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">autonomie L0–L3</text>
+    <polygon points="215,150 265,178 265,234 215,262 165,234 165,178" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="215" y="198" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">P4</text>
+    <text x="215" y="218" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Deterministická</text>
+    <text x="215" y="234" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">orchestrace</text>
+    <polygon points="410,150 460,178 460,234 410,262 360,234 360,178" fill="#0c1628" stroke="#f5c842" stroke-width="2"/>
+    <text x="410" y="198" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">P5</text>
+    <text x="410" y="218" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Spec = živý</text>
+    <text x="410" y="234" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">artefakt</text>
+    <polygon points="605,150 655,178 655,234 605,262 555,234 555,178" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="605" y="198" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">P6</text>
+    <text x="605" y="218" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Drift jako</text>
+    <text x="605" y="234" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">primární metrika</text>
+    <rect x="360" y="278" width="100" height="50" rx="6" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="410" y="300" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">P7</text>
+    <text x="410" y="318" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#fff">Hard Locks</text>
+    <line x1="330" y1="76" x2="360" y2="76" stroke="#1e3050" stroke-width="1"/>
+    <line x1="460" y1="76" x2="490" y2="76" stroke="#1e3050" stroke-width="1"/>
+    <line x1="265" y1="206" x2="360" y2="206" stroke="#1e3050" stroke-width="1"/>
+    <line x1="460" y1="206" x2="555" y2="206" stroke="#1e3050" stroke-width="1"/>
+    <line x1="460" y1="234" x2="460" y2="278" stroke="#1e3050" stroke-width="1"/>
+  </svg>
+</div>
+
+<h3>P1 — Intent-first</h3>
+<p>Práce nezačíná task listem. Začíná <strong>srozumitelně definovaným intentem</strong> — strukturovaným dokumentem, který agent dokáže číst, interpretovat a podle něj exekuovat. Intent není prompt. Je to kontrakt.</p>
+
+<h3>P2 — Kontinuální flow</h3>
+<p>Žádné fixní cadence. Práce plyne kontinuálně, řízena event-triggered governance gates, ne kalendářem. Tým reaguje na signály, ne na plánované schůzky.</p>
+
+<h3>P3 — Vrstvená autonomie</h3>
+<p>Každý task má explicitně přiřazený governance level (L0–L3). Autonomie není binární volba — je to kontinuum kalibrovatelné podle typu úkolu, reversibility, blast radius a citlivosti.</p>
+
+<h3>P4 — Deterministická orchestrace</h3>
+<p>Agenti nerozhodují o pořadí prací ani o workflow sekvencích. Deterministický engine řídí přechody stavů. Agenti exekuují uvnitř svého bounded scope.</p>
+
+<h3>P5 — Spec jako živý artefakt</h3>
+<p>Intent Spec není statická dokumentace. Je to verzovaný, strojově čitelný dokument, který evoluje společně s prací — agent může navrhovat upřesnění, curator je schvaluje.</p>
+
+<h3>P6 — Drift jako primární metrika</h3>
+<p>Nezajímá nás velocity (kolik bylo hotovo). Zajímá nás <strong>drift</strong> — jak moc se exekuce odchýlila od intentu. Nízký drift = dobré specs a guardraily. Vysoký drift = specs jsou nejednoznačné nebo agenti překračují hranice.</p>
+
+<h3>P7 — Hard Locks jsou neporušitelné</h3>
+<p>Existují kategorie akcí, které agent nikdy nesmí provést bez explicitního lidského schválení, bez ohledu na jakékoliv instrukce ve specu. Tyto zámky jsou hardcoded v governance enginu, ne v Intent Specu.</p>
+
+<hr>
+
+<!-- ═══ S3 ═══ -->
+<h2 id="s3"><span class="num">03 —</span>Domény pokrytí</h2>
+<p>GALDUR pokrývá <strong>celou šíři technických operací</strong>, nejen vývoj kódu. Každá doména má svůj vlastní profil governance levels — Ops domény mají obecně přísnější výchozí úrovně a více Hard Locks než Dev domény.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Sedm domén pokrytí GALDUR</div>
+  <svg viewBox="0 0 700 380" width="100%" style="max-width:700px">
+    <circle cx="350" cy="190" r="55" fill="#0c1628" stroke="#00d4ff" stroke-width="2"/>
+    <text x="350" y="185" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#00d4ff">GALDUR</text>
+    <text x="350" y="204" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">domény</text>
+    <rect x="285" y="50" width="130" height="60" rx="7" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="350" y="74" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#f5c842">Software Dev</text>
+    <text x="350" y="92" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">kód · testy · API · docs</text>
+    <line x1="350" y1="110" x2="350" y2="135" stroke="#f5c842" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="502" y="76" width="138" height="60" rx="7" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="571" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00d4ff">Infrastruktura</text>
+    <text x="571" y="118" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">servery · VM · cloud</text>
+    <line x1="502" y1="114" x2="420" y2="163" stroke="#00d4ff" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="534" y="166" width="132" height="60" rx="7" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="600" y="190" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Databáze</text>
+    <text x="600" y="208" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">migrace · zálohy · SQL</text>
+    <line x1="534" y1="196" x2="405" y2="196" stroke="#00e896" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="482" y="268" width="138" height="60" rx="7" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="551" y="292" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#b06dff">Síť &amp; Routing</text>
+    <text x="551" y="310" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">DNS · VPN · firewall</text>
+    <line x1="492" y1="276" x2="400" y2="236" stroke="#b06dff" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="80" y="268" width="130" height="60" rx="7" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="145" y="292" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#ff6b6b">Security</text>
+    <text x="145" y="310" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">IAM · certs · audit</text>
+    <line x1="210" y1="276" x2="302" y2="236" stroke="#ff6b6b" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="34" y="166" width="130" height="60" rx="7" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="99" y="190" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00d4ff">Cloud Ops</text>
+    <text x="99" y="208" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">scaling · cost · backup</text>
+    <line x1="164" y1="196" x2="295" y2="196" stroke="#00d4ff" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="60" y="76" width="130" height="60" rx="7" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="125" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Data Ops</text>
+    <text x="125" y="118" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">ETL · GDPR · reporting</text>
+    <line x1="190" y1="114" x2="296" y2="163" stroke="#00e896" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+  </svg>
+</div>
+
+<hr>
+
+<!-- ═══ S4 ═══ -->
+<h2 id="s4"><span class="num">04 —</span>Role v GALDUR týmu</h2>
+
+<div class="diagram">
+  <div class="diagram-title">Struktura rolí a odpovědností</div>
+  <svg viewBox="0 0 780 310" width="100%" style="max-width:780px">
+    <rect x="270" y="20" width="240" height="78" rx="8" fill="#0c1628" stroke="#f5c842" stroke-width="2"/>
+    <text x="390" y="50" text-anchor="middle" font-family="Playfair Display,serif" font-size="17" font-weight="700" fill="#f5c842">Intent Architect</text>
+    <text x="390" y="70" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Intent · Architektura · Strategická rozhodnutí</text>
+    <text x="390" y="88" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">dříve: Tech Lead / Architect</text>
+    <rect x="30" y="158" width="220" height="78" rx="8" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="140" y="188" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#b06dff">Governance Steward</text>
+    <text x="140" y="208" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Gates · Eskalace · Drift metriky</text>
+    <text x="140" y="226" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">dříve: Scrum Master</text>
+    <rect x="530" y="158" width="220" height="78" rx="8" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="640" y="188" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#00e896">Agent Curator</text>
+    <text x="640" y="208" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Review · Validace · Eskalace řešení</text>
+    <text x="640" y="226" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">dříve: Developer / Sysadmin</text>
+    <rect x="200" y="258" width="150" height="44" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.2"/>
+    <text x="275" y="276" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">coding_agent</text>
+    <text x="275" y="293" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">infra_agent</text>
+    <rect x="430" y="258" width="150" height="44" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.2"/>
+    <text x="505" y="276" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">db_agent</text>
+    <text x="505" y="293" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">security_agent</text>
+    <line x1="330" y1="98" x2="200" y2="158" stroke="#f5c842" stroke-width="1.5" opacity=".5"/>
+    <line x1="450" y1="98" x2="590" y2="158" stroke="#f5c842" stroke-width="1.5" opacity=".5"/>
+    <line x1="200" y1="236" x2="250" y2="258" stroke="#6a80a0" stroke-width="1" opacity=".4"/>
+    <line x1="560" y1="236" x2="505" y2="258" stroke="#6a80a0" stroke-width="1" opacity=".4"/>
+  </svg>
+</div>
+
+<h3>Intent Architect <span style="font-size:14px;font-family:'JetBrains Mono',monospace;color:var(--muted);font-weight:400">(dříve: Tech Lead / Architect)</span></h3>
+<p><strong>Odpovědnost:</strong> Definuje a prioritizuje Intent Specs. Rozhoduje o architektuře, datových modelech, systémových integracích. Schvaluje specy před crystallizací.</p>
+<p><strong>Typické aktivity:</strong> Píše nebo reviewuje Intent Specs pro L2/L3 tasky. Rozhoduje o architektonických pivotách. Definuje domain guardraily a hard locks pro nové domény. Vede Trace Audity.</p>
+<p><strong>Klíčový posun:</strong> Netráví čas implementací. Tráví čas kvalitou intentu a architektury hranic.</p>
+
+<h3>Governance Steward <span style="font-size:14px;font-family:'JetBrains Mono',monospace;color:var(--muted);font-weight:400">(dříve: Scrum Master / Ops Manager)</span></h3>
+<p><strong>Odpovědnost:</strong> Řídí governance gates, eskalace, monitoruje drift metriky, spravuje timeout eskalace.</p>
+<p><strong>Typické aktivity:</strong> Monitoruje Drift Dashboard. Triaguje eskalace agentů. Zajišťuje, že specy splňují minimální standard před spuštěním. Spravuje Hard Lock incidenty. Koordinuje Trace Audity.</p>
+<p><strong>Klíčový posun:</strong> Nekoordinuje lidi — koordinuje rozhraní mezi agenty a lidmi.</p>
+
+<h3>Agent Curator <span style="font-size:14px;font-family:'JetBrains Mono',monospace;color:var(--muted);font-weight:400">(dříve: Developer / Sysadmin / DBA)</span></h3>
+<p><strong>Odpovědnost:</strong> Review agentních výstupů, refinement specs, řešení eskalací. Domain expert pro specifické oblasti (kód, infra, síť, DB...).</p>
+<p><strong>Typické aktivity:</strong> Validuje výstupy agentů na Validation Gates. Zpracovává eskalace vyžadující domain expertise. Navrhuje upřesnění specs na základě výstupů. Drží kontextové znalosti, které agenti nemají.</p>
+<p><strong>Klíčový posun:</strong> Nepíše veškerý kód ani neadminuje vše ručně — je quality gate a escalation handler.</p>
+
+<h3>Agenti</h3>
+<p>Exekuují Intent Spec tasky uvnitř přiděleného governance level. Logují drift, eskalují při překročení hranic, navrhují spec refinementy. Typy: <code>coding_agent</code>, <code>infra_agent</code>, <code>db_agent</code>, <code>network_agent</code>, <code>security_agent</code>, <code>docs_agent</code>, <code>analysis_agent</code>.</p>
+
+<hr>
+
+<!-- ═══ S5 ═══ -->
+<h2 id="s5"><span class="num">05 —</span>Intent Spec — živý artefakt</h2>
+
+<h3>5.1 Co je Intent Spec</h3>
+<p>Intent Spec je <strong>primární pracovní artefakt GALDUR metodiky</strong>. Není to user story (příliš vágní), technická specifikace (příliš detailní), task v JIRA (příliš atomický), ani dokumentace (statická). Je to <strong>strukturovaný kontrakt</strong> mezi lidským intentem a agentem, který ho exekuuje. Má dvě části:</p>
+<ul>
+  <li><strong>Header</strong> — human-authored, strategický, popisuje záměr</li>
+  <li><strong>Execution Body</strong> — machine-readable, operační, řídí exekuci</li>
+</ul>
+
+<h3>5.2 Lifecycle stavů</h3>
+
+<div class="diagram">
+  <div class="diagram-title">Lifecycle Intent Specu — stavy, přechody a kdo je může iniciovat</div>
+  <svg viewBox="0 0 880 300" width="100%" style="max-width:880px">
+    <defs>
+      <marker id="a2" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#00d4ff" opacity=".7"/></marker>
+      <marker id="a3" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#ff6b6b" opacity=".7"/></marker>
+      <marker id="a4" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#00e896" opacity=".7"/></marker>
+    </defs>
+    <!-- States row 1 -->
+    <rect x="10" y="118" width="88" height="44" rx="5" fill="#0c1628" stroke="#6a80a0" stroke-width="1.5"/>
+    <text x="54" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#9aafcc">DRAFT</text>
+    <text x="54" y="152" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">IA píše</text>
+
+    <rect x="120" y="118" width="108" height="44" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="174" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">CRYSTALLIZED</text>
+    <text x="174" y="152" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">ke spuštění</text>
+
+    <rect x="252" y="118" width="88" height="44" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="2"/>
+    <text x="296" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">ACTIVE</text>
+    <text x="296" y="152" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">agent exekuuje</text>
+
+    <!-- ESCALATED above ACTIVE -->
+    <rect x="244" y="36" width="104" height="44" rx="5" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="296" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">ESCALATED</text>
+    <text x="296" y="70" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">čeká curator</text>
+
+    <!-- SUSPENDED below ACTIVE -->
+    <rect x="244" y="206" width="104" height="44" rx="5" fill="#0c1628" stroke="#6a80a0" stroke-width="1.5"/>
+    <text x="296" y="224" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#9aafcc">SUSPENDED</text>
+    <text x="296" y="240" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">blocker</text>
+
+    <!-- PENDING VALIDATION -->
+    <rect x="368" y="118" width="120" height="44" rx="5" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="428" y="134" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">PENDING</text>
+    <text x="428" y="150" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">VALIDATION</text>
+
+    <!-- VALIDATED -->
+    <rect x="512" y="118" width="96" height="44" rx="5" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <text x="560" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">VALIDATED</text>
+    <text x="560" y="152" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">schváleno</text>
+
+    <!-- CLOSED / REVERTED -->
+    <rect x="634" y="100" width="88" height="40" rx="5" fill="#0c1628" stroke="#00e896" stroke-width="1"/>
+    <text x="678" y="115" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">CLOSED</text>
+    <text x="678" y="131" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">✓ hotovo</text>
+
+    <rect x="634" y="154" width="88" height="40" rx="5" fill="#0c1628" stroke="#ff6b6b" stroke-width="1"/>
+    <text x="678" y="169" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">REVERTED</text>
+    <text x="678" y="185" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">staženo</text>
+
+    <!-- Arrows -->
+    <line x1="98" y1="140" x2="120" y2="140" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#a2)"/>
+    <text x="109" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#6a80a0">review</text>
+    <line x1="228" y1="140" x2="252" y2="140" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#a2)"/>
+    <text x="240" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#6a80a0">aktivace</text>
+    <line x1="296" y1="118" x2="296" y2="80" stroke="#ff6b6b" stroke-width="1.2" marker-end="url(#a3)"/>
+    <text x="316" y="100" font-family="Source Sans 3,sans-serif" font-size="9" fill="#ff6b6b">eskalace</text>
+    <line x1="296" y1="162" x2="296" y2="206" stroke="#6a80a0" stroke-width="1.2" stroke-dasharray="3,3"/>
+    <text x="316" y="188" font-family="Source Sans 3,sans-serif" font-size="9" fill="#6a80a0">blocker</text>
+    <line x1="340" y1="140" x2="368" y2="140" stroke="#b06dff" stroke-width="1.5" marker-end="url(#a2)"/>
+    <text x="354" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#b06dff">hotovo</text>
+    <line x1="488" y1="140" x2="512" y2="140" stroke="#00e896" stroke-width="1.5" marker-end="url(#a4)"/>
+    <text x="500" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#00e896">approve</text>
+    <line x1="608" y1="130" x2="634" y2="118" stroke="#00e896" stroke-width="1.2" marker-end="url(#a4)"/>
+    <line x1="608" y1="150" x2="634" y2="162" stroke="#ff6b6b" stroke-width="1.2" marker-end="url(#a3)"/>
+
+    <!-- Legend -->
+    <text x="10" y="290" font-family="JetBrains Mono,monospace" font-size="9" fill="#f5c842">● člověk iniciuje přechod</text>
+    <text x="200" y="290" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff">● agent může iniciovat přechod</text>
+    <text x="430" y="290" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">Přechody DRAFT→CRYSTALLIZED a CRYSTALLIZED→ACTIVE vždy člověkem</text>
+  </svg>
+</div>
+
+<p><strong>Přechody iniciované agentem:</strong> ACTIVE → ESCALATED (překročení hranic), ACTIVE → PENDING VALIDATION (dokončení tasků), ACTIVE → SUSPENDED (blokující závislost).</p>
+<p><strong>Přechody vždy iniciované člověkem:</strong> DRAFT → CRYSTALLIZED, CRYSTALLIZED → ACTIVE, PENDING VALIDATION → VALIDATED nebo REVERTED, ESCALATED → ACTIVE.</p>
+
+<h3>5.3 Verzování specs</h3>
+<p>Intent Spec je verzovaný stejně jako kód — v git repozitáři. Každá změna scope nebo constraints vyžaduje novou verzi a re-crystallization.</p>
+<table>
+  <tr><th>Typ změny</th><th>Bump</th><th>Kdo může</th></tr>
+  <tr><td>Oprava typa / přesnější formulace</td><td>Minor (v1 → v1.1)</td><td>Curator nebo Agent (s flagging)</td></tr>
+  <tr><td>Změna scope nebo constraints</td><td>Major (v1 → v2) + re-crystallization</td><td>Intent Architect</td></tr>
+  <tr><td>Přidání tasku do execution body</td><td>Minor</td><td>Curator</td></tr>
+  <tr><td>Změna governance level <strong>nahoru</strong></td><td>Major + re-crystallization</td><td>Intent Architect</td></tr>
+  <tr><td>Změna governance level <strong>dolů</strong></td><td>Minor</td><td>Curator</td></tr>
+</table>
+
+<h3>5.4 Agent-navržená upřesnění (Amendments)</h3>
+<p>Agent může <strong>navrhovat upřesnění specu</strong> (Amendment) na základě toho, co při exekuci zjistí — nesmí spec měnit unilaterálně. Agent MUSÍ zastavit exekuci dotčeného tasku a čekat na rozhodnutí. Curator má 24h na rozhodnutí, pak se eskaluje na Intent Architekta. Rejected amendment → agent pokračuje bez změny a loguje do drift_log.</p>
+
+<h3>5.5 Spec Health Indicators</h3>
+<table>
+  <tr><th>Indikátor</th><th>Výpočet</th><th>Threshold</th><th>Akce při překročení</th></tr>
+  <tr><td>Amendment Rate</td><td>amendments / tasks</td><td>&gt; 0.3</td><td>Re-crystallization schůzka</td></tr>
+  <tr><td>Escalation Rate</td><td>eskalace / tasks</td><td>&gt; 0.2</td><td>Review constraints</td></tr>
+  <tr><td>Drift Score</td><td>weighted drift events</td><td>&gt; 15</td><td>Trace Audit</td></tr>
+  <tr><td>Timeout Rate</td><td>timeouty / tasks</td><td>&gt; 0.1</td><td>Review agent_role assignments</td></tr>
+  <tr><td>Suspension Age</td><td>dny v SUSPENDED</td><td>&gt; 3 dny</td><td>Force resolution nebo cancel</td></tr>
+</table>
+
+<h3>5.6 Kompletní šablona Intent Spec</h3>
+<pre>
+## IDENTIFIKACE
+id: IS-YYYY-NNN
+domain: dev | infra | db | network | security | cloud | data | mixed
+title: ""
+status: draft
+version: "1.0"
+created_by: ""
+
+## HEADER — human-authored
+intent: |
+  # Proč to děláme (2-4 věty).
+  # Co je strategický důvod, jaký problém řeší, co odblokuje.
+  # NENÍ to popis implementace.
+
+outcome:
+  # Jak KONKRÉTNĚ a MĚŘITELNĚ poznáme, že je hotovo.
+  # Každý bod musí být binárně ověřitelný (ano/ne, pass/fail).
+  - ""
+
+scope:
+  in_scope:
+    - ""
+  out_of_scope:
+    # POVINNÉ — agenti mají tendenci scope-creepovat.
+    - ""
+
+constraints:
+  # Co agent NESMÍ dělat. Negativní pravidla.
+  - ""
+
+environment:
+  # Pro Ops domény — na jakém prostředí se pracuje.
+  target: production | staging | dev | mixed
+  systems: []
+  change_window: ""
+
+dependencies:
+  depends_on: []   # IS-IDs, které musí být validated
+  blocks: []       # IS-IDs čekající na tento spec
+
+context: |
+  # Technický kontext, který agent potřebuje k exekuci.
+
+risk_assessment:
+  blast_radius: low | medium | high | critical
+  reversibility: easy | partial | hard | irreversible
+  rollback_plan: ""
+
+## EXECUTION BODY — machine-readable
+governance:
+  level: autonomous | supervised | collaborative | manual
+  escalate_on:
+    - schema_changes
+    - new_external_dependency
+    - security_sensitive
+    - production_impact
+  escalation_to: ""
+  timeout_hours: 4
+  change_window_required: false
+
+tasks:
+  - id: IS-NNN-T1
+    title: ""
+    type: implementation | testing | documentation | analysis |
+           infrastructure | database | network | security | migration
+    agent_role: coding_agent | infra_agent | db_agent | network_agent |
+                security_agent | docs_agent | analysis_agent
+    depends_on: []
+    governance_override: ~   # pouze dolů (více autonomie), nikdy nahoru
+    pre_conditions: []
+    acceptance: ""
+    rollback: ""
+    timeout_hours: 2
+
+## VALIDATION GATE
+validation:
+  reviewer: ""
+  checklist:
+    - "Všechny outcome podmínky splněny?"
+    - "Žádný constraint porušen?"
+    - "Drift report přečten a pochopen?"
+    - "Rollback plán ověřen (pokud relevantní)?"
+
+## AUDIT TRAIL
+drift_log: []
+# - task_id: IS-NNN-T1
+#   timestamp: YYYY-MM-DDTHH:MM:SSZ
+#   type: scope_expansion | constraint_violation | technical_deviation |
+#         inferred_decision | escalation | timeout | amendment_proposed
+#   description: ""
+#   resolution: approved | reverted | escalated | accepted_with_note
+#   resolved_by: ""
+</pre>
+
+<hr>
+
+<!-- ═══ S6 ═══ -->
+<h2 id="s6"><span class="num">06 —</span>Governance Levels L0–L3</h2>
+
+<div class="diagram">
+  <div class="diagram-title">Čtyři úrovně autonomie — od plně autonomní po manuální asistenci</div>
+  <svg viewBox="0 0 880 360" width="100%" style="max-width:880px">
+    <defs>
+      <linearGradient id="lvlg" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e896" stop-opacity=".07"/>
+        <stop offset="100%" stop-color="#ff6b6b" stop-opacity=".07"/>
+      </linearGradient>
+    </defs>
+    <rect x="0" y="0" width="880" height="360" rx="8" fill="url(#lvlg)"/>
+    <!-- L0 -->
+    <rect x="20" y="18" width="840" height="72" rx="6" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <rect x="20" y="18" width="88" height="72" rx="6" fill="rgba(0,232,150,.12)"/>
+    <text x="64" y="50" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="22" font-weight="700" fill="#00e896">L0</text>
+    <text x="64" y="70" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">AUTONOMOUS</text>
+    <text x="200" y="46" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Plná autonomie — agent exekuuje, loguje, pokračuje</text>
+    <text x="200" y="66" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Human touchpoint: Drift Signal async. Výstupy se člověk dozví, ale nezastaví flow.</text>
+    <text x="200" y="83" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Příklady: unit testy · README · izolovaný bug fix · log rotation · read-only analýza</text>
+    <!-- L1 -->
+    <rect x="20" y="104" width="840" height="72" rx="6" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <rect x="20" y="104" width="88" height="72" rx="6" fill="rgba(245,200,66,.1)"/>
+    <text x="64" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="22" font-weight="700" fill="#f5c842">L1</text>
+    <text x="64" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">SUPERVISED</text>
+    <text x="200" y="132" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Dohledovaná exekuce — výstup prochází Validation Gate před deploy</text>
+    <text x="200" y="152" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Human touchpoint: Curator reviewuje a approves nebo posílá k revizi.</text>
+    <text x="200" y="169" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Příklady: nová feature · staging deploy · additive DB migrace · OS patch non-prod</text>
+    <!-- L2 -->
+    <rect x="20" y="190" width="840" height="72" rx="6" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <rect x="20" y="190" width="88" height="72" rx="6" fill="rgba(176,109,255,.1)"/>
+    <text x="64" y="222" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="22" font-weight="700" fill="#b06dff">L2</text>
+    <text x="64" y="242" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">COLLABORATIVE</text>
+    <text x="200" y="218" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Kolaborativní plánování — agent plánuje, člověk schvaluje, pak exekuce</text>
+    <text x="200" y="238" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Human touchpoint: Approval před exekucí. Plán → schválení → exekuce.</text>
+    <text x="200" y="255" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Příklady: prod deploy · destructive migrace · firewall changes · API breaking change</text>
+    <!-- L3 -->
+    <rect x="20" y="276" width="840" height="70" rx="6" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <rect x="20" y="276" width="88" height="70" rx="6" fill="rgba(255,107,107,.1)"/>
+    <text x="64" y="306" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="22" font-weight="700" fill="#ff6b6b">L3</text>
+    <text x="64" y="326" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">MANUAL</text>
+    <text x="200" y="304" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Manuálně asistovaná exekuce — člověk řídí, agent asistuje</text>
+    <text x="200" y="324" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Human touchpoint: Každý krok musí člověk explicitně triggerovat.</text>
+    <text x="200" y="339" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Příklady: IAM changes · platební logika · kryptografie · incident containment</text>
+  </svg>
+</div>
+
+<div class="diagram">
+  <div class="diagram-title">Eskalační kaskáda — co dělá agent, když narazí na nejistotu</div>
+  <svg viewBox="0 0 740 455" width="100%" style="max-width:740px">
+    <defs>
+      <marker id="ae" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#00d4ff" opacity=".8"/></marker>
+    </defs>
+    <!-- Start -->
+    <rect x="195" y="14" width="350" height="50" rx="6" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="370" y="35" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="14" font-weight="700" fill="#ff6b6b">Agent detekuje nejistotu</text>
+    <text x="370" y="54" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">nebo boundary crossing</text>
+    <line x1="370" y1="64" x2="370" y2="88" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ae)"/>
+    <!-- Step 1 -->
+    <rect x="140" y="88" width="460" height="62" rx="6" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="370" y="111" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">① SELF-RESOLVE</text>
+    <text x="370" y="130" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Existuje pravidlo v constraints? → Aplikuje, loguje, pokračuje.</text>
+    <!-- Branch YES — posunutý nad Step 2 -->
+    <line x1="550" y1="110" x2="608" y2="94" stroke="#00e896" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="608" y="78" width="122" height="34" rx="4" fill="rgba(0,232,150,.08)" stroke="#00e896" stroke-width="1"/>
+    <text x="669" y="91" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">→ POKRAČUJE</text>
+    <text x="669" y="105" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#6a80a0">pravidlo nalezeno</text>
+    <line x1="370" y1="150" x2="370" y2="182" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ae)"/>
+    <!-- Step 2 -->
+    <rect x="140" y="182" width="460" height="62" rx="6" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="370" y="205" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">② CONTEXTUAL INFERENCE</text>
+    <text x="370" y="224" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Lze odvodit z intentu + out_of_scope? → Inferuje, loguje.</text>
+    <line x1="370" y1="244" x2="370" y2="272" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ae)"/>
+    <!-- Step 3 -->
+    <rect x="140" y="272" width="460" height="62" rx="6" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="370" y="295" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#b06dff">③ SUSPEND + SIGNAL</text>
+    <text x="370" y="314" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Suspenduje task · vytvoří Drift Signal · čeká na curator (timeout_hours)</text>
+    <line x1="370" y1="334" x2="370" y2="358" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ae)"/>
+    <!-- Step 4 — expanded box to fit three options -->
+    <rect x="100" y="358" width="540" height="78" rx="6" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="370" y="378" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00d4ff">④ CURATOR REVIEW — rozhodnutí</text>
+    <line x1="110" y1="388" x2="630" y2="388" stroke="#1e3050" stroke-width=".5"/>
+    <text x="210" y="407" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">approve_and_continue</text>
+    <text x="370" y="407" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">refine_spec</text>
+    <text x="540" y="407" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">escalate_to_architect</text>
+    <text x="210" y="425" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">pokračuje dál</text>
+    <text x="370" y="425" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">upřesnit spec</text>
+    <text x="540" y="425" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">IA rozhoduje</text>
+  </svg>
+</div>
+
+<hr>
+
+<!-- ═══ S7 ═══ -->
+<h2 id="s7"><span class="num">07 —</span>Governance matice pro Dev a Ops</h2>
+<p>Každá doména má definovanou výchozí governance úroveň pro různé typy tasků. Buňky označené <span class="hard">HARD</span> nelze snížit žádným governance_override v Intent Specu.</p>
+
+<h3>7.1 Software Development</h3>
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Eskalační trigger</th></tr>
+  <tr><td>Nová izolovaná funkce</td><td class="l1">L1</td><td>nová závislost, API změna</td></tr>
+  <tr><td>Refactor (bez API změny)</td><td class="l0">L0</td><td>blast radius &gt; 5 souborů</td></tr>
+  <tr><td>Bug fix (izolovaný)</td><td class="l0">L0</td><td>fix mění business logiku</td></tr>
+  <tr><td>Bug fix (v produkci)</td><td class="l1">L1</td><td>vždy gate před deploy</td></tr>
+  <tr><td>API breaking change</td><td class="l2">L2</td><td>vždy</td></tr>
+  <tr><td>DB migrace — additive</td><td class="l1">L1</td><td>vždy gate před apply</td></tr>
+  <tr><td>DB migrace — destructive</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit</span></td></tr>
+  <tr><td>Schema breaking change</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit</span></td></tr>
+  <tr><td>Auth / session logika</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit</span></td></tr>
+  <tr><td>Kryptografie / secret handling</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Platební / fakturační logika</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Unit testy</td><td class="l0">L0</td><td>pokrytí klesne pod threshold</td></tr>
+  <tr><td>Integration testy</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>E2E testy</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Security testy / pen testing</td><td class="l2">L2</td><td>vždy</td></tr>
+  <tr><td>Inline dokumentace</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>API dokumentace (OpenAPI)</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Changelog / release notes</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Komunikace směrem ven</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit</span></td></tr>
+  <tr><td>Technical research / spike</td><td class="l0">L0</td><td>navrhne akci mimo scope</td></tr>
+  <tr><td>Architecture decision (ADR)</td><td class="l2">L2</td><td>vždy</td></tr>
+</table>
+
+<h3>7.2 Infrastruktura (Servery, VM, Kontejnery)</h3>
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Poznámka</th></tr>
+  <tr><td>Čtení stavu / monitoring read</td><td class="l0">L0</td><td>read-only vždy L0</td></tr>
+  <tr><td>Log analýza</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Konfigurace — dev prostředí</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Konfigurace — staging</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Konfigurace — produkce</td><td class="l2">L2</td><td>change window required</td></tr>
+  <tr><td>OS patch — non-prod</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>OS patch — produkce</td><td class="l2">L2</td><td>change window + rollback plan</td></tr>
+  <tr><td>Deployment — staging</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Deployment — produkce</td><td class="l2">L2</td><td>change window required</td></tr>
+  <tr><td>Provisioning nového serveru</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Decommission serveru</td><td class="l2">L2</td><td>data backup verification first</td></tr>
+  <tr><td>Restart service — non-prod</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Restart service — produkce</td><td class="l2">L2</td><td>change window</td></tr>
+  <tr><td>Restart OS — produkce</td><td class="l2">L2</td><td>change window + notification</td></tr>
+  <tr><td>SSL certifikát — renewal</td><td class="l1">L1</td><td>monitoring na expiry</td></tr>
+  <tr><td>SSL certifikát — nový/replace</td><td class="l2">L2</td><td>downtime risk</td></tr>
+  <tr><td>Backup spuštění (manuální)</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Backup restore — test prostředí</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Backup restore — produkce</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+</table>
+
+<h3>7.3 Databáze</h3>
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Poznámka</th></tr>
+  <tr><td>SELECT query / reporting</td><td class="l0">L0</td><td>read-only vždy L0</td></tr>
+  <tr><td>EXPLAIN / query analýza</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Index creation — non-prod</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Index creation — produkce</td><td class="l1">L1</td><td>CONCURRENTLY doporučeno</td></tr>
+  <tr><td>Additive migrace — non-prod</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Additive migrace — produkce</td><td class="l2">L2</td><td>backup + rollback povinně</td></tr>
+  <tr><td>Destructive migrace (DROP/ALTER)</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit, vždy L2</span></td></tr>
+  <tr><td>Data update (batch)</td><td class="l2">L2</td><td>sample first, povinný rollback</td></tr>
+  <tr><td>Data delete — non-prod</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Data delete — produkce</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Data export (PII obsahuje)</td><td class="l2">L2</td><td>GDPR compliance check</td></tr>
+  <tr><td>Backup spuštění</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Backup restore — test</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Backup restore — produkce</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Replikace konfigurace</td><td class="l2">L2</td><td>downtime risk</td></tr>
+  <tr><td>DB user — vytvoření</td><td class="l2">L2</td><td>principle of least privilege</td></tr>
+  <tr><td>DB user — smazání</td><td class="l2">L2</td><td>dependency check first</td></tr>
+  <tr><td>Stored procedure / trigger</td><td class="l2">L2</td><td>code review ekvivalent</td></tr>
+</table>
+
+<h3>7.4 Síť (Router, Switch, DNS, VPN, Load Balancer)</h3>
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Poznámka</th></tr>
+  <tr><td>Network monitoring / read</td><td class="l0">L0</td><td>read-only vždy L0</td></tr>
+  <tr><td>DNS record — přidání</td><td class="l1">L1</td><td>TTL awareness</td></tr>
+  <tr><td>DNS record — změna</td><td class="l2">L2</td><td>propagation risk</td></tr>
+  <tr><td>DNS record — smazání</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit</span></td></tr>
+  <tr><td>VLAN — nová (izolovaná)</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>VLAN — změna existující</td><td class="l2">L2</td><td>blast radius assessment</td></tr>
+  <tr><td>Routing table — přidání</td><td class="l2">L2</td><td>loop risk assessment</td></tr>
+  <tr><td>Routing table — změna/smazání</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit</span></td></tr>
+  <tr><td>VPN — user přidání/odebrání</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>VPN — konfigurace změna</td><td class="l2">L2</td><td>disconnection risk</td></tr>
+  <tr><td>Load balancer — backend přidání</td><td class="l1">L1</td><td>health check ověření</td></tr>
+  <tr><td>Load balancer — backend odebrání</td><td class="l2">L2</td><td>traffic drain first</td></tr>
+  <tr><td>BGP konfigurace</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Core switch konfigurace</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+</table>
+
+<h3>7.5 Security &amp; Firewall</h3>
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Poznámka</th></tr>
+  <tr><td>Vulnerability scan (read)</td><td class="l0">L0</td><td>read-only, nikdy auto-exploit</td></tr>
+  <tr><td>Security audit / report</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Firewall rule — přidání (allow)</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit, vždy L2</span></td></tr>
+  <tr><td>Firewall rule — přidání (deny)</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit</span></td></tr>
+  <tr><td>Firewall rule — změna / smazání</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>SSL/TLS konfigurace</td><td class="l2">L2</td><td>downtime risk</td></tr>
+  <tr><td>Certifikát — renewal (auto)</td><td class="l1">L1</td><td>monitoring povinný</td></tr>
+  <tr><td>IAM role — vytvoření</td><td class="l2">L2</td><td>least privilege review</td></tr>
+  <tr><td>IAM role — úprava</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit</span></td></tr>
+  <tr><td>IAM role — smazání</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>API klíč — generování</td><td class="l2">L2</td><td>scope + expiry povinně</td></tr>
+  <tr><td>Secret rotation</td><td class="l2">L2</td><td>rollback plán povinný</td></tr>
+  <tr><td>Penetration testing</td><td class="l2">L2</td><td>scope + authorization povinně</td></tr>
+  <tr><td>Incident response — investigation</td><td class="l1">L1</td><td>read-mostly</td></tr>
+  <tr><td>Incident response — containment</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ S8 ═══ -->
+<h2 id="s8"><span class="num">08 —</span>Operační cyklus</h2>
+<p>Jak GALDUR funguje v praxi — bez sprintů, bez standupů. Práce je řízena events, ne kalendářem.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Operační cyklus GALDUR — swimlane diagram</div>
+  <svg viewBox="0 0 820 440" width="100%" style="max-width:820px">
+    <defs>
+      <marker id="sw" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#00d4ff" opacity=".7"/></marker>
+    </defs>
+    <!-- Swimlanes -->
+    <rect x="0" y="50" width="820" height="110" fill="rgba(245,200,66,.05)" rx="3"/>
+    <rect x="0" y="168" width="820" height="110" fill="rgba(176,109,255,.05)" rx="3"/>
+    <rect x="0" y="286" width="820" height="110" fill="rgba(0,212,255,.05)" rx="3"/>
+    <!-- Lane labels -->
+    <text x="12" y="115" font-family="JetBrains Mono,monospace" font-size="9" fill="#f5c842" transform="rotate(-90,12,115)" text-anchor="middle">INTENT ARCH</text>
+    <text x="12" y="228" font-family="JetBrains Mono,monospace" font-size="9" fill="#b06dff" transform="rotate(-90,12,228)" text-anchor="middle">GOV STEWARD</text>
+    <text x="12" y="340" font-family="JetBrains Mono,monospace" font-size="9" fill="#00d4ff" transform="rotate(-90,12,340)" text-anchor="middle">AGENT</text>
+    <!-- Nodes -->
+    <circle cx="100" cy="104" r="30" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="100" y="99" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f5c842">1. Draft</text>
+    <text x="100" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">Intent Spec</text>
+    <circle cx="240" cy="104" r="30" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="240" y="99" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f5c842">2. Crystallize</text>
+    <text x="240" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">review</text>
+    <circle cx="360" cy="222" r="30" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="360" y="217" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#b06dff">3. Aktivace</text>
+    <text x="360" y="232" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">spustit agenty</text>
+    <circle cx="470" cy="340" r="30" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="470" y="335" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#00d4ff">4. Exekuce</text>
+    <text x="470" y="350" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">agent pracuje</text>
+    <circle cx="575" cy="222" r="30" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="575" y="217" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#b06dff">5. Drift Signal</text>
+    <text x="575" y="232" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">/ eskalace</text>
+    <circle cx="680" cy="104" r="30" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="680" y="99" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f5c842">6. Validation</text>
+    <text x="680" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">Gate</text>
+    <circle cx="780" cy="104" r="30" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <text x="780" y="99" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#00e896">7. ✓</text>
+    <text x="780" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="9" fill="#9aafcc">VALIDATED</text>
+    <!-- Connections — adjusted for r=30 -->
+    <line x1="130" y1="104" x2="210" y2="104" stroke="#f5c842" stroke-width="1.5" marker-end="url(#sw)" opacity=".7"/>
+    <line x1="257" y1="122" x2="344" y2="208" stroke="#b06dff" stroke-width="1.5" marker-end="url(#sw)" opacity=".6"/>
+    <line x1="378" y1="248" x2="454" y2="318" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#sw)" opacity=".6"/>
+    <line x1="490" y1="318" x2="556" y2="246" stroke="#b06dff" stroke-width="1.5" marker-end="url(#sw)" opacity=".6"/>
+    <line x1="594" y1="206" x2="662" y2="122" stroke="#f5c842" stroke-width="1.5" marker-end="url(#sw)" opacity=".6"/>
+    <line x1="710" y1="104" x2="750" y2="104" stroke="#00e896" stroke-width="1.5" marker-end="url(#sw)" opacity=".7"/>
+    <!-- Scrum labels -->
+    <text x="100" y="435" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">Sprint Planning</text>
+    <text x="360" y="435" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">Daily Standup</text>
+    <text x="570" y="435" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">Sprint Review</text>
+    <text x="730" y="435" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#6a80a0">Retrospektiva</text>
+    <text x="410" y="420" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0" letter-spacing="1">SCRUM EKVIVALENTY:</text>
+  </svg>
+</div>
+
+<h3>Nahrazení Scrum ceremonií</h3>
+<table>
+  <tr><th>Scrum ceremonie</th><th>GALDUR ekvivalent</th><th>Kadence</th><th>Trvání</th></tr>
+  <tr><td>Sprint Planning</td><td><strong>Intent Crystallization</strong></td><td>Event-triggered (nová potřeba)</td><td>20–45 min</td></tr>
+  <tr><td>Daily Standup</td><td><strong>Drift Dashboard</strong></td><td>Kontinuální, async</td><td>0 min (čte se)</td></tr>
+  <tr><td>Sprint Review</td><td><strong>Validation Gate</strong></td><td>Event-triggered (spec completion)</td><td>15–30 min</td></tr>
+  <tr><td>Retrospektiva</td><td><strong>Trace Audit</strong></td><td>2–4 týdny nebo po milníku</td><td>60–90 min</td></tr>
+  <tr><td>Backlog Grooming</td><td><strong>Spec Backlog Review</strong></td><td>Týdně (volitelně)</td><td>30 min</td></tr>
+  <tr><td>Sprint (2 týdny)</td><td><strong>Intent Cycle</strong></td><td>Completion-triggered, ne časový</td><td>Variabilní</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ S9 ═══ -->
+<h2 id="s9"><span class="num">09 —</span>Trace Audit</h2>
+
+<h3>9.1 Co je Trace Audit</h3>
+<p>Trace Audit je GALDUR ekvivalent retrospektivy — ale s klíčovým rozdílem: <strong>neptáme se jak se cítil tým</strong>, ptáme se <strong>co nás říká data o kvalitě našich specs a guardrailů</strong>.</p>
+<p>Trace Audit se koná:</p>
+<ul>
+  <li>Každé 2–4 týdny (nebo po větším milníku / incidentu)</li>
+  <li>Vždy po Hard Lock incidentu</li>
+  <li>Vždy po Drift Score &gt; 15 na jakémkoliv specu</li>
+</ul>
+<p><strong>Účastníci:</strong> Intent Architect + Governance Steward (povinně), relevantní Curators (dle domén v review periodu).</p>
+
+<h3>9.2 Trace Audit Template</h3>
+<pre>
+# Trace Audit — [Datum]
+## Review perioda: [od] → [do]
+
+### 1. PŘEHLED PERIODY
+| Metrika                        | Hodnota | Trend | Threshold |
+|--------------------------------|---------|-------|-----------|
+| Celkem spuštěných spec         |         |       | —         |
+| Validated (úspěšně)            |         |       | > 85%     |
+| Reverted                       |         |       | < 5%      |
+| Průměrný Drift Score           |         |       | < 10      |
+| Celkem escalací                |         |       | —         |
+| Hard Lock incidenty            |         |       | 0         |
+| Průměrný Amendment Rate        |         |       | < 0.2     |
+| Průměrný čas spec → validated  |         |       | —         |
+
+### 2. DRIFT ANALÝZA
+#### 2.1 Nejčastější typy drift events
+| Drift type          | Počet | % z celku | Příklady |
+|---------------------|-------|-----------|----------|
+| scope_expansion     |       |           |          |
+| constraint_violation|       |           |          |
+| technical_deviation |       |           |          |
+| inferred_decision   |       |           |          |
+| timeout             |       |           |          |
+| amendment_proposed  |       |           |          |
+
+#### 2.2 Spec s nejvyšším Drift Score
+| Spec ID | Domain | Drift Score | Hlavní příčina | Akce |
+
+#### 2.3 Kde selhávaly specs (pattern analýza)
+Vzor #1: [popis]
+  Výskyt: [N krát]
+  Hypotéza příčiny: [...]
+  Navrhovaná oprava: [...]
+
+### 3. ESKALAČNÍ ANALÝZA
+#### 3.1 Opakující se eskalace (2× v periodu = systémový problém)
+Opakující se eskalace: [popis]
+  Příčina: [chybějící constraint / vágní intent / špatný governance level]
+  Doporučení: [konkrétní oprava]
+
+#### 3.2 Eskalace, které by šlo eliminovat
+| Eskalace | Co by ji eliminovalo |
+|----------|----------------------|
+|          | Lepší formulace intentu v spec template |
+|          | Nový constraint do domain guardrailů |
+|          | Snížení / zvýšení governance level |
+
+### 4. GOVERNANCE LEVEL KALIBRACE
+#### 4.1 Over-governed (candidáti na snížení)
+| Task type | Doména | Aktuální level | Navrhovaný level | Zdůvodnění |
+
+#### 4.2 Under-governed (způsobily incident nebo rollback)
+| Task type | Doména | Aktuální level | Navrhovaný level | Zdůvodnění |
+
+#### 4.3 Noví Hard Lock kandidáti
+| Akce | Doména | Zdůvodnění |
+
+### 5. AGENT PERFORMANCE
+| Agent role     | Tasky | Drift rate | Timeout rate | Escalation rate |
+|----------------|-------|------------|--------------|-----------------|
+| coding_agent   |       |            |              |                 |
+| infra_agent    |       |            |              |                 |
+| db_agent       |       |            |              |                 |
+| network_agent  |       |            |              |                 |
+| security_agent |       |            |              |                 |
+
+### 6. AKČNÍ BODY
+| # | Akce | Zodpovědný | Deadline | Priorita |
+
+### 7. METRIKY TRENDU
+- [ ] Drift Score trend (rolling average)
+- [ ] Escalation Rate per domain
+- [ ] Spec → Validated průměrná doba
+- [ ] Amendment Rate trend
+- [ ] Governance Level distribuce (mix L0–L3)
+</pre>
+
+<hr>
+
+<!-- ═══ S10 ═══ -->
+<h2 id="s10"><span class="num">10 —</span>Hard Locks — absolutní zákazy</h2>
+<p>Hard Locks jsou kategorie akcí, které <strong>agent nikdy nesmí provést bez explicitního lidského schválení</strong> v reálném čase. Tyto zámky jsou implementovány v governance enginu — nejsou součástí Intent Spec, agent je nemůže přepsat, curator je nemůže delegovat.</p>
+
+<div class="card card-red">
+  <h4 style="color:#ff6b6b">🔴 10.1 Universal Hard Locks — platí pro všechny domény, bez výjimky</h4>
+  <table>
+    <tr><th>Kategorie</th><th>Konkrétní zákazy</th></tr>
+    <tr><td style="color:#ff6b6b"><strong>Credentials &amp; Secrets</strong></td><td>Manipulace s private keys/hesly/API klíči v plain-text · Zápis secrets do logů nebo DB bez šifrování · Rotace prod credentials bez rollback plánu</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Destruktivní DB operace</strong></td><td>DELETE bez WHERE na produkční DB · DROP TABLE/DATABASE v produkci · TRUNCATE prod tabulky · Přepsání produkčních záloh</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Identita &amp; Přístup</strong></td><td>Jakákoliv změna IAM/permissions bez human approval · Vytvoření nebo smazání admin/root účtu · SSH klíč do authorized_keys na prod serveru</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Kritická infrastruktura</strong></td><td>Změna core routing tables nebo BGP · Změna prod firewall rules (allow i deny) · Shutdown/restart kritického prod serveru bez change window</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Komunikace ven</strong></td><td>Email/notifikace &gt;10 příjemcům · Webhook do externího systému s PII · Komunikace implikující závazek organizace</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Platby &amp; Compliance</strong></td><td>Manipulace s platební logikou nebo billing daty · Export PII bez GDPR audit trail · Smazání dat podléhajících retention policy</td></tr>
+  </table>
+</div>
+
+<h3>10.2 Domain-specific Hard Locks</h3>
+<pre>
+🔴 INFRASTRUKTURA:
+  ├── Restore ze zálohy na produkci
+  ├── Decommission serveru bez verifikace data backup
+  └── Změna produkční SSL/TLS konfigurace bez downtime koordinace
+
+🔴 DATABÁZE:
+  ├── Restore zálohy na produkční DB
+  ├── Jakýkoliv UPDATE bez WHERE na prod tabulce > 10K řádků
+  └── Změna DB replikační konfigurace
+
+🔴 SÍŤ:
+  ├── Změna nebo smazání DNS records pro prod domény (A, MX, NS)
+  ├── Změna core switch konfigurace
+  └── Jakákoliv změna VPN konfigurace zasahující prod provoz
+
+🔴 SECURITY:
+  ├── Incident response containment (isolace systému, blokování IP)
+  ├── Smazání nebo úprava audit logů
+  └── Jakýkoliv pokus o exploit nebo penetraci (i authorized pen test)
+</pre>
+
+<h3>10.3 Co se stane při Hard Lock detekci</h3>
+<ol>
+  <li>Agent okamžitě zastaví exekuci</li>
+  <li>Spec přejde do stavu <code>ESCALATED:hard_lock</code></li>
+  <li>Governance Steward dostane okamžitou notifikaci (ne async Drift Signal)</li>
+  <li>Incident se zapíše do separátního Hard Lock Incident Logu</li>
+  <li>Spec NELZE pokračovat bez explicitního Intent Architect approval</li>
+  <li>Hard Lock incident se VŽDY vyhodnocuje na nejbližším Trace Auditu</li>
+</ol>
+
+<hr>
+
+<!-- ═══ S11 ═══ -->
+<h2 id="s11"><span class="num">11 —</span>Adaptace na velikost týmu</h2>
+
+<h3>Solo developer s agenty</h3>
+<div class="card card-cyan">
+  <p><strong>Intent Architect = Governance Steward = Agent Curator = TY</strong></p>
+  <p>Úpravy: L2 tasky — dáváš souhlas sám před exekucí (ale stále před, ne po). Trace Audit: 1× měsíčně, osobní review drift logů. Drift Dashboard: terminálový výpis / jednoduché CLI. Hard Locks platí beze změny.</p>
+</div>
+
+<h3>Malý tým (2–4 lidi)</h3>
+<div class="card card-cyan">
+  <p>1 Intent Architect (senior / tech lead) · 1–2 Agent Curators (full-stack, ops) · Governance Steward rotuje nebo je sdílená role</p>
+  <p>Úpravy: Validaci L1 tasků může dělat jakýkoliv Curator. L2 tasky vyžadují Intent Architect approval. Weekly Spec Backlog Review (30 min) nahrazuje sprint planning.</p>
+</div>
+
+<h3>Střední tým (5–15 lidí)</h3>
+<div class="card card-cyan">
+  <p>1–2 Intent Architects (per doméně: Dev IA + Ops IA) · 1 Governance Steward (dedikovaná role) · 3–10 Agent Curators (specializovaní per doméně)</p>
+  <p>Doporučení: Separátní spec backlog per doménu. Domain-specific Trace Audity (Dev, Ops) + cross-domain quarterly. Governance Steward má přístup ke všem drift dashboardům.</p>
+</div>
+
+<hr>
+
+<!-- ═══ S12 ═══ -->
+<h2 id="s12"><span class="num">12 —</span>Vztah k existujícím metodikám</h2>
+<p>GALDUR není revoluce, je <strong>selektivní syntéza</strong>:</p>
+<table>
+  <tr><th>Metodika</th><th>Co GALDUR přebírá</th><th>Co zahazuje</th></tr>
+  <tr><td><strong>Lean / Kanban</strong></td><td>Kontinuální flow, WIP limity, eliminace waste</td><td>Vizualizace boardu pro lidi jako exekutory</td></tr>
+  <tr><td><strong>Scrum</strong></td><td>Iterativnost, customer feedback, inspect &amp; adapt</td><td>Sprint cadence, velocity, ceremony overhead</td></tr>
+  <tr><td><strong>Waterfall</strong></td><td>Strukturu specs, explicitní fáze, audit trail</td><td>Sekvenční závislosti, rigidní plán</td></tr>
+  <tr><td><strong>Domain-Driven Design</strong></td><td>Bounded contexts, ubiquitous language</td><td>Komplexní domain modeling overhead</td></tr>
+  <tr><td><strong>GitOps</strong></td><td>Infrastructure as code, verzování, audit trail</td><td>(přebírá celý koncept)</td></tr>
+  <tr><td><strong>ITIL / ITSM</strong></td><td>Change management, Hard Locks filozofie</td><td>Ceremony overhead, ticket bureaucracy</td></tr>
+  <tr><td><strong>SRE</strong></td><td>SLO/SLI uvažování, blameless postmortem</td><td>(postmortem → Trace Audit)</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ S13 ═══ -->
+<h2 id="s13"><span class="num">13 —</span>Přílohy — šablony</h2>
+
+<h3>A. Intent Spec — Dev varianta (zjednodušená)</h3>
+<pre>
+id: IS-YYYY-NNN
+domain: dev
+title: ""
+status: draft
+intent: ""
+outcome: []
+scope:
+  in_scope: []
+  out_of_scope: []
+constraints: []
+context: ""
+governance:
+  level: supervised
+  escalate_on: [schema_changes, new_external_dependency, security_sensitive]
+  escalation_to: ""
+  timeout_hours: 4
+tasks: []
+validation:
+  reviewer: ""
+  checklist:
+    - "Outcome podmínky splněny?"
+    - "Žádný constraint porušen?"
+    - "Drift report přečten?"
+drift_log: []
+</pre>
+
+<h3>B. Intent Spec — Ops varianta (rozšířená)</h3>
+<pre>
+id: IS-YYYY-NNN
+domain: infra | db | network | security
+title: ""
+status: draft
+intent: ""
+outcome: []
+scope:
+  in_scope: []
+  out_of_scope: []
+constraints: []
+environment:
+  target: production | staging | dev
+  systems: []
+  change_window: ""
+  notification_required: false
+risk_assessment:
+  blast_radius: low | medium | high | critical
+  reversibility: easy | partial | hard | irreversible
+  estimated_downtime: none | seconds | minutes | hours
+  rollback_plan: ""
+context: ""
+governance:
+  level: collaborative      # Ops default je vyšší než Dev
+  escalate_on: [production_impact, blast_radius_expansion,
+                security_sensitive, irreversible_action]
+  escalation_to: ""
+  timeout_hours: 2          # kratší timeout pro Ops
+  change_window_required: false
+tasks:
+  - id: IS-NNN-T1
+    title: ""
+    type: infrastructure | database | network | security
+    agent_role: infra_agent | db_agent | network_agent | security_agent
+    pre_conditions: []
+    acceptance: ""
+    rollback: ""            # POVINNÉ pro všechny Ops tasky
+validation:
+  reviewer: ""
+  checklist:
+    - "Outcome podmínky splněny?"
+    - "Žádný constraint porušen?"
+    - "Rollback plán ověřen?"
+    - "Monitoring alerts aktivní?"
+    - "Change window dodrženo?"
+post_actions:
+  notify: []
+  monitoring_period: "24h"
+drift_log: []
+</pre>
+
+<h3>C. Governance Level — rychlá referenční karta</h3>
+<pre>
+L0 AUTONOMOUS    → Agent exekuuje → Drift Signal async
+L1 SUPERVISED    → Agent exekuuje → Validation Gate před deploy
+L2 COLLABORATIVE → Agent plánuje → Human schvaluje → Agent exekuuje
+L3 MANUAL        → Human exekuuje → Agent asistuje
+
+NELZE SNÍŽIT (per doménu):
+  Dev:  DB destructive, Auth, Krypto, Platby, Komunikace ven
+  Ops:  Prod firewall, IAM changes, Prod data delete, Backup restore
+  Net:  DNS produkce, Core routing, VPN prod config
+  Sec:  Incident containment, Audit log manipulace
+</pre>
+
+<hr>
+
+<!-- ═══ ADDENDUM I — SCALE ═══ -->
+<h2 id="scale"><span class="num">ADDENDUM I —</span>GALDUR @ Scale — srovnání se SAFe</h2>
+
+<h3>S1. Proč SAFe vznikl a co řeší</h3>
+<p>SAFe (Scaled Agile Framework, Dean Leffingwell, 2011) řeší tři základní problémy škálování Agile: <strong>Alignment</strong> (jak zajistit, že desítky týmů táhnou stejným směrem), <strong>Závislosti</strong> (jak synchronizovat práci mezi týmy) a <strong>Strategická spojitost</strong> (jak přenést business strategii do práce stovek vývojářů).</p>
+<p>SAFe odpovídá čtyřúrovňovou hierarchií: Portfolio → Large Solution → Program (ART) → Team. Klíčovým synchronizačním mechanismem je <strong>PI Planning</strong> — dvoudenní hromadná akce kde 50–125 lidí plánuje 8–12 týdnů dopředu.</p>
+
+<h3>S2. Kritika SAFe — kde selhává</h3>
+<p><strong>Ceremony overhead je obrovský.</strong> Organizace popisují stav, kdy 20 lidí pracuje na plný úvazek jen na PI planningu. PI Planning vyžaduje koordinaci, facilitaci, přípravu a follow-up, který mnohdy trvá déle než samotná 2denní akce.</p>
+<p><strong>Iluze agility, realita waterfalu.</strong> SAFe je kritizován za to, že dává organizacím iluzi adopce Agile, zatímco zachovává původní procesy. Dlouhodobé PI plánování (8–12 týdnů dopředu) je strukturálně velmi blízké waterfalu. Marty Cagan ze Silicon Valley Product Group prohlásil, že nezná žádnou silnou produktovou firmu používající SAFe.</p>
+<p><strong>Top-down command and control.</strong> Týmy jsou nuceny do způsobů práce, nemohou dělat vlastní rozhodnutí a práce jim bývá přidělena bez ohledu na jejich technické znalosti. To podrývá přesně tu autonomii, kterou Agile přislibuje.</p>
+<p><strong>Neřeší AI agenty vůbec.</strong> SAFe byl navržen pro lidské týmy. V roce 2025–26, kdy agenti přebírají velké části exekuce, nemá SAFe žádný model pro řízení práce probíhající v agentních workflow.</p>
+
+<div class="diagram">
+  <div class="diagram-title">GALDUR vs. SAFe — 9 klíčových srovnání</div>
+  <svg viewBox="0 0 820 400" width="100%" style="max-width:820px">
+    <rect x="0" y="0" width="265" height="400" rx="5" fill="rgba(245,200,66,.04)"/>
+    <rect x="275" y="0" width="270" height="400" rx="5" fill="rgba(255,255,255,.02)"/>
+    <rect x="555" y="0" width="265" height="400" rx="5" fill="rgba(0,212,255,.04)"/>
+    <text x="132" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#f5c842">SAFe</text>
+    <text x="410" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#6a80a0" letter-spacing="1">DIMENZE</text>
+    <text x="688" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#00d4ff">GALDUR</text>
+    <line x1="0" y1="38" x2="820" y2="38" stroke="#1e3050" stroke-width="1"/>
+    <g font-family="Source Sans 3,sans-serif" font-size="13">
+      <text x="132" y="68" text-anchor="middle" fill="#c8a830">Vlak (release train)</text>
+      <text x="410" y="68" text-anchor="middle" fill="#9aafcc" font-weight="600">Metafora</text>
+      <text x="688" y="68" text-anchor="middle" fill="#00c4ee">Orchestr + dirigent</text>
+      <line x1="0" y1="78" x2="820" y2="78" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="108" text-anchor="middle" fill="#c8a830">Meeting-heavy</text>
+      <text x="410" y="108" text-anchor="middle" fill="#9aafcc" font-weight="600">Koordinace</text>
+      <text x="688" y="108" text-anchor="middle" fill="#00c4ee">Intent Spec sdílení</text>
+      <line x1="0" y1="118" x2="820" y2="118" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="148" text-anchor="middle" fill="#c8a830">PI cadence 8–12 týdnů</text>
+      <text x="410" y="148" text-anchor="middle" fill="#9aafcc" font-weight="600">Adaptace</text>
+      <text x="688" y="148" text-anchor="middle" fill="#00c4ee">Continuous, event-driven</text>
+      <line x1="0" y1="158" x2="820" y2="158" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="188" text-anchor="middle" fill="#c8a830">Hierarchie úrovní</text>
+      <text x="410" y="188" text-anchor="middle" fill="#9aafcc" font-weight="600">Škálování</text>
+      <text x="688" y="188" text-anchor="middle" fill="#00c4ee">Spec sharing + vrstvy</text>
+      <line x1="0" y1="198" x2="820" y2="198" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="228" text-anchor="middle" fill="#c8a830">Neadresováno</text>
+      <text x="410" y="228" text-anchor="middle" fill="#9aafcc" font-weight="600">AI agenti</text>
+      <text x="688" y="228" text-anchor="middle" fill="#00c4ee">First-class citizens</text>
+      <line x1="0" y1="238" x2="820" y2="238" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="268" text-anchor="middle" fill="#c8a830">Jen software delivery</text>
+      <text x="410" y="268" text-anchor="middle" fill="#9aafcc" font-weight="600">Pokrytí</text>
+      <text x="688" y="268" text-anchor="middle" fill="#00c4ee">Dev + Ops + Infra + Roboti</text>
+      <line x1="0" y1="278" x2="820" y2="278" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="308" text-anchor="middle" fill="#c8a830">~900 person-h/kvartál</text>
+      <text x="410" y="308" text-anchor="middle" fill="#9aafcc" font-weight="600">Ceremony overhead</text>
+      <text x="688" y="308" text-anchor="middle" fill="#00c4ee">~150 person-h/kvartál</text>
+      <line x1="0" y1="318" x2="820" y2="318" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="348" text-anchor="middle" fill="#c8a830">8–18 měsíců rollout</text>
+      <text x="410" y="348" text-anchor="middle" fill="#9aafcc" font-weight="600">Nasazení</text>
+      <text x="688" y="348" text-anchor="middle" fill="#00c4ee">Inkrementální, 1 Crew</text>
+      <line x1="0" y1="358" x2="820" y2="358" stroke="#1e3050" stroke-width=".5"/>
+      <text x="132" y="388" text-anchor="middle" fill="#c8a830">PI Planning: 2 dny</text>
+      <text x="410" y="388" text-anchor="middle" fill="#9aafcc" font-weight="600">Velké plánování</text>
+      <text x="688" y="388" text-anchor="middle" fill="#00c4ee">Intent Broadcast: async</text>
+    </g>
+  </svg>
+</div>
+
+<h3>S4. Jak GALDUR škáluje — model vrstev</h3>
+<p>Klíčový insight pro škálování: <strong>v GALDUR neroste koordinační overhead lineárně s počtem lidí</strong>, protože koordinace probíhá přes specs, ne přes schůzky. Čím lépe jsou specs napsány, tím méně koordinace potřebují lidé dělat aktivně.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Organizační vrstvy GALDUR @ Enterprise</div>
+  <svg viewBox="0 0 760 340" width="100%" style="max-width:760px">
+    <defs>
+      <linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f5c842" stop-opacity=".2"/><stop offset="100%" stop-color="#f5c842" stop-opacity=".04"/></linearGradient>
+      <linearGradient id="og" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#b06dff" stop-opacity=".15"/><stop offset="100%" stop-color="#b06dff" stop-opacity=".03"/></linearGradient>
+      <linearGradient id="dg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00d4ff" stop-opacity=".12"/><stop offset="100%" stop-color="#00d4ff" stop-opacity=".02"/></linearGradient>
+      <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00e896" stop-opacity=".12"/><stop offset="100%" stop-color="#00e896" stop-opacity=".02"/></linearGradient>
+    </defs>
+    <rect x="20" y="20" width="720" height="62" rx="6" fill="url(#pg)" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="40" y="44" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">PORTFOLIO LAYER</text>
+    <text x="40" y="62" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">Strategic Intent Map · Investment Domains · Hard Budgets · ~5–10 lidí · quarterly</text>
+    <rect x="20" y="95" width="720" height="62" rx="6" fill="url(#og)" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="40" y="119" font-family="JetBrains Mono,monospace" font-size="11" fill="#b06dff">ORGANIZATION LAYER</text>
+    <text x="40" y="137" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">2–6 Intent Domains · Governance Council · cross-domain synchronizace · ~20–60 lidí</text>
+    <rect x="20" y="170" width="720" height="62" rx="6" fill="url(#dg)" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="40" y="194" font-family="JetBrains Mono,monospace" font-size="11" fill="#00d4ff">INTENT DOMAIN LAYER</text>
+    <text x="40" y="212" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">1 Domain Arch · 1–2 Stewards · 3–8 Curators · dedikovaný agentní pool · ~10–50 ekviv.</text>
+    <rect x="20" y="245" width="720" height="76" rx="6" fill="url(#cg)" stroke="#00e896" stroke-width="2"/>
+    <text x="40" y="269" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">CREW LAYER — základní jednotka</text>
+    <text x="40" y="289" font-family="Source Sans 3,sans-serif" font-size="13" fill="#9aafcc">1 Intent Architect · 1 Governance Steward · 2–5 Curators · agentní pool per doménu</text>
+    <text x="40" y="308" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Schopna dodat 80 % práce bez závislosti na jiné Crew · ~5–15 lidí</text>
+  </svg>
+</div>
+
+<h3>S6. Synchronizace bez PI Planningu</h3>
+<p>SAFe PI Planning řeší tři věci: alignment, dependency mapping a commitment. GALDUR řeší každý z těchto bodů jinak.</p>
+<p><strong>Místo Alignment: Domain Intent Broadcast</strong> — strukturovaný YAML dokument vydávaný každý kvartál Domain Intent Architektem. Obsahuje priority, kapacitní guidance, cross-domain závislosti a deprioritizované položky. Čas potřebný: 2–4 hodiny přípravy, distribuce async. Vs. 2 dny PI Planning.</p>
+<p><strong>Místo Dependency Mapping:</strong> Závislosti jsou explicitně zakódovány v Intent Specech přes pole <code>depends_on</code> a <code>blocks</code>. Governance engine automaticky blokuje aktivaci specu, pokud jeho závislosti nejsou splněny, a generuje <strong>Dependency Dashboard</strong> v reálném čase.</p>
+<p><strong>Místo Commitment:</strong> SAFe vytváří commitment přes sociální tlak PI Planningu. GALDUR ho nahrazuje strukturální accountability — každý spec má explicitního ownera, každý drift je logován, Trace Audit data jsou sdílena na domain i portfolio úrovni.</p>
+
+<h3>S9. Výhody GALDUR oproti SAFe</h3>
+<ul>
+  <li><strong>Drasticky nižší ceremony overhead</strong> — ~150 vs. ~900 person-hodin per kvartál</li>
+  <li><strong>Nativní podpora AI agentů</strong> — first-class citizens s governance levels od základu</li>
+  <li><strong>Pokrývá celou technickou organizaci</strong> — Dev + Ops + Infra + Security + Roboti</li>
+  <li><strong>Organická adopce</strong> — začíná jednou Crew, ne big-bang rollout</li>
+  <li><strong>Specs jako komunikační médium</strong> — kontexty jsou v artefaktu, ne v hlavách lidí</li>
+  <li><strong>Governance je distribuovaná</strong> — v specech a enginu, ne centralizovaná v rolích</li>
+  <li><strong>Product-led kulturu</strong> — Intent-first přirozeně podporuje outcome thinking</li>
+</ul>
+
+<h3>S10. Nevýhody a rizika GALDUR při škálování</h3>
+<ul>
+  <li><strong>Spec writing je těžká disciplína</strong> — celá metodika stojí a padá na kvalitě specs; špatný spec způsobí viditelný drift bez kompenzace meetings</li>
+  <li><strong>Neexistující tooling ekosystém</strong> — SAFe má Jira Align, certifikace, konzultanty; GALDUR zatím nic</li>
+  <li><strong>Obtížná obhajoba vůči tradičnímu managementu</strong> — chybí brand recognition a certifikační program</li>
+  <li><strong>Spec backlog může explodovat</strong> — bez WIP disciplíny vznikají stovky Suspended/Draft speců; potřeba explicitní spec hygiene politiky</li>
+  <li><strong>AI governance je nový terén</strong> — fintech/healthcare regulace s agenty (DORA, GDPR) je nová disciplína</li>
+</ul>
+
+<h3>S11. Migrační strategie ze SAFe na GALDUR</h3>
+<p><strong>Fáze 1 (měsíce 1–3): Pilotní Crew</strong> — Vyber jeden tým, nespokojený se SAFe ceremony overhead, technicky silný. Spusť paralelně se SAFe — stále plní SAFe povinnosti, ale interně pracuje GALDUR způsobem. Metriky: ceremony overhead, drift rate, čas od intent ke validated feature.</p>
+<p><strong>Fáze 2 (měsíce 3–9): Domain pilotáž</strong> — Rozšíření na celou Intent Domain. Přidá Domain Intent Architect roli, cross-Crew dependency management, Domain Trace Audity. Na portfolio úrovni stále SAFe rytmus — uvnitř domény GALDUR.</p>
+<p><strong>Fáze 3 (měsíce 9–18): Portfolio přechod</strong> — Governance Council nahradí ARTs, Strategic Intent Map nahradí Portfolio Kanban, PI Planning formálně ukončen.</p>
+
+<h3>Co ze SAFe zachovat</h3>
+<table>
+  <tr><th>SAFe koncept</th><th>GALDUR ekvivalent</th><th>Zachovat?</th></tr>
+  <tr><td>WSJF prioritizace</td><td>Funguje per spec i per Epic</td><td>✅ Zachovat</td></tr>
+  <tr><td>Lean budgeting per domain</td><td>Strategic Intent Map</td><td>✅ Zachovat</td></tr>
+  <tr><td>Communities of Practice</td><td>—</td><td>✅ Zachovat beze změny</td></tr>
+  <tr><td>Continuous Delivery pipeline</td><td>—</td><td>✅ Zachovat beze změny</td></tr>
+  <tr><td>PI Planning</td><td>Domain Intent Broadcast</td><td>❌ Nahradit</td></tr>
+  <tr><td>ART / Release Train</td><td>Intent Domain</td><td>🔄 Transformovat</td></tr>
+  <tr><td>LACE</td><td>Governance Council</td><td>🔄 Transformovat</td></tr>
+  <tr><td>Scrum ceremonies</td><td>Trace Audit + Drift Dashboard</td><td>❌ Nahradit</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══ ROBOTI ═══ -->
+<h2 id="robots"><span class="num">ADDENDUM II/R —</span>Robotická dimenze — Physical AI</h2>
+
+<h3>R1. Proč roboti patří do GALDUR</h3>
+<p>Dosavadní popis GALDUR pokrývá digitální agenty. Ale metodika musí adresovat i <strong>fyzické agenty</strong> — roboty, kteří vykonávají práci v reálném světě. Jak systémy fyzické AI dozrávají, organizace nasazují heterogenní flotily robotů od více dodavatelů, každý s proprietárními protokoly. Rané výsledky proof-of-concept robotických iniciací ukazují až 50% snížení neplánovaných výpadků a 25% zlepšení produktivity.</p>
+<p>Fyzický svět přidává dimenze, které digitální svět nemá: <strong>tělesná přítomnost, bezpečnost, nevratnost fyzických akcí a koexistence s lidmi v prostoru.</strong></p>
+
+<div class="diagram">
+  <div class="diagram-title">Taxonomie fyzických agentů v GALDUR — 5 úrovní</div>
+  <svg viewBox="0 0 820 320" width="100%" style="max-width:820px">
+    <defs><linearGradient id="rg" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#00e896" stop-opacity=".15"/><stop offset="100%" stop-color="#ff6b6b" stop-opacity=".15"/></linearGradient></defs>
+    <rect x="0" y="0" width="820" height="320" rx="6" fill="url(#rg)"/>
+    <rect x="20" y="14" width="780" height="52" rx="5" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <rect x="20" y="14" width="88" height="52" rx="5" fill="rgba(0,232,150,.12)"/>
+    <text x="64" y="36" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">TIER 1 · L0–L1</text>
+    <text x="64" y="52" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">AMR/AGV</text>
+    <text x="200" y="37" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Autonomní mobilní roboti (AMR/AGV)</text>
+    <text x="200" y="56" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Pohyb v prostoru · přeprava · navigace · sklady, logistika, výroba · Hard Lock: detekce osob vždy aktivní</text>
+    <rect x="20" y="78" width="780" height="52" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <rect x="20" y="78" width="88" height="52" rx="5" fill="rgba(245,200,66,.1)"/>
+    <text x="64" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">TIER 2 · L1–L2</text>
+    <text x="64" y="116" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">Cobot</text>
+    <text x="200" y="101" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#f5c842">Kolaborativní roboti (Cobot)</text>
+    <text x="200" y="120" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Práce těsně vedle lidí · montáž, asistence · Hard Lock: safety perimeter + force limit vždy</text>
+    <rect x="20" y="142" width="780" height="52" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <rect x="20" y="142" width="88" height="52" rx="5" fill="rgba(0,212,255,.08)"/>
+    <text x="64" y="164" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">TIER 3 · L1/L3</text>
+    <text x="64" y="180" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">Fixed</text>
+    <text x="200" y="165" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00d4ff">Průmysloví roboti (Fixed)</text>
+    <text x="200" y="184" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Izolované buňky · vysoká přesnost · svářečky, laserové stroje · Parametry L1, nová konfigurace L3</text>
+    <rect x="20" y="206" width="780" height="52" rx="5" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <rect x="20" y="206" width="88" height="52" rx="5" fill="rgba(176,109,255,.08)"/>
+    <text x="64" y="228" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">TIER 4 · L2–L3</text>
+    <text x="64" y="244" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">Humanoid</text>
+    <text x="200" y="229" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#b06dff">Humanoidní roboti</text>
+    <text x="200" y="248" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Obecná fyzická práce · adaptabilní · Figure, Agility Digit, Boston Dynamics Atlas (2025: majority akcí L2–L3)</text>
+    <rect x="20" y="270" width="780" height="44" rx="5" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <rect x="20" y="270" width="88" height="44" rx="5" fill="rgba(255,107,107,.08)"/>
+    <text x="64" y="290" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">TIER 5 · L2–L3</text>
+    <text x="64" y="306" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">Spec.</text>
+    <text x="200" y="291" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#ff6b6b">Specializovaní fyzičtí agenti</text>
+    <text x="200" y="308" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Drony (inspekce, doručení) · chirurgičtí roboti · podvodní vozidla · farmboti · domain-specific L2–L3</text>
+  </svg>
+</div>
+
+<h3>R3. Fyzické Hard Locks — absolutní kategorie</h3>
+<div class="card card-red">
+  <p><strong>Fyzické Hard Locks jsou nadřazeny všem ostatním</strong> — nelze je přepsat softwarově. Jsou implementovány v hardwaru robota i v orchestračním softwaru:</p>
+  <ul>
+    <li>Robot se nesmí pohybovat, pokud je detekována osoba v definované safety zóně bez explicitního override</li>
+    <li>Force limit nesmí být překročen (hardware limit)</li>
+    <li>Emergency stop musí být vždy funkční a dostupný</li>
+    <li>Ztráta komunikace = okamžitý bezpečný stop (fail-safe)</li>
+    <li>Manipulace s biologickými/chemickými/radioaktivními materiály vyžaduje L3 + certifikovaný protokol</li>
+    <li>Rekonfigurace safety parametrů: vždy L3 + audit záznam</li>
+    <li>Fyzický robot nesmí omezovat pohyb nebo výstup osoby z prostoru (anti-trapping)</li>
+  </ul>
+</div>
+
+<h3>R7. Digitální dvojče jako rozhraní mezi intentem a fyzickým světem</h3>
+<p>Digital twin umožňuje <strong>simulaci před exekucí</strong> — robot "odehraje" Intent Spec ve virtuálním prostředí, governance engine validuje výsledek před spuštěním v reálném světě. V GALDUR modelu: fyzický Intent Spec má povinné pole <code>digital_twin_simulation: required | optional | n/a</code>. Pro L2+ tasky fyzických agentů je simulace povinná před schválením.</p>
+
+<hr>
+
+<!-- ═══ LIDSKÁ DIMENZE ═══ -->
+<h2 id="human"><span class="num">ADDENDUM II/H —</span>Lidská dimenze</h2>
+
+<h3>H1. Problém, který metodiky ignorují</h3>
+<p>GALDUR dosud popisoval role jako funkční entity. Ale lidé nejsou role. Lidé jsou bytosti se sociálními potřebami, emocemi, ambicemi, strachem z relevance, potřebou uznání, přátelskými vazbami a individuálními rytmy produktivity. <strong>Metodika, která tohle ignoruje, skončí jako SAFe — technicky korektní, lidsky nesnesitelná.</strong></p>
+<p>Výzkum je jednoznačný: umírněná úroveň automatizace udržuje dostatečné zapojení pracovníků do rozhodovacího procesu, čímž kontinuálně podporuje jejich autonomii a kompetence. Empirický výzkum v psychologii automatizace naznačuje, že zachování aktivního zapojení pracovníků, i jen částečného, pomáhá udržet sebeurčenou motivaci, snižuje pocity monotonie a předchází automatizací indukovanému odpojení. A zároveň: Human-AI týmy vykazují nižší kohezi a identifikaci než čistě lidské týmy.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Pět lidských potřeb a strukturální odpovědi GALDUR</div>
+  <svg viewBox="0 0 820 380" width="100%" style="max-width:820px">
+    <circle cx="410" cy="190" r="52" fill="#0c1628" stroke="#00d4ff" stroke-width="2"/>
+    <text x="410" y="184" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00d4ff">LIDÉ</text>
+    <text x="410" y="202" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">v GALDUR</text>
+    <rect x="320" y="14" width="180" height="72" rx="7" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="410" y="36" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#f5c842">Autonomie</text>
+    <text x="410" y="54" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">mám vliv na svou práci</text>
+    <text x="410" y="72" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Intent Spec píše člověk</text>
+    <line x1="410" y1="86" x2="410" y2="138" stroke="#f5c842" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="608" y="58" width="174" height="72" rx="7" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="695" y="80" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00e896">Kompetence</text>
+    <text x="695" y="98" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">jsem dobrý v tom, co dělám</text>
+    <text x="695" y="116" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Curator = domain expert</text>
+    <line x1="616" y1="104" x2="463" y2="158" stroke="#00e896" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="608" y="248" width="174" height="72" rx="7" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="695" y="270" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#b06dff">Sounáležitost</text>
+    <text x="695" y="288" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">patřím někam</text>
+    <text x="695" y="306" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Domain Day · Weekly Sync</text>
+    <line x1="616" y1="268" x2="463" y2="224" stroke="#b06dff" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="38" y="248" width="174" height="72" rx="7" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="125" y="270" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00d4ff">Smysluplnost</text>
+    <text x="125" y="288" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">co dělám, má smysl</text>
+    <text x="125" y="306" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Portfolio Intent Map veřejná</text>
+    <line x1="204" y1="268" x2="360" y2="224" stroke="#00d4ff" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="38" y="58" width="174" height="72" rx="7" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="125" y="80" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#ff6b6b">Spravedlnost</text>
+    <text x="125" y="98" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">pravidla platí pro všechny</text>
+    <text x="125" y="116" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Drift log je blameless</text>
+    <line x1="204" y1="106" x2="360" y2="160" stroke="#ff6b6b" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <text x="410" y="368" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">Self-Determination Theory (Deci &amp; Ryan) · Edmondson Psychological Safety</text>
+  </svg>
+</div>
+
+<h3>H2. Pět lidských potřeb — strukturální odpovědi GALDUR</h3>
+
+<h4>Autonomie — mám vliv na svou práci</h4>
+<p>Největší riziko agentního světa: člověk se stane pasivním validátorem výstupů, které nijak neovlivnil. GALDUR odpovídá: Intent Spec píše člověk (ne agent), Curator může navrhovat alternativní decomposition a jiné governance levels, žádný agent nesmí iniciovat práci bez crystallizovaného specu.</p>
+
+<h4>Kompetence — jsem dobrý v tom, co dělám</h4>
+<p>Hrozba: agenti produkují výstupy rychleji a občas kvalitněji než člověk, což může erodovat pocit odborné hodnoty. GALDUR odpovídá: Curator je explicitně domain expert, který agentní výstup hodnotí z pozice znalostí, které agent nemá (business kontext, organizační paměť, relationship intelligence). Trace Audity oceňují lidský pattern recognition. Intent Architect role je kreativní a strategická.</p>
+
+<h4>Sounáležitost — patřím někam</h4>
+<p>GALDUR zavádí strukturální sociální mechanismy: <strong>Trace Audit jako sociální událost</strong> (posledních 15 minut je open floor bez agendy) · <strong>Intent Crystallization Session</strong> (kreativní akt bez agentů) · <strong>Weekly Human Sync</strong> (30 min, NE o specs, NE o agentech — o lidech) · <strong>Domain Day kvartálně</strong> (celý den pro lidi: dema, learningy, neformální čas).</p>
+
+<h4>Smysluplnost — to co dělám, má smysl</h4>
+<p>Každý Curator má přiřazenu doménovou odpovědnost — je strážce kvality celé domény. Intent Spec explicitně obsahuje sekci <code>intent</code> popisující proč — každý, kdo na specu pracuje, zná větší obrázek. Portfolio Intent Map je veřejně viditelná pro všechny členy týmu.</p>
+
+<h4>Spravedlnost — pravidla platí pro všechny, můj přínos je vidět</h4>
+<p>Drift log je transparentní — vidíme kde spec selhal, ne kde selhal člověk. Hard Locks platí pro všechny agenty, všechny domény. Trace Audit metriky jsou sdílené. Každé rozhodnutí má stopu v Amendment procesu.</p>
+
+<h3>H3. Psychologická bezpečnost v GALDUR kontextu</h3>
+<p>V Human-AI týmech hrozí: člen týmu ví, že agentní výstup je špatný, ale cítí tlak ho schválit, protože "AI to udělala rychle". GALDUR zaručuje:</p>
+<ul>
+  <li><strong>Curator má veto bez zdůvodnění</strong> — "nezdá se mi to správné" je legitimní důvod pro revizi; agent nikdy neargumentuje zpět</li>
+  <li><strong>Eskalace je odměňována</strong> — Trace Audit explicitně sleduje "escalations that prevented incidents" jako positive metriky</li>
+  <li><strong>Drift log je blameless</strong> — "curator X má vysoký rejection rate" = "specs v doméně X potřebují upřesnění", ne hodnocení osoby</li>
+  <li><strong>Hard Lock incident není skandál</strong> — postmortem je o zlepšení systému, ne o hledání viníka</li>
+</ul>
+
+<h3>H4. Kariérní trajektorie v GALDUR světě</h3>
+<table>
+  <tr><th>Úroveň</th><th>Role</th><th>Klíčová kompetence</th></tr>
+  <tr><td>Entry</td><td>Agent Curator (junior)</td><td>Domain znalosti, spec reading, drift pattern recognition</td></tr>
+  <tr><td>Mid</td><td>Agent Curator (senior) / Governance Steward</td><td>Cross-domain porozumění, eskalační judgment, spec writing</td></tr>
+  <tr><td>Senior</td><td>Intent Architect</td><td>Strategic intent formulation, constraint design, architecture</td></tr>
+  <tr><td>Principal</td><td>Domain Intent Architect</td><td>Cross-domain orchestrace, portfolio management</td></tr>
+  <tr><td>Leadership</td><td>Chief Intent Officer / CTO</td><td>Strategic Intent Map, Hard Lock politika, governance evoluce</td></tr>
+</table>
+<p><strong>Klíčová změna oproti tradičnímu modelu:</strong> hodnota člověka roste s jeho schopností definovat a ohraničit práci — ne s rychlostí, jakou ji exekuuje.</p>
+
+<h3>H5. Onboarding do GALDUR týmu</h3>
+<div class="card card-purple">
+  <p><strong>Týden 1:</strong> Přečti 10 posledních validated Intent Specs v doméně. Zúčastni se Trace Auditu jako pozorovatel. Nevaliduj nic — jen sleduj a ptej se.</p>
+  <p><strong>Týden 2:</strong> Shadowing seniora Curatora při 5 Validation Gates. Diskutuj každé rozhodnutí: proč approve, proč reject. Zapiš vlastní pozorování.</p>
+  <p><strong>Týden 3:</strong> Supervised validation — validuj sám, ale každé rozhodnutí konzultuj se seniorem. Navrhni 3 věci, které by šlo ve specech zlepšit.</p>
+  <p><strong>Týden 4:</strong> Samostatná práce pro L0–L1 tasky. Mentor dostupný pro konzultaci.</p>
+  <p><strong>Výstup onboardingu:</strong> Nový člen rozumí třem věcem: co je dobrý spec, jak poznat kvalitní agentní výstup, kdy eskalovat. A jedné lidské věci: ví, na koho se obrátit.</p>
+</div>
+
+<h3>H6. "Moral crumple zones" — kdo nese odpovědnost?</h3>
+<p>V Human-AI systémech se odpovědnost za chybu AI přenáší na nejbližšího člověka v hierarchii — i když skutečné rozhodnutí udělal agent. V GALDUR kontextu: curator schválil specifikaci, agent provedl destruktivní operaci, curator nese odpovědnost.</p>
+<p><strong>GALDUR odpovídá:</strong> Odpovědnost je sdílená, ne přenášená — Curator odpovídá za kvalitu Validation Gate, Intent Architect za kvalitu specs a constraints. Audit trail dokumentuje rozhodnutí, ne viníky. Hard Locks chrání nejen systém, ale i Curatora — agent nikdy neprovede akci, za kterou by Curator nesl nepřiměřenou odpovědnost. Blameless postmortem je povinný: "kde selhal systém?" ne "kdo selhal?"</p>
+
+<hr>
+
+<!-- ═══ FINANCE ═══ -->
+<h2 id="finance"><span class="num">ADDENDUM II/F —</span>Finanční dimenze</h2>
+
+<h3>F1. Základní napětí: agentní čas vs. lineární finanční čas</h3>
+<p>Agenti pracují asynchronně, paralelně, v burst režimech. Finance a management žijí v lineárně plynoucím čase — čtvrtletí, fiskální rok, milníky pro investory, platební cykly dodavatelů. Toto napětí je reálné. 63 % finančních týmů má problém s prognózami za horizont šesti měsíců při používání tradičních metod.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Tříhorizontový finanční model GALDUR</div>
+  <svg viewBox="0 0 820 260" width="100%" style="max-width:820px">
+    <defs>
+      <linearGradient id="f1g" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#00e896" stop-opacity=".2"/><stop offset="100%" stop-color="#00e896" stop-opacity=".04"/></linearGradient>
+      <linearGradient id="f2g" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#f5c842" stop-opacity=".2"/><stop offset="100%" stop-color="#f5c842" stop-opacity=".04"/></linearGradient>
+      <linearGradient id="f3g" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#b06dff" stop-opacity=".2"/><stop offset="100%" stop-color="#b06dff" stop-opacity=".04"/></linearGradient>
+    </defs>
+    <line x1="40" y1="220" x2="780" y2="220" stroke="#1e3050" stroke-width="1.5"/>
+    <text x="40" y="238" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0" text-anchor="middle">Dnes</text>
+    <text x="280" y="238" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0" text-anchor="middle">+4 týdny</text>
+    <text x="520" y="238" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0" text-anchor="middle">+3 měsíce</text>
+    <text x="780" y="238" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0" text-anchor="middle">+18 měsíců</text>
+    <!-- F1 -->
+    <rect x="40" y="20" width="240" height="188" rx="7" fill="url(#f1g)" stroke="#00e896" stroke-width="2"/>
+    <text x="160" y="46" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">HORIZON F1</text>
+    <text x="160" y="64" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Execution Window</text>
+    <text x="160" y="82" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">0 – 4 týdny</text>
+    <line x1="60" y1="94" x2="260" y2="94" stroke="#1e3050" stroke-width=".5"/>
+    <text x="160" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Aktivní Intent Specy</text>
+    <text x="160" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Per-spec cost tracking</text>
+    <text x="160" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Real-time Drift Dashboard</text>
+    <text x="160" y="172" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Zodp.: Governance Steward</text>
+    <text x="160" y="194" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">Update: kontinuální</text>
+    <!-- F2 -->
+    <rect x="300" y="20" width="240" height="188" rx="7" fill="url(#f2g)" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="420" y="46" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">HORIZON F2</text>
+    <text x="420" y="64" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Planning Window</text>
+    <text x="420" y="82" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">1 – 3 měsíce</text>
+    <line x1="320" y1="94" x2="520" y2="94" stroke="#1e3050" stroke-width=".5"/>
+    <text x="420" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Crystallized + Draft specy</text>
+    <text x="420" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Epic-level plánování</text>
+    <text x="420" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Rolling forecast (3 scénáře)</text>
+    <text x="420" y="172" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Zodp.: Domain Architect</text>
+    <text x="420" y="194" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">Update: týdně</text>
+    <!-- F3 -->
+    <rect x="560" y="20" width="220" height="188" rx="7" fill="url(#f3g)" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="670" y="46" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#b06dff">HORIZON F3</text>
+    <text x="670" y="64" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Strategic Window</text>
+    <text x="670" y="82" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">3 – 18 měsíců</text>
+    <line x1="580" y1="94" x2="760" y2="94" stroke="#1e3050" stroke-width=".5"/>
+    <text x="670" y="114" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Strategic Intent Map</text>
+    <text x="670" y="132" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Domain capacity budget</text>
+    <text x="670" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Board / Investor reporting</text>
+    <text x="670" y="172" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Zodp.: Portfolio / CFO</text>
+    <text x="670" y="194" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">Update: kvartálně</text>
+  </svg>
+</div>
+
+<h3>F3. Intent-based milníky — ne kalendářové</h3>
+<p>Tradiční milníky jsou kalendářové ("do 31. 3. dodáme feature X"). GALDUR zavádí <strong>Intent-based milníky</strong> — milník je splněn, když jsou validovány všechny linked specy, ne když uplyne datum. Confidence level se automaticky počítá z drift metrik aktivních speců (<code>weighted_spec_completion * (1 - avg_drift_score)</code>).</p>
+
+<h3>F4. Per-Spec Cost Model</h3>
+<p>Každý Intent Spec má přiřazenu finanční dimenzi: <code>human_hours</code>, <code>agent_compute_units</code>, <code>infra_cost</code> a <code>total_estimated</code>. Governance engine průběžně sleduje actual vs. estimated. Tím portfolio layer vidí v reálném čase kde jdou peníze — bez time-trackingu, project reportingu nebo ručního controllingu.</p>
+
+<h3>F5. Rolling Forecast místo ročního budgetu</h3>
+<p>GALDUR přirozeně implementuje přístup rolling forecastu: iniciativy jsou financovány po etapách — každá s jasnými kritérii pokračování vázanými na výsledky. Tím je snazší zastavit nebo přesměrovat práci bez toho, aby každé zrušení bylo vnímáno jako selhání.</p>
+
+<h3>F6. Agent Compute Budget — nová účetní kategorie</h3>
+<p>Tradiční účetnictví: mzdy, hardware, software licence, cloud. Agentní organizace potřebuje novou kategorii: <strong>agent compute budget</strong>. Každý spec má <code>max_agent_budget</code> (hard cap) — governance engine zastaví agenta při překročení 80% budgetu a eskaluje (throttling alert) ještě před tím, než přesáhne limit.</p>
+
+<h3>F7. Business Value Framework per spec</h3>
+<p>Každý Intent Spec může (pro F2+, doporučeno) obsahovat: <code>value_type</code> (revenue_enabling / cost_reduction / risk_mitigation / compliance / capability_building), <code>estimated_annual_value_eur</code>, <code>value_realization_date</code> a <code>measurement_method</code>. Tím je možný ROI výpočet per spec: <strong>(Business Value − Total Cost) / Total Cost × 100</strong>.</p>
+
+<h3>F10. Potenciálně transformativní koncepty (zatím nerozšířené)</h3>
+<p><strong>Outcome-based agent pricing</strong> — platba za validovaný výsledek, ne za tokeny a compute. Experimentálně začínají nabízet specializované agentní firmy — přirozené rozšíření GALDUR cost modelu.</p>
+<p><strong>Agentní kapacita jako obchodovatelné aktivum</strong> — organizace s vyspělou agentní governance a dobrými Intent Specs má aktiva, která lze pronajmout (Crew-as-a-service), prodat jako "validated agent workflow", nebo investovat do joint venture.</p>
+<p><strong>Financial digital twin</strong> — virtuální model celého finančního chování organizace, aktualizovaný v reálném čase z Drift Dashboardu, spec completion dat a cost trackingu. CFO může dělat "what if" analýzy: "co se stane s Q3 milestones, pokud přesunu 30 % kapacity z domény A do domény B?"</p>
+
+<hr>
+
+<!-- ═══ PŘÍKLADY ═══ -->
+<h2 id="examples"><span class="num">ADDENDUM III —</span>Příklady nasazení v praxi</h2>
+
+<div class="blockquote">
+  Agenti myslí. Roboti dělají. Lidé vedou. Finance drží čas.
+</div>
+
+<h3>Metafora: restaurační kuchyně</h3>
+<p>Nejsrozumitelnější analogie pro management: GALDUR tým je jako kuchyně ve velké restauraci.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Kuchyně jako model GALDUR týmu</div>
+  <svg viewBox="0 0 820 200" width="100%" style="max-width:820px">
+    <rect x="20" y="24" width="175" height="140" rx="8" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="107" y="55" text-anchor="middle" font-size="30">👨‍🍳</text>
+    <text x="107" y="82" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#f5c842">Šéfkuchař</text>
+    <text x="107" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">= Intent Architect</text>
+    <text x="107" y="120" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Receptury · menu ·</text>
+    <text x="107" y="136" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">záměr a standard</text>
+    <text x="107" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">= Intent Spec</text>
+    <rect x="215" y="24" width="175" height="140" rx="8" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="302" y="55" text-anchor="middle" font-size="30">🧑‍🍳</text>
+    <text x="302" y="82" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00e896">Sous-chef</text>
+    <text x="302" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">= Agent Curator</text>
+    <text x="302" y="120" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Kontroluje sekce ·</text>
+    <text x="302" y="136" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">posuzuje výstup</text>
+    <text x="302" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">= Validation Gate</text>
+    <rect x="410" y="24" width="175" height="140" rx="8" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="497" y="55" text-anchor="middle" font-size="30">📋</text>
+    <text x="497" y="82" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#b06dff">Provozní manažer</text>
+    <text x="497" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">= Gov. Steward</text>
+    <text x="497" y="120" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Hladký provoz ·</text>
+    <text x="497" y="136" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">řeší problémy</text>
+    <text x="497" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">= Drift Dashboard</text>
+    <rect x="605" y="24" width="195" height="140" rx="8" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="702" y="55" text-anchor="middle" font-size="30">🤖</text>
+    <text x="702" y="82" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00d4ff">Kuchaři u stanic</text>
+    <text x="702" y="100" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">= Agenti</text>
+    <text x="702" y="120" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">Rychle, přesně ·</text>
+    <text x="702" y="136" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#6a80a0">podle receptury</text>
+    <text x="702" y="156" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">= Exekuce specu</text>
+  </svg>
+</div>
+
+<p><strong>Šéfkuchař</strong> (Intent Architect) určuje co se vaří a jak — vytváří receptury, rozhoduje o menu, ví co chce host. Sám nevaří každé jídlo. <strong>Sous-chefové</strong> (Agent Curators) dohlížejí na sekce kuchyně — kontrolují, jestli výsledek vypadá správně. <strong>Kuchaři u stanic</strong> (Agenti) připravují konkrétní chody — rychle, přesně, podle receptury. Neumí vymyslet nové jídlo, ale podle dobré receptury uvaří stovky porcí bez chyby. <strong>Provozní manažer</strong> (Governance Steward) hlídá, aby kuchyně fungovala jako celek.</p>
+<p>Receptury jsou Intent Specy. Pravidla bezpečnosti potravin jsou Hard Locks. Degustační procesy jsou Validation Gates.</p>
+
+<h3>Příklad 1: Malá softwarová agentura (8 lidí)</h3>
+<div class="card card-cyan">
+  <p><strong>Situace:</strong> Vývojáři tráví 40 % času rutinními věcmi — psaní testů, dokumentace, jednoduché bugy. Nestíhají kreativní a architektonickou práci, kvůli které si je zákazníci platí.</p>
+  <p><strong>Nasazení GALDUR (zjednodušená verze):</strong></p>
+  <ul>
+    <li>L0 agenti: unit testy k hotovému kódu, aktualizace dokumentace, jednoduché bugy</li>
+    <li>Governance pravidlo: pokud agent narazí na DB strukturu nebo autentizaci → zastaví se a informuje vývojáře</li>
+    <li>Ranní 10minutový Drift Dashboard nahradil daily standup</li>
+  </ul>
+  <p><strong>Výsledek po 3 měsících:</strong> Každý vývojář ušetřil 6 hodin týdně. Tým zvládl o 2 projekty více za kvartál bez nového náboru. Tester přešel od manuálního klikání k navrhování testovacích scénářů.</p>
+</div>
+
+<h3>Příklad 2: Fintech startup (50 lidí)</h3>
+<div class="card card-cyan">
+  <p><strong>Situace:</strong> DevOps inženýr tráví 70 % času opakujícími se operačními úkoly. Na architektonická rozhodnutí mu zbývají hodiny týdně.</p>
+  <table>
+    <tr><th>Co agenti převzali</th><th>Co zůstalo lidem</th></tr>
+    <tr><td>Rutinní monitoring serverů 24/7</td><td>Jakákoliv změna v produkci</td></tr>
+    <tr><td>Rotace SSL certifikátů</td><td>Firewall pravidla (4-eyes principle)</td></tr>
+    <tr><td>Týdenní zálohy + ověření integrity</td><td>Zálohy produkce (L3)</td></tr>
+    <tr><td>Patche OS na dev a staging</td><td>Nové přístupy do systémů</td></tr>
+    <tr><td>Detekce anomálií v DB výkonu + čekání na souhlas</td><td>Architektonická rozhodnutí</td></tr>
+  </table>
+  <p><strong>Finanční výsledek:</strong> Agentní kapacita ≈ 1,5 extra DevOps inženýra. Náklady: 8 000 Kč/měsíc. Ušetřený čas: ~120 hod/měsíc senior. ROI pozitivní od 2. měsíce.</p>
+</div>
+
+<h3>Příklad 3: Výrobní korporace (2 000 lidí) — fázované nasazení</h3>
+
+<div class="diagram">
+  <div class="diagram-title">Tři fáze korporátního nasazení GALDUR</div>
+  <svg viewBox="0 0 820 180" width="100%" style="max-width:820px">
+    <rect x="20" y="20" width="240" height="140" rx="7" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="140" y="48" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00d4ff">FÁZE 1 · měsíce 1–6</text>
+    <text x="140" y="68" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Pilotní Crew</text>
+    <text x="140" y="90" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">IT Support doména</text>
+    <text x="140" y="108" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Monitoring · Ticket triage</text>
+    <text x="140" y="130" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">−30 % rutinní zátěže</text>
+    <text x="140" y="148" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">−58 % čas na ticket</text>
+    <polygon points="270,90 290,80 290,100" fill="#6a80a0" opacity=".6"/>
+    <line x1="260" y1="90" x2="290" y2="90" stroke="#6a80a0" stroke-width="1.5" opacity=".6"/>
+    <rect x="290" y="20" width="240" height="140" rx="7" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="410" y="48" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">FÁZE 2 · měsíce 7–18</text>
+    <text x="410" y="68" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Domain Pilotáž</text>
+    <text x="410" y="90" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Dev Domain přidána</text>
+    <text x="410" y="108" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">"Digitální zadávací list"</text>
+    <text x="410" y="130" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Jednoduchá f.: 2 týd.→1 den</text>
+    <text x="410" y="148" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Složitá f.: 6 týd.→2–3 týd.</text>
+    <polygon points="540,90 560,80 560,100" fill="#6a80a0" opacity=".6"/>
+    <line x1="530" y1="90" x2="560" y2="90" stroke="#6a80a0" stroke-width="1.5" opacity=".6"/>
+    <rect x="560" y="20" width="240" height="140" rx="7" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="680" y="48" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">FÁZE 3 · měsíce 18–36</text>
+    <text x="680" y="68" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="700" fill="#fff">Výrobní systémy</text>
+    <text x="680" y="90" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">AMR roboti ve výrobě</text>
+    <text x="680" y="108" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Operátoři = Curators</text>
+    <text x="680" y="130" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">Digital Twin simulace</text>
+    <text x="680" y="148" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#6a80a0">před každým L2+ spec</text>
+  </svg>
+</div>
+
+<p><strong>Pro vedení korporace:</strong></p>
+<ul>
+  <li><strong>COO:</strong> Výroba nezastavena ani jednou kvůli IT problému. Čas od schválení IT požadavku do nasazení: průměrně 60 % kratší. Kompletní audit trail každé změny v systémech.</li>
+  <li><strong>CFO:</strong> Investice v pilotní fázi 2,4 mil. Kč. Ušetřená kapacita IT týmu: cca 8 FTE ekvivalent ročně. ROI pozitivní od 4. měsíce fáze 2.</li>
+  <li><strong>HR:</strong> Žádné propouštění — lidé přešli na smysluplnější práci. Snížení přesčasů v IT týmu o 40 %. 3 seniorní technici, kteří uvažovali o odchodu, zůstali.</li>
+</ul>
+
+<h3>Příklad 4: AI-first agentura (12 lidí) — nový byznysový model</h3>
+<div class="card card-gold">
+  <p><strong>Model:</strong> 12 lidí dělá práci, na kterou by tradičně potřebovali 50. Agenti dělají 80 % exekuce. Lidé definují, komunikují se zákazníky a zodpovídají za výsledek.</p>
+  <table>
+    <tr><th>Projekt</th><th>Tradičně</th><th>AI-first agentura</th></tr>
+    <tr><td>Zákaznická datová analýza</td><td>3 analytici, 6 týdnů, 450 000 Kč</td><td>1 analytik, 6 dní, 90 000 Kč</td></tr>
+    <tr><td>Softwarová feature</td><td>Tým 3 lidí, 3 sprinty</td><td>1 Curator, Intent Cycle 2–5 dní</td></tr>
+    <tr><td>Infrastrukturní projekt</td><td>DevOps tým, 4 týdny</td><td>1 Steward + agenti, 1 týden</td></tr>
+  </table>
+  <p>Zákazník platí za lidský úsudek, domain expertizu a odpovědnost za výsledek — ne za počet hodin u klávesnice.</p>
+</div>
+
+<h3>Jak to vypadá den za dnem</h3>
+<p><strong>Ráno Intent Architekta (Lukáš, Kreditio):</strong> Otevře Drift Dashboard. Zelené položky (hotovo, zalogováno) projde za 5 minut. Žluté (čeká na rozhodnutí) řeší do 30 minut ještě před příchodem. Červené (vyžaduje pozornost dnes) adresuje okamžitě. 9:00 — Intent Crystallization session s Markem (product): 25 minut, projdou spec společně. 9:30 — review agentního výstupu: všimne si edge case, přidá upřesnění do specu, agent doplní test. 10:00 — DB index problém: přečte agentní analýzu tří možných příčin, z vlastní zkušenosti vybere nejpravděpodobnější, schválí postup. Zbytek dne: architektonická rozhodnutí, zákaznický call, mentorování juniora.</p>
+<p><strong>Den Governance Stewarda (Jana, Technoform):</strong> Pondělí ráno — zelené: 47 serverů zpatchováno, 3 certy obnoveny, backup OK. Žluté: nový firewall rule čeká na souhlas, monitoring threshold úprava. Červené: disk I/O anomálie na jednom serveru, rostoucí latence prod DB. Jana stráví první hodinu červenými položkami, žluté deleguje na Curatora Martina. Zbytek dne: facilituje Intent Crystallization (45 min), vede měsíční Trace Audit (90 min), řeší jednu eskalaci agenta.</p>
+
+<h3>Tři nejčastější otázky managementu</h3>
+<table>
+  <tr><th>Otázka</th><th>Odpověď</th></tr>
+  <tr><td><strong>"Co když agent udělá chybu?"</strong></td><td>Udělá — stejně jako nový zaměstnanec. Tři vrstvy ochrany: (1) agent se zastaví u rizikovějších akcí, (2) vše prochází lidským review před nasazením, (3) Hard Locks fyzicky blokují nejnebezpečnější akce. Chyby se stávají — v GALDUR jsou zachyceny dřív než napáchají škodu.</td></tr>
+  <tr><td><strong>"Nepřijdeme o lidi?"</strong></td><td>Ne — přesuneme je. Analogie: příchod počítačů nezrušil účetní, přesunul je od sčítání čísel k finanční analýze. Potřebujeme méně lidí na exekuci a více lidí s dobrým úsudkem. Posun v profilu náboru, ne masivní propouštění.</td></tr>
+  <tr><td><strong>"Jak dlouho trvá zavedení?"</strong></td><td>Malý tým (5–15 lidí): první výsledky 4–8 týdnů, plné nasazení 3–6 měsíců. Středně velká firma: pilotáž 2–3 měsíce, plné nasazení 12–18 měsíců. Korporace (500+ lidí): pilot 3–6 měsíců, postupné rozšíření 2–4 roky. Doporučení: nezačínat revolucí — vybrat jeden tým, prokázat hodnotu, pak rozšířit.</td></tr>
+</table>
+
+<h3>Srovnání: jak se mění práce</h3>
+<div class="diagram">
+  <div class="diagram-title">Před a po GALDUR — konkrétní změny v každodenní práci</div>
+  <svg viewBox="0 0 820 300" width="100%" style="max-width:820px">
+    <rect x="0" y="0" width="820" height="300" rx="6" fill="#060d1a"/>
+    <rect x="0" y="0" width="260" height="36" rx="3" fill="rgba(245,200,66,.1)"/>
+    <rect x="270" y="0" width="260" height="36" rx="3" fill="rgba(0,212,255,.06)"/>
+    <rect x="540" y="0" width="280" height="36" rx="3" fill="rgba(0,232,150,.08)"/>
+    <text x="130" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">SITUACE</text>
+    <text x="400" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#ff6b6b">PŘED GALDUR</text>
+    <text x="680" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">PO GALDUR</text>
+    <g font-family="Source Sans 3,sans-serif" font-size="13">
+      <line x1="0" y1="40" x2="820" y2="40" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="62" fill="#9aafcc">Rutinní bug fix</text>
+      <text x="270" y="62" fill="#ff6b6b">Vývojář: 3 hodiny</text>
+      <text x="540" y="62" fill="#00e896">Agent 45 min + 15 min review</text>
+      <line x1="0" y1="70" x2="820" y2="70" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="92" fill="#9aafcc">Update 50 serverů</text>
+      <text x="270" y="92" fill="#ff6b6b">Sysadmin: celý den</text>
+      <text x="540" y="92" fill="#00e896">Agent přes noc + 30 min review</text>
+      <line x1="0" y1="100" x2="820" y2="100" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="122" fill="#9aafcc">Zákaznická analýza dat</text>
+      <text x="270" y="122" fill="#ff6b6b">Analytik: 3 týdny</text>
+      <text x="540" y="122" fill="#00e896">Agent: 3 dny + 1 den review</text>
+      <line x1="0" y1="130" x2="820" y2="130" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="152" fill="#9aafcc">IT sprint plánování</text>
+      <text x="270" y="152" fill="#ff6b6b">Scrum meeting: 4 hodiny</text>
+      <text x="540" y="152" fill="#00e896">Intent Crystallization: 45 min</text>
+      <line x1="0" y1="160" x2="820" y2="160" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="182" fill="#9aafcc">"Co se děje v systémech?"</text>
+      <text x="270" y="182" fill="#ff6b6b">Ruční monitoring, standup</text>
+      <text x="540" y="182" fill="#00e896">Drift Dashboard, async, 10 min</text>
+      <line x1="0" y1="190" x2="820" y2="190" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="212" fill="#9aafcc">Incident v produkci</text>
+      <text x="270" y="212" fill="#ff6b6b">Krizový call, chaos</text>
+      <text x="540" y="212" fill="#00e896">Agent detekuje → Steward → Curator</text>
+      <line x1="0" y1="220" x2="820" y2="220" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="242" fill="#9aafcc">Onboarding nové funkce</text>
+      <text x="270" y="242" fill="#ff6b6b">2týdenní sprint, demo</text>
+      <text x="540" y="242" fill="#00e896">Intent Cycle: 2–5 dní, Validation Gate</text>
+      <line x1="0" y1="250" x2="820" y2="250" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="272" fill="#9aafcc">DB migrace v produkci</text>
+      <text x="270" y="272" fill="#ff6b6b">DBA + vývojář + meeting</text>
+      <text x="540" y="272" fill="#00e896">Agent plán → L2 approval → exekuce</text>
+      <line x1="0" y1="280" x2="820" y2="280" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="298" fill="#9aafcc">Cert rotace 20 serverů</text>
+      <text x="270" y="298" fill="#ff6b6b">Sysadmin: půl dne</text>
+      <text x="540" y="298" fill="#00e896">Agent: automaticky + report</text>
+    </g>
+  </svg>
+</div>
+
+
+<hr>
+
+<!-- ═══ ADDENDUM IV — ZNALOSTNÍ DOMÉNY ═══ -->
+<h2 id="knowledge"><span class="num">ADDENDUM IV —</span>Znalostní domény — Obchod, Marketing, Právo, Finance</h2>
+
+<h3>Proč znalostní práce potřebuje governance stejně jako IT</h3>
+<div class="blockquote" style="border-color:var(--green);background:linear-gradient(90deg,rgba(0,232,150,.05) 0%,transparent 100%);margin-bottom:32px">
+  Rozhodnutí je lidské. Exekuce je agentní.<br>
+  Governance je most mezi nimi.<br>
+  Čím přesnější záměr, tím lepší výsledek.
+</div>
+
+<p>GALDUR v základní podobě pokrývá Dev a Ops domény. Ale v hybridní firmě — kde agenti pracují napříč celou organizací — se stejné principy plně uplatňují v obchodě, marketingu, právním oddělení nebo financích. Rizika jsou jiná, ale struktura problému je identická:</p>
+<ul>
+  <li>Agent produkuje výstupy rychle — ale kvalita a schválení závisí na člověku</li>
+  <li>Některé akce jsou <strong>nevratné</strong> — odeslaný e-mail zákazníkovi, podepsaná smlouva, publikovaný příspěvek</li>
+  <li>Blast radius nekontrolované akce může být obrovský — právní závazek, poškození reputace, regulační problém</li>
+  <li>Bez explicitní governance se autonomie agentů stává rizikem, ne výhodou</li>
+</ul>
+<p>Klíčový insight: <strong>znalostní práce má vyšší podíl L2–L3 tasků</strong> než IT. Důvodem je, že výstupy znalostní práce jsou přímo viditelné zákazníkům, partnerům nebo regulátorům — a chyba se nedá "rollbacknout" jako databázová migrace.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Rozšířené domény pokrytí GALDUR — hybridní firma</div>
+  <svg viewBox="0 0 820 412" width="100%" style="max-width:820px">
+    <defs>
+      <radialGradient id="hgk" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#00d4ff" stop-opacity=".1"/><stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/></radialGradient>
+    </defs>
+    <ellipse cx="410" cy="200" rx="180" ry="130" fill="url(#hgk)"/>
+    <circle cx="410" cy="200" r="52" fill="#0c1628" stroke="#00d4ff" stroke-width="2"/>
+    <text x="410" y="194" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#00d4ff">GALDUR</text>
+    <text x="410" y="212" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">governance</text>
+    <!-- IT domény (existující) -->
+    <rect x="300" y="30" width="120" height="52" rx="6" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="360" y="52" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">Software Dev</text>
+    <text x="360" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">existující</text>
+    <line x1="360" y1="82" x2="385" y2="148" stroke="#f5c842" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="540" y="56" width="120" height="52" rx="6" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="600" y="78" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">Infra / Ops</text>
+    <text x="600" y="94" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">existující</text>
+    <line x1="548" y1="100" x2="462" y2="168" stroke="#f5c842" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <rect x="540" y="296" width="120" height="52" rx="6" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="600" y="318" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" font-weight="700" fill="#f5c842">Security / DB</text>
+    <text x="600" y="334" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">existující</text>
+    <line x1="548" y1="304" x2="462" y2="232" stroke="#f5c842" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <!-- NOVÉ znalostní domény -->
+    <rect x="160" y="56" width="120" height="60" rx="6" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <text x="220" y="78" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Obchod</text>
+    <text x="220" y="96" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">CRM · nabídky</text>
+    <text x="220" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e896">NOVÉ ↓</text>
+    <line x1="272" y1="100" x2="362" y2="168" stroke="#00e896" stroke-width="1.5" stroke-dasharray="3,3" opacity=".6"/>
+    <rect x="30" y="180" width="120" height="60" rx="6" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <text x="90" y="202" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Marketing</text>
+    <text x="90" y="220" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">obsah · kampaně</text>
+    <text x="90" y="234" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e896">NOVÉ ↓</text>
+    <line x1="150" y1="210" x2="358" y2="210" stroke="#00e896" stroke-width="1.5" stroke-dasharray="3,3" opacity=".6"/>
+    <rect x="160" y="296" width="120" height="60" rx="6" fill="#0c1628" stroke="#00e896" stroke-width="2"/>
+    <text x="220" y="318" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#00e896">Právo</text>
+    <text x="220" y="336" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">smlouvy · compliance</text>
+    <text x="220" y="350" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#00e896">NOVÉ ↓</text>
+    <line x1="272" y1="310" x2="362" y2="242" stroke="#00e896" stroke-width="1.5" stroke-dasharray="3,3" opacity=".6"/>
+    <rect x="300" y="330" width="120" height="60" rx="6" fill="#0c1628" stroke="#b06dff" stroke-width="2"/>
+    <text x="360" y="352" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" font-weight="700" fill="#b06dff">Finance</text>
+    <text x="360" y="370" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">reporting · modely</text>
+    <text x="360" y="384" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#b06dff">NOVÉ ↓</text>
+    <line x1="360" y1="330" x2="410" y2="252" stroke="#b06dff" stroke-width="1.5" stroke-dasharray="3,3" opacity=".6"/>
+    <!-- Legenda — přesunuta pod diagram, aby nepřekrývala Security/DB -->
+    <line x1="0" y1="378" x2="820" y2="378" stroke="#1e3050" stroke-width=".5"/>
+    <rect x="180" y="386" width="16" height="10" rx="2" fill="none" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="202" y="397" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">IT domény (Addenda I–III) — existující</text>
+    <rect x="480" y="386" width="16" height="10" rx="2" fill="none" stroke="#00e896" stroke-width="2"/>
+    <text x="502" y="397" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">Znalostní domény (Addendum IV) — nové</text>
+  </svg>
+</div>
+
+<h3>Jak se mění role v netech kontextu</h3>
+<p>GALDUR role zůstávají — mění se jen jejich konkrétní obsah. Intent Architect nemusí být technický člověk. Curator nemusí umět kód. Co zůstává stejné: <strong>člověk drží intent, agent exekuuje, governance rozhoduje o míře autonomie.</strong></p>
+
+<div class="diagram">
+  <div class="diagram-title">Role GALDUR v hybridní firmě — příklady obsazení</div>
+  <svg viewBox="0 0 820 240" width="100%" style="max-width:820px">
+    <!-- Headers -->
+    <rect x="0" y="0" width="820" height="32" fill="#0c1628" rx="4"/>
+    <text x="80" y="21" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#6a80a0">DOMÉNA</text>
+    <text x="250" y="21" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">INTENT ARCHITECT</text>
+    <text x="450" y="21" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">AGENT CURATOR</text>
+    <text x="650" y="21" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#b06dff">GOV. STEWARD</text>
+    <line x1="0" y1="32" x2="820" y2="32" stroke="#1e3050" stroke-width="1"/>
+    <g font-family="Source Sans 3,sans-serif" font-size="13">
+      <text x="80" y="60" text-anchor="middle" fill="#9aafcc" font-weight="600">IT / Dev</text>
+      <text x="250" y="60" text-anchor="middle" fill="#f5c842">Tech Lead / Architect</text>
+      <text x="450" y="60" text-anchor="middle" fill="#00e896">Developer / SysAdmin</text>
+      <text x="650" y="60" text-anchor="middle" fill="#b06dff">Scrum Master / DevOps</text>
+      <line x1="0" y1="70" x2="820" y2="70" stroke="#1e3050" stroke-width=".5"/>
+      <text x="80" y="98" text-anchor="middle" fill="#9aafcc" font-weight="600">Obchod</text>
+      <text x="250" y="98" text-anchor="middle" fill="#f5c842">Sales Director / KAM</text>
+      <text x="450" y="98" text-anchor="middle" fill="#00e896">Obchodní zástupce</text>
+      <text x="650" y="98" text-anchor="middle" fill="#b06dff">Head of Sales / COO</text>
+      <line x1="0" y1="108" x2="820" y2="108" stroke="#1e3050" stroke-width=".5"/>
+      <text x="80" y="136" text-anchor="middle" fill="#9aafcc" font-weight="600">Marketing</text>
+      <text x="250" y="136" text-anchor="middle" fill="#f5c842">CMO / Brand Manager</text>
+      <text x="450" y="136" text-anchor="middle" fill="#00e896">Copywriter / Social Manager</text>
+      <text x="650" y="136" text-anchor="middle" fill="#b06dff">Head of Marketing / COO</text>
+      <line x1="0" y1="146" x2="820" y2="146" stroke="#1e3050" stroke-width=".5"/>
+      <text x="80" y="174" text-anchor="middle" fill="#9aafcc" font-weight="600">Právo</text>
+      <text x="250" y="174" text-anchor="middle" fill="#f5c842">General Counsel / Právník</text>
+      <text x="450" y="174" text-anchor="middle" fill="#00e896">Paralegal / Junior Lawyer</text>
+      <text x="650" y="174" text-anchor="middle" fill="#b06dff">COO / Compliance Officer</text>
+      <line x1="0" y1="184" x2="820" y2="184" stroke="#1e3050" stroke-width=".5"/>
+      <text x="80" y="212" text-anchor="middle" fill="#9aafcc" font-weight="600">Finance</text>
+      <text x="250" y="212" text-anchor="middle" fill="#f5c842">CFO / Finance Manager</text>
+      <text x="450" y="212" text-anchor="middle" fill="#00e896">Controller / Accountant</text>
+      <text x="650" y="212" text-anchor="middle" fill="#b06dff">COO / CFO</text>
+    </g>
+    <text x="410" y="232" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">V malé firmě (2–5 lidí) může jedna osoba zastávat více rolí — Intent Architect + Curator pro svou doménu</text>
+  </svg>
+</div>
+
+<hr>
+
+<h2 id="k-obchod"><span class="num">IV.1 —</span>Governance matice — Obchod a CRM</h2>
+<p>Obchodní agenti pracují s citlivými daty zákazníků, připravují nabídky a komunikují jménem firmy. Klíčový princip: <strong>vše, co může vázat firmu závazkem nebo jít přímo k zákazníkovi, vyžaduje minimálně L2</strong>.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Obchodní domény — typické aktivity agenta a jejich riziko</div>
+  <svg viewBox="0 0 820 200" width="100%" style="max-width:820px">
+    <defs>
+      <linearGradient id="riskgrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00e896" stop-opacity=".3"/>
+        <stop offset="50%" stop-color="#f5c842" stop-opacity=".3"/>
+        <stop offset="100%" stop-color="#ff6b6b" stop-opacity=".3"/>
+      </linearGradient>
+    </defs>
+    <rect x="0" y="60" width="820" height="30" fill="url(#riskgrad)" rx="4"/>
+    <text x="130" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">NÍZKÉ RIZIKO</text>
+    <text x="410" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">STŘEDNÍ RIZIKO</text>
+    <text x="690" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">VYSOKÉ RIZIKO</text>
+    <!-- Activity dots -->
+    <circle cx="60" cy="140" r="28" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="60" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#00e896">Analýza</text>
+    <text x="60" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">CRM dat</text>
+    <text x="60" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">L0</text>
+    <circle cx="155" cy="140" r="28" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="155" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#00e896">Lead</text>
+    <text x="155" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">scoring</text>
+    <text x="155" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">L0</text>
+    <circle cx="290" cy="140" r="28" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="290" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#f5c842">Draft</text>
+    <text x="290" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">nabídky</text>
+    <text x="290" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">L1</text>
+    <circle cx="390" cy="140" r="28" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="390" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#f5c842">Interní</text>
+    <text x="390" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">e-mail</text>
+    <text x="390" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">L1</text>
+    <circle cx="510" cy="140" r="28" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="510" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#b06dff">E-mail</text>
+    <text x="510" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">zákazníkovi</text>
+    <text x="510" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">L2</text>
+    <circle cx="620" cy="140" r="28" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="620" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#ff6b6b">Odeslání</text>
+    <text x="620" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">smlouvy</text>
+    <text x="620" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">L3</text>
+    <circle cx="720" cy="140" r="28" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="720" y="135" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#ff6b6b">Přijetí</text>
+    <text x="720" y="150" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="10" fill="#9aafcc">závazku</text>
+    <text x="720" y="162" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">HARD</text>
+  </svg>
+</div>
+
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Poznámka / Trigger</th></tr>
+  <tr><td>Analýza CRM dat, pipeline reporty</td><td class="l0">L0</td><td>read-only vždy L0</td></tr>
+  <tr><td>Lead scoring, segmentace zákazníků</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Příprava draftu nabídky / ceníku</td><td class="l1">L1</td><td>Validation Gate před odesláním zákazníkovi</td></tr>
+  <tr><td>Personalizace šablony e-mailu (interní)</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Aktualizace záznamu v CRM</td><td class="l1">L1</td><td>záznamy o závazcích → L2</td></tr>
+  <tr><td>Odeslání e-mailu zákazníkovi (1 příjemce)</td><td class="l2">L2</td><td>agent plánuje → obchodník schvaluje</td></tr>
+  <tr><td>Hromadný e-mail (&gt;5 příjemců)</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit</span></td></tr>
+  <tr><td>Příprava smlouvy (draft)</td><td class="l2">L2</td><td>právní review povinné</td></tr>
+  <tr><td>Odeslání smlouvy zákazníkovi</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Přijetí objednávky / závazku jménem firmy</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Slevová politika — aplikace slevy &gt;10 %</td><td class="l2">L2</td><td>Intent Architect approval</td></tr>
+  <tr><td>Forecast / pipeline analýza</td><td class="l0">L0</td><td>—</td></tr>
+</table>
+
+<div class="card card-cyan">
+  <h4>Příklad: Obchodní agent v praxi</h4>
+  <p><strong>Situace:</strong> Zákazník pošle poptávku. Obchodní agent může: analyzovat zákazníkovu historii (L0), připravit draft nabídky na základě ceníku (L1, curator zkontroluje ceny a podmínky), a navrhnout text průvodního e-mailu (L1). Odeslání e-mailu a jakákoliv komunikace obsahující cenové podmínky nebo termíny dodání vyžaduje explicitní souhlas obchodníka (L2).</p>
+  <p><strong>Co agent nesmí nikdy:</strong> Odeslat nabídku přímo zákazníkovi bez schválení. Přijmout objednávku. Potvrdit termín dodání jako závazný. Nabídnout slevu mimo schválené rozsahy.</p>
+</div>
+
+<hr>
+
+<h2 id="k-marketing"><span class="num">IV.2 —</span>Governance matice — Marketing a obsah</h2>
+<p>Marketing má specifické riziko: <strong>obsah jde ven pod jménem firmy</strong> a je okamžitě viditelný. Chyba v contentu může poškodit brand, reputaci nebo vyvolat právní problémy (copyright, reklamní regulace). Zároveň marketing těží z vysoké frekvence L0 tasků — příprava draftu, analýza, research — kde agent přidává enormní hodnotu.</p>
+
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Poznámka / Trigger</th></tr>
+  <tr><td>Competitor research, trend analýza</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Keyword research, SEO analýza</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Draft blogového příspěvku / článku</td><td class="l1">L1</td><td>human review před publikací</td></tr>
+  <tr><td>Draft social media příspěvku</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Příprava e-mail newsletteru (draft)</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Publikace na owned channels (blog, web)</td><td class="l2">L2</td><td>agent navrhuje → curator schvaluje → publikace</td></tr>
+  <tr><td>Odeslání newsletteru (&gt;100 příjemců)</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit</span></td></tr>
+  <tr><td>Publikace na social media (firemní účet)</td><td class="l2">L2</td><td>brand voice approval povinný</td></tr>
+  <tr><td>Spuštění placené kampaně (PPC, social ads)</td><td class="l2">L2</td><td>budget + creative approval</td></tr>
+  <tr><td>Změna kampaňového budgetu &gt;20 %</td><td class="l2">L2</td><td>CFO nebo CMO approval</td></tr>
+  <tr><td>Tisková zpráva / PR komunikace</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Krizová komunikace (reakce na negativní PR)</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Komunikace jménem C-level (quote, statement)</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+</table>
+
+<div class="card card-cyan">
+  <h4>Příklad: Obsahový agent v marketingové agentuře</h4>
+  <p><strong>Situace:</strong> Klient schválil content plán na měsíc. Agent každý týden připraví drafty 4 social media příspěvků a 1 blogový článek (vše L1). Copywriter / Curator reviewuje, upravuje tone of voice, schvaluje nebo posílá k revizi. Po schválení agent připraví plánování v scheduling nástroji (L1) — ale samotné publikování spustí curator (L2).</p>
+  <p><strong>Výsledek:</strong> Tým 2 lidí produkuje obsah jako tým 6. Curator tráví čas quality gate a brand voice, ne generováním prvního draftu.</p>
+</div>
+
+<hr>
+
+<h2 id="k-pravo"><span class="num">IV.3 —</span>Governance matice — Právo a compliance</h2>
+<p>Právní doména má nejvyšší podíl L2–L3 tasků ze všech znalostních domén. Důvod je jednoduchý: <strong>právní chyba může mít nevratné důsledky</strong> — závazek, spor, regulační pokuta, reputační škoda. Zároveň zde agent přidává obrovskou hodnotu v L0 práci: analýza smluv, research judikatury, kontrola compliance — to jsou stovky hodin ušetřené práce.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Právní doména — tok Intent Spec od analýzy ke smlouvě</div>
+  <svg viewBox="0 0 820 160" width="100%" style="max-width:820px">
+    <defs>
+      <marker id="al" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#00d4ff" opacity=".7"/></marker>
+    </defs>
+    <rect x="10" y="40" width="130" height="80" rx="7" fill="#0c1628" stroke="#00e896" stroke-width="1.5"/>
+    <text x="75" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">L0</text>
+    <text x="75" y="86" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#fff">Analýza</text>
+    <text x="75" y="102" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">smlouvy</text>
+    <line x1="140" y1="80" x2="168" y2="80" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#al)"/>
+    <rect x="168" y="40" width="130" height="80" rx="7" fill="#0c1628" stroke="#f5c842" stroke-width="1.5"/>
+    <text x="233" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">L1</text>
+    <text x="233" y="86" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#fff">Draft</text>
+    <text x="233" y="102" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">úprav / addend.</text>
+    <line x1="298" y1="80" x2="326" y2="80" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#al)"/>
+    <rect x="326" y="40" width="130" height="80" rx="7" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="391" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">L2</text>
+    <text x="391" y="86" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#fff">Review</text>
+    <text x="391" y="102" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">právníkem</text>
+    <line x1="456" y1="80" x2="484" y2="80" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#al)"/>
+    <rect x="484" y="40" width="130" height="80" rx="7" fill="#0c1628" stroke="#ff6b6b" stroke-width="1.5"/>
+    <text x="549" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">L3</text>
+    <text x="549" y="86" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#fff">Odeslání</text>
+    <text x="549" y="102" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">protistraně</text>
+    <line x1="614" y1="80" x2="642" y2="80" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#al)"/>
+    <rect x="642" y="40" width="130" height="80" rx="7" fill="#0c1628" stroke="#ff6b6b" stroke-width="2"/>
+    <text x="707" y="62" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#ff6b6b">L3 HARD</text>
+    <text x="707" y="82" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="12" fill="#fff">Podpis /</text>
+    <text x="707" y="98" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#9aafcc">akceptace</text>
+    <!-- Labels -->
+    <text x="75" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">agent čte</text>
+    <text x="233" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">agent navrhuje</text>
+    <text x="391" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">právník schvaluje</text>
+    <text x="549" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">člověk odesílá</text>
+    <text x="707" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff6b6b">vždy člověk</text>
+  </svg>
+</div>
+
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Poznámka / Trigger</th></tr>
+  <tr><td>Analýza / review smlouvy (čtení)</td><td class="l0">L0</td><td>výstup = souhrn rizik a doporučení</td></tr>
+  <tr><td>Research judikatury, právních předpisů</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Compliance monitoring (sledování změn)</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Draft právního dokumentu / addenda</td><td class="l1">L1</td><td>právník vždy reviewuje před použitím</td></tr>
+  <tr><td>Příprava právní korespondence (draft)</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>GDPR compliance check, data mapping</td><td class="l1">L1</td><td>DPO review pro nové kategorie dat</td></tr>
+  <tr><td>Finalizace smluvního dokumentu</td><td class="l2">L2</td><td>právník schvaluje každou verzi</td></tr>
+  <tr><td>Komunikace s protistranou (právní kontext)</td><td class="l2">L2</td><td><span class="hard">HARD: nelze snížit</span></td></tr>
+  <tr><td>Regulatorní hlášení (příprava)</td><td class="l2">L2</td><td>compliance officer review povinný</td></tr>
+  <tr><td>Odeslání smlouvy protistraně</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Podpis nebo akceptace závazku</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual, oprávněná osoba</span></td></tr>
+  <tr><td>Regulatorní podání (filing)</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Právní rada poskytnutá externímu klientovi</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual, odpovědnost právníka</span></td></tr>
+</table>
+
+<hr>
+
+<h2 id="k-finance"><span class="num">IV.4 —</span>Governance matice — Finance a controlling</h2>
+<p>Finanční agenti jsou cenní pro analýzu, reporting a modelování — kde jsou rychlí a přesní. Governance je zde kritická zejména pro <strong>jakoukoliv akci, která pohybuje penězi nebo zavazuje firmu finančně</strong>. Platí absolutní pravidlo: agent nikdy neinitiuje platbu.</p>
+
+<table class="gm-table">
+  <tr><th>Task type</th><th>Level</th><th>Poznámka / Trigger</th></tr>
+  <tr><td>Finanční reporting, příprava podkladů</td><td class="l0">L0</td><td>read / aggregate vždy L0</td></tr>
+  <tr><td>Cashflow analýza, ratio výpočty</td><td class="l0">L0</td><td>—</td></tr>
+  <tr><td>Budget modelování, scénáře</td><td class="l0">L0</td><td>výstup = podklad pro rozhodnutí, ne rozhodnutí</td></tr>
+  <tr><td>Příprava faktur (draft)</td><td class="l1">L1</td><td>controller review před odesláním</td></tr>
+  <tr><td>Příprava finančního výkazu (draft)</td><td class="l1">L1</td><td>CFO / accountant finalizuje</td></tr>
+  <tr><td>Forecast, rolling estimate update</td><td class="l1">L1</td><td>—</td></tr>
+  <tr><td>Odeslání faktury zákazníkovi</td><td class="l2">L2</td><td>controller schvaluje před odesláním</td></tr>
+  <tr><td>Budget alokace / přesun zdrojů</td><td class="l2">L2</td><td>CFO approval povinný</td></tr>
+  <tr><td>Investor / board reporting (draft)</td><td class="l2">L2</td><td>CEO + CFO review povinný</td></tr>
+  <tr><td>Příprava platebního příkazu (draft)</td><td class="l2">L2</td><td>výstup = návrh, ne pokyn bance</td></tr>
+  <tr><td>Odeslání platebního příkazu bance</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual, 4-eyes principle</span></td></tr>
+  <tr><td>Jakákoliv platba (libovolná částka)</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual</span></td></tr>
+  <tr><td>Podpis finanční smlouvy / závazku</td><td class="l3">L3</td><td><span class="hard">HARD: vždy manual, oprávněná osoba</span></td></tr>
+  <tr><td>Přístup k bankovním systémům</td><td class="l3">L3</td><td><span class="hard">HARD: agent nesmí mít přímý přístup</span></td></tr>
+</table>
+
+<hr>
+
+<h2 id="k-hardlocks"><span class="num">IV.5 —</span>Hard Locks pro znalostní domény</h2>
+<p>Doplněk k Universal Hard Locks (sekce 10). Platí pro všechny znalostní domény bez výjimky:</p>
+
+<div class="card card-red">
+  <h4 style="color:#ff6b6b">🔴 Hard Locks — znalostní domény (doplněk k Universal)</h4>
+  <table>
+    <tr><th>Kategorie</th><th>Konkrétní zákazy</th></tr>
+    <tr><td style="color:#ff6b6b"><strong>Závazná komunikace</strong></td><td>Jakákoliv komunikace adresovaná externímu subjektu (zákazník, partner, regulátor), která obsahuje ceny, termíny, podmínky nebo závazky — bez explicitního human schválení</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Právní úkony</strong></td><td>Podpis, akceptace nebo odmítnutí smlouvy · Odeslání smlouvy protistraně · Právní prohlášení nebo uznání závazku · Jakýkoliv regulatorní filing</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Finanční pohyby</strong></td><td>Inicializace platby jakékoliv výše · Přístup k bankovním nebo platebním systémům · Příslib platby nebo odložení závazku vůči třetí straně</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Veřejné projevy</strong></td><td>Tisková zpráva · Krizová komunikace · Komunikace obsahující finanční výsledky nebo prognózy · Statement jménem C-level bez jejich přímého schválení</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>HR a personální</strong></td><td>Jakákoliv komunikace s (potenciálními) zaměstnanci týkající se nabídky, odmítnutí, výpovědi nebo podmínek zaměstnání</td></tr>
+    <tr><td style="color:#ff6b6b"><strong>Důvěrná data třetích stran</strong></td><td>Přístup nebo zpracování důvěrných dat zákazníků, partnerů nebo dodavatelů bez explicitní autorizace v Intent Specu</td></tr>
+  </table>
+</div>
+
+<hr>
+
+<h2 id="k-hybrfirma"><span class="num">IV.6 —</span>GALDUR v hybridní firmě — jak to vypadá</h2>
+<p>Hybridní firma nasazuje agenty napříč IT, obchodem, marketingem a finančním oddělením. To přináší nové výzvy governance — ale stejný framework funguje pro všechny domény.</p>
+
+<div class="diagram">
+  <div class="diagram-title">Den hybridní firmy s GALDUR — přehled autonomních toků</div>
+  <svg viewBox="0 0 820 340" width="100%" style="max-width:820px">
+    <!-- Background lanes -->
+    <rect x="0" y="0" width="820" height="340" fill="#060d1a" rx="6"/>
+    <rect x="0" y="0" width="820" height="56" fill="rgba(0,232,150,.05)" rx="3"/>
+    <rect x="0" y="60" width="820" height="56" fill="rgba(0,212,255,.05)" rx="3"/>
+    <rect x="0" y="120" width="820" height="56" fill="rgba(176,109,255,.05)" rx="3"/>
+    <rect x="0" y="180" width="820" height="56" fill="rgba(245,200,66,.05)" rx="3"/>
+    <!-- Lane labels -->
+    <text x="64" y="33" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00e896">OBCHOD</text>
+    <text x="64" y="93" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#00d4ff">MARKETING</text>
+    <text x="64" y="153" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#b06dff">PRÁVO</text>
+    <text x="64" y="213" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f5c842">FINANCE</text>
+    <!-- Obchod activities -->
+    <rect x="130" y="8" width="100" height="40" rx="5" fill="#0c1628" stroke="#00e896" stroke-width="1"/>
+    <text x="180" y="25" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#00e896">CRM analýza</text>
+    <text x="180" y="40" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L0 · auto</text>
+    <rect x="250" y="8" width="110" height="40" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1"/>
+    <text x="305" y="25" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#f5c842">Draft nabídky</text>
+    <text x="305" y="40" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L1 · review</text>
+    <rect x="380" y="8" width="120" height="40" rx="5" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="440" y="25" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#b06dff">E-mail zákazn.</text>
+    <text x="440" y="40" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#b06dff">L2 · approval ✓</text>
+    <!-- Marketing activities -->
+    <rect x="130" y="68" width="100" height="40" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1"/>
+    <text x="180" y="85" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#00d4ff">Blog draft</text>
+    <text x="180" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L1 · review</text>
+    <rect x="250" y="68" width="100" height="40" rx="5" fill="#0c1628" stroke="#00d4ff" stroke-width="1"/>
+    <text x="300" y="85" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#00d4ff">Social posts</text>
+    <text x="300" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L1 · review</text>
+    <rect x="370" y="68" width="130" height="40" rx="5" fill="#0c1628" stroke="#b06dff" stroke-width="1.5"/>
+    <text x="435" y="85" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#b06dff">Publikace webu</text>
+    <text x="435" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#b06dff">L2 · approval ✓</text>
+    <!-- Právní activities -->
+    <rect x="130" y="128" width="120" height="40" rx="5" fill="#0c1628" stroke="#b06dff" stroke-width="1"/>
+    <text x="190" y="145" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#b06dff">Analýza smlouvy</text>
+    <text x="190" y="160" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L0 · auto</text>
+    <rect x="270" y="128" width="110" height="40" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1"/>
+    <text x="325" y="145" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#f5c842">Draft addenda</text>
+    <text x="325" y="160" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L1 · review</text>
+    <rect x="400" y="128" width="80" height="40" rx="5" fill="#0c1628" stroke="#ff6b6b" stroke-width="2"/>
+    <text x="440" y="145" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#ff6b6b">Odeslání</text>
+    <text x="440" y="160" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff6b6b">L3 · manual</text>
+    <!-- Finance activities -->
+    <rect x="130" y="188" width="110" height="40" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1"/>
+    <text x="185" y="205" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#f5c842">Cashflow report</text>
+    <text x="185" y="220" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L0 · auto</text>
+    <rect x="260" y="188" width="100" height="40" rx="5" fill="#0c1628" stroke="#f5c842" stroke-width="1"/>
+    <text x="310" y="205" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#f5c842">Draft faktur</text>
+    <text x="310" y="220" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a80a0">L1 · review</text>
+    <rect x="380" y="188" width="110" height="40" rx="5" fill="#0c1628" stroke="#ff6b6b" stroke-width="2"/>
+    <text x="435" y="205" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="11" fill="#ff6b6b">Platba</text>
+    <text x="435" y="220" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff6b6b">L3 · HARD LOCK</text>
+    <!-- Drift dashboard -->
+    <rect x="560" y="8" width="240" height="260" rx="7" fill="#0c1628" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="680" y="30" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00d4ff">DRIFT DASHBOARD</text>
+    <text x="680" y="50" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">real-time · všechny domény</text>
+    <line x1="570" y1="58" x2="790" y2="58" stroke="#1e3050" stroke-width="1"/>
+    <circle cx="590" cy="80" r="5" fill="#00e896"/><text x="608" y="84" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Obchod: 3 hotovo</text>
+    <circle cx="590" cy="105" r="5" fill="#00e896"/><text x="608" y="109" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Marketing: 2 hotovo</text>
+    <circle cx="590" cy="130" r="5" fill="#f5c842"/><text x="608" y="134" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Právo: čeká approval</text>
+    <circle cx="590" cy="155" r="5" fill="#00e896"/><text x="608" y="159" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">Finance: report ready</text>
+    <circle cx="590" cy="180" r="5" fill="#ff6b6b"/><text x="608" y="184" font-family="Source Sans 3,sans-serif" font-size="12" fill="#9aafcc">IT/Dev: 1 eskalace</text>
+    <line x1="570" y1="198" x2="790" y2="198" stroke="#1e3050" stroke-width="1"/>
+    <text x="680" y="220" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">Governance Steward</text>
+    <text x="680" y="238" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">vidí vše najednou</text>
+    <text x="680" y="256" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">bez domain sila</text>
+    <!-- Label day -->
+    <text x="340" y="295" text-anchor="middle" font-family="Source Sans 3,sans-serif" font-size="13" fill="#6a80a0">Jeden den, jedna firma — agenti pracují paralelně ve čtyřech doménách</text>
+    <text x="340" y="315" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a80a0">Governance Steward spravuje celý obrázek z jednoho dashboardu</text>
+  </svg>
+</div>
+
+<h3>Příklad: Hybridní firma 15 lidí</h3>
+<div class="card card-gold">
+  <p><strong>Firma:</strong> Právně-technologická firma poskytující SaaS + právní poradenství. 15 lidí, 6 domén aktivních najednou: Dev, Ops, Obchod, Marketing, Právo, Finance.</p>
+  <table>
+    <tr><th>Co agenti dělají autonomně (L0)</th><th>Co vyžaduje schválení (L1–L2)</th><th>Co nikdy nesmí agent (L3/HARD)</th></tr>
+    <tr><td>CRM analýzy, pipeline reports · Cashflow dashboard · Blog drafty · Analýza smluv klientů · Compliance monitoring · Security scanning</td><td>Nabídky zákazníkům · Social media příspěvky · Faktury · Staging deploye · Addenda ke smlouvám · Finanční forecasts</td><td>Odesílání smluv · Platby · Podpisy · Press releases · Prod deploy · IAM změny</td></tr>
+  </table>
+  <p><strong>Výsledek:</strong> 15 lidí pokrývá kapacitu 35–40 FTE. Governance Steward (COO) vidí celý drift dashboard přes všechny domény v jednom pohledu. Intent Architekti jsou doménově odděleni (CTO, CSO, CMO), ale sdílí stejný framework.</p>
+</div>
+
+<h3>Srovnání: znalostní domény před a po GALDUR</h3>
+<div class="diagram">
+  <div class="diagram-title">Znalostní práce — konkrétní změny s GALDUR</div>
+  <svg viewBox="0 0 820 260" width="100%" style="max-width:820px">
+    <rect x="0" y="0" width="820" height="260" rx="6" fill="#060d1a"/>
+    <rect x="0" y="0" width="260" height="36" rx="3" fill="rgba(245,200,66,.1)"/>
+    <rect x="270" y="0" width="260" height="36" rx="3" fill="rgba(0,212,255,.06)"/>
+    <rect x="540" y="0" width="280" height="36" rx="3" fill="rgba(0,232,150,.08)"/>
+    <text x="130" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f5c842">SITUACE</text>
+    <text x="400" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#ff6b6b">PŘED GALDUR</text>
+    <text x="680" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#00e896">PO GALDUR</text>
+    <g font-family="Source Sans 3,sans-serif" font-size="13">
+      <line x1="0" y1="40" x2="820" y2="40" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="62" fill="#9aafcc">Analýza smlouvy 30 stran</text>
+      <text x="270" y="62" fill="#ff6b6b">Právník: 3–4 hodiny</text>
+      <text x="540" y="62" fill="#00e896">Agent: 15 min + 30 min review</text>
+      <line x1="0" y1="72" x2="820" y2="72" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="94" fill="#9aafcc">Příprava nabídky na míru</text>
+      <text x="270" y="94" fill="#ff6b6b">Obchodník: 2 hodiny</text>
+      <text x="540" y="94" fill="#00e896">Agent draft: 10 min + 20 min review</text>
+      <line x1="0" y1="104" x2="820" y2="104" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="126" fill="#9aafcc">Měsíční finanční reporting</text>
+      <text x="270" y="126" fill="#ff6b6b">Controller: 1–2 dny</text>
+      <text x="540" y="126" fill="#00e896">Agent: 2 hodiny + 30 min finalizace</text>
+      <line x1="0" y1="136" x2="820" y2="136" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="158" fill="#9aafcc">Content plán + 4 posty/týden</text>
+      <text x="270" y="158" fill="#ff6b6b">Copywriter: celý týden</text>
+      <text x="540" y="158" fill="#00e896">Agent drafty + 3 hod. review/týden</text>
+      <line x1="0" y1="168" x2="820" y2="168" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="190" fill="#9aafcc">Compliance check nové legislativy</text>
+      <text x="270" y="190" fill="#ff6b6b">Právník: týden research</text>
+      <text x="540" y="190" fill="#00e896">Agent: 1 hodina + review impaktů</text>
+      <line x1="0" y1="200" x2="820" y2="200" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="222" fill="#9aafcc">Pipeline forecast (Q-end)</text>
+      <text x="270" y="222" fill="#ff6b6b">Sales + Finance: 3–4 hodiny</text>
+      <text x="540" y="222" fill="#00e896">Agent model + 45 min review</text>
+      <line x1="0" y1="232" x2="820" y2="232" stroke="#1e3050" stroke-width=".5"/>
+      <text x="20" y="252" fill="#9aafcc">Odeslání smlouvy protistraně</text>
+      <text x="270" y="252" fill="#ff6b6b">Právník: pošle sám</text>
+      <text x="540" y="252" fill="#00e896">L3 HARD — vždy člověk (stejně jako dřív)</text>
+    </g>
+  </svg>
+</div>
+
+<div class="notice">
+  <strong>Klíčový insight znalostních domén:</strong> Hard Locks v obchodu, právu a financích nejsou nová omezení. Jsou to věci, které dělal vždy člověk — a GALDUR formalizuje, že to tak zůstane. Co se mění, je všechno ostatní: příprava, analýza, drafty, reporting. Tam agenti přebírají rutinu a lidem zbývá čas na to, co vyžaduje skutečný úsudek.
+</div>
+
+<!-- Closing -->
+<div class="card card-cyan" style="text-align:center;padding:44px 32px;margin-top:56px">
+  <h2 style="border:none;margin-top:0;font-size:28px;color:#fff">GALDUR není o nahrazení lidí</h2>
+  <p style="font-size:17px;max-width:640px;margin:16px auto;color:var(--text)">Je o tom, jak přestoupit z modelu, kde vaši nejlepší lidé tráví 60 % času prací pod jejich úrovní — a přejít na model, kde dělají práci, pro kterou je platíte:</p>
+  <p style="font-size:20px;color:var(--cyan);font-family:'Playfair Display',serif;margin:16px 0"><strong>rozhodování · kreativitu · vztahy · strategii</strong></p>
+  <p style="color:var(--muted);font-size:14px;margin-top:20px;font-family:'JetBrains Mono',monospace">GALDUR Methodology v0.9-draft · Living Document · Vladimír + Claude · April 2026</p>
+</div>
+
+</div>
+
+<script>
+/* ═══ THEME ═══ */
+function setTheme(theme){
+  document.documentElement.setAttribute('data-theme',theme);
+  localStorage.setItem('g-theme',theme);
+  document.querySelectorAll('.theme-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.themeBtn===theme);
+  });
+}
+function initThemeButtons(){
+  var cur=document.documentElement.getAttribute('data-theme')||'galdur';
+  document.querySelectorAll('.theme-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.themeBtn===cur);
+  });
+}
+
+/* ═══ LANGUAGE ═══ */
+var docT={
+  cs:{'bc.home':'Domů','bc.docs':'Dokumentace','bc.back':'← Zpět na web'},
+  en:{'bc.home':'Home','bc.docs':'Documentation','bc.back':'← Back to site'}
+};
+var currentLang='cs';
+function applyLang(lang){
+  currentLang=lang;
+  document.documentElement.lang=lang;
+  localStorage.setItem('g-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.lang===lang);
+  });
+  var dict=docT[lang]||docT.cs;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k=el.dataset.i18n;
+    if(dict[k]!==undefined) el.textContent=dict[k];
+  });
+}
+function setLang(lang){applyLang(lang);}
+function initLang(){
+  var stored=localStorage.getItem('g-lang');
+  if(stored){applyLang(stored);return;}
+  var bl=(navigator.language||'cs').toLowerCase();
+  applyLang(bl.startsWith('cs')||bl.startsWith('sk')?'cs':'en');
+}
+
+/* ═══ LIGHT THEME — fix heading colors ═══ */
+function applyHeadingFix(){
+  var theme=document.documentElement.getAttribute('data-theme');
+  var style=document.getElementById('heading-fix');
+  if(!style){style=document.createElement('style');style.id='heading-fix';document.head.appendChild(style);}
+  if(theme==='light'){
+    style.textContent='h2{color:var(--heading)!important} h3{color:var(--cyan)!important} strong{color:var(--heading)} .hero h1{background:linear-gradient(135deg,var(--heading) 30%,var(--cyan) 65%,var(--gold) 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}';
+  } else {
+    style.textContent='';
+  }
+}
+
+/* ═══ INIT ═══ */
+initThemeButtons();
+initLang();
+applyHeadingFix();
+
+// Re-apply on theme change
+var origSetTheme=setTheme;
+setTheme=function(t){origSetTheme(t);applyHeadingFix();};
+</script>
+
+</body>
+</html>

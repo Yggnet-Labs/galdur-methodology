@@ -1,0 +1,91 @@
+## IDENTIFIKACE
+id: IS-YYYY-NNN
+domain: dev
+title: ""
+status: draft
+version: "1.0"
+created_by: ""
+created_at: ""
+
+## HEADER — human-authored
+
+intent: |
+  # Proč to děláme (2–4 věty).
+  # Co je strategický důvod, jaký problém řeší, co odblokuje.
+  # NENÍ to popis implementace.
+
+outcome:
+  # Jak KONKRÉTNĚ a MĚŘITELNĚ poznáme, že je hotovo.
+  # Každý bod musí být binárně ověřitelný (ano/ne, pass/fail).
+  - ""
+
+scope:
+  in_scope:
+    - ""
+  out_of_scope:
+    # POVINNÉ — agenti mají tendenci scope-creepovat.
+    - ""
+
+constraints:
+  # Co agent NESMÍ dělat. Negativní pravidla.
+  - ""
+
+context: |
+  # Technický kontext, který agent potřebuje k exekuci.
+
+dependencies:
+  depends_on: []   # IS-IDs that must be validated first
+  blocks: []       # IS-IDs waiting for this spec
+
+risk_assessment:
+  blast_radius: low | medium | high | critical
+  reversibility: easy | partial | hard | irreversible
+  rollback_plan: ""
+
+## EXECUTION BODY — machine-readable
+
+governance:
+  level: autonomous | supervised | collaborative | manual
+  # L0 autonomous    = agent executes, logs, continues
+  # L1 supervised    = Validation Gate before deploy
+  # L2 collaborative = agent plans → human approves → executes
+  # L3 manual        = human executes, agent assists
+  escalate_on:
+    - schema_changes
+    - new_external_dependency
+    - security_sensitive
+  escalation_to: ""
+  timeout_hours: 4
+
+tasks:
+  - id: IS-NNN-T1
+    title: ""
+    type: implementation | testing | documentation | analysis
+    agent_role: coding_agent | docs_agent | analysis_agent
+    depends_on: []
+    governance_override: ~   # only downward (more autonomy), never upward
+    pre_conditions: []
+    acceptance: ""
+    rollback: ""
+    timeout_hours: 2
+
+## VALIDATION GATE
+
+validation:
+  reviewer: ""
+  checklist:
+    - "All outcome conditions met?"
+    - "No constraints violated?"
+    - "Drift report read and understood?"
+    - "Rollback plan verified (if applicable)?"
+
+## AUDIT TRAIL
+
+drift_log: []
+# - task_id: IS-NNN-T1
+#   timestamp: YYYY-MM-DDTHH:MM:SSZ
+#   type: scope_expansion | constraint_violation | technical_deviation |
+#         inferred_decision | escalation | timeout | amendment_proposed
+#   description: ""
+#   resolution: approved | reverted | escalated | accepted_with_note
+#   resolved_by: ""

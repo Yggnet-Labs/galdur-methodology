@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GALDUR — Community</title>
+  <style>
+    :root{--bg:#0f1117;--bg2:#161b22;--bg3:#1d2430;--text:#e6edf3;--muted:#8b949e;--line:#30363d;--accent:#4da3ff;--green:#22c55e;--gold:#f5c842;--max:1040px}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+    a{color:var(--accent)}.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:24px 0 0;flex-wrap:wrap}
+    .back,.lang button,.cta{border:1px solid var(--line);background:var(--bg2);color:var(--text);padding:10px 14px;border-radius:8px;text-decoration:none;cursor:pointer}.lang{display:flex;gap:8px}.lang button.active{border-color:var(--accent);color:var(--accent)}main{padding:32px 0 72px}.eyebrow{color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+    h1{font-size:42px;line-height:1.1;margin:10px 0 18px}h2{font-size:24px;margin:0 0 14px}h3{font-size:18px;margin:0 0 8px}.lead{font-size:18px;color:#d0d7de;max-width:860px}.status{margin-top:18px;background:rgba(77,163,255,.08);border:1px solid rgba(77,163,255,.22);border-radius:12px;padding:16px;color:#d0e7ff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:24px}.card{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:24px}.card ul{margin:12px 0 0 18px;padding:0}.card li{margin-bottom:10px}.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}.cta.primary{background:var(--accent);color:#08111d;border-color:transparent}.cta.gold{background:var(--gold);color:#111;border-color:transparent}
+    .operator-mark{display:flex;align-items:center;gap:16px;margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--bg2);max-width:460px}.operator-mark img{width:54px;height:auto;border-radius:10px;background:#f2f2f2}.operator-mark strong{display:block;font-size:14px}.operator-mark span{display:block;color:var(--muted);font-size:13px}
+    .pill{display:inline-block;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:4px 8px;border-radius:999px;background:rgba(34,197,94,.12);color:var(--green);margin-bottom:12px}.muted{color:var(--muted)}.mini{font-size:14px;color:var(--muted)}.list{margin:12px 0 0 18px}.list li{margin-bottom:10px}.foot{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="/">← <span data-i18n="back">Zpět na getgaldur.com</span></a>
+      <div class="lang"><button data-lang="cs" onclick="setLang('cs')">CS</button><button data-lang="en" onclick="setLang('en')">EN</button></div>
+    </div>
+    <main>
+      <div class="eyebrow">GALDUR · COMMUNITY</div>
+      <h1 data-i18n="title">Komunita kolem metodiky pro hybridní týmy lidí a AI</h1>
+      <p class="lead" data-i18n-html="lead">GALDUR není komunita kolem produktu. Je to komunita kolem otázky, jak řídit agentní práci bezpečně, srozumitelně a bez provozního chaosu. Dnes už je live <a href="/templates/">template library</a>; veřejná GitHub discussions vrstva se otevře až s kurátorovaným public-safe releasem.</p>
+      <div class="status" id="github" data-i18n-html="status">Aktuální stav: metodika i šablony GALDUR jsou veřejně dostupné — šablony ke stažení zde i na getgaldur.com, komunita na GitHubu (Discussions a forkovatelné šablony) je otevřená. Přidej se a přispěj.</div>
+      <div class="operator-mark">
+        <img src="/branding/yggnet_webmark.png" alt="Yggnet Labs logo">
+        <div>
+          <strong data-i18n="operator.title">Yggnet Labs s.r.o.</strong>
+          <span data-i18n="operator.sub">Operator komunitní a billing vrstvy kolem GALDUR</span>
+        </div>
+      </div>
+
+      <div class="grid">
+        <section class="card">
+          <span class="pill" data-i18n="cards.templates.badge">Templates</span>
+          <h3 data-i18n="cards.templates.title">Template library</h3>
+          <p data-i18n="cards.templates.body">Intent Spec a Trace Audit šablony už jsou veřejně dostupné ke stažení na webu. To je první community-safe vrstva před otevřením GitHub forking flow.</p>
+          <div class="cta-row"><a class="cta primary" href="/templates/" data-i18n="cards.templates.cta">Otevřít templates →</a></div>
+        </section>
+        <section class="card">
+          <span class="pill" data-i18n="cards.discussions.badge">Discussions</span>
+          <h3 data-i18n="cards.discussions.title">Jak budou fungovat diskuze</h3>
+          <p data-i18n="cards.discussions.body">Searchable fórum má žít v GitHub Discussions: otázky, case studies, nápady, mezinárodní překlady a show-and-tell z praxe.</p>
+          <ul>
+            <li data-i18n="cards.discussions.li1">Q&A — rychlé otázky a odpovědi</li>
+            <li data-i18n="cards.discussions.li2">Case Studies — konkrétní nasazení GALDUR</li>
+            <li data-i18n="cards.discussions.li3">Ideas — návrhy změn a nových modulů</li>
+          </ul>
+        </section>
+        <section class="card">
+          <span class="pill" data-i18n="cards.issues.badge">Issues</span>
+          <h3 data-i18n="cards.issues.title">Co patří do Issues</h3>
+          <p data-i18n="cards.issues.body">GitHub Issues nejsou obecné fórum. Patří tam jen metodické nebo template chyby a missing content.</p>
+          <ul>
+            <li data-i18n="cards.issues.li1">chyba v textu metodiky</li>
+            <li data-i18n="cards.issues.li2">chyba v šabloně nebo quick reference</li>
+            <li data-i18n="cards.issues.li3">chybějící sekce, příklad nebo template</li>
+          </ul>
+        </section>
+        <section class="card">
+          <span class="pill" data-i18n="cards.access.badge">Early access</span>
+          <h3 data-i18n="cards.access.title">Než se otevře public GitHub</h3>
+          <p data-i18n="cards.access.body">Než bude public GitHub scope uvolněný, sběr zájmu a prvního feedbacku běží přes early access intake na landing page a přes support kontakt.</p>
+          <div class="cta-row"><a class="cta gold" href="/#community" data-i18n="cards.access.cta">Přihlásit early access →</a></div>
+        </section>
+      </div>
+
+      <section class="card" style="margin-top:24px">
+        <h2 data-i18n="flow.title">Jak komunita ovlivňuje metodiku</h2>
+        <ol class="list">
+          <li data-i18n="flow.li1">Komunita hlásí, co funguje a co nefunguje v praxi.</li>
+          <li data-i18n="flow.li2">Case studies a Q&A se propisují do backlogu dalších verzí.</li>
+          <li data-i18n="flow.li3">Templates a quick references se ladí podle reality provozu, ne podle teorie.</li>
+          <li data-i18n="flow.li4">Nová verze vyjde až po splnění podmínek, ne podle kalendáře.</li>
+        </ol>
+      </section>
+
+      <section class="card" style="margin-top:24px">
+        <h2 data-i18n="conduct.title">Komunitní pravidla</h2>
+        <ul class="list">
+          <li data-i18n="conduct.li1">věcnost a konkrétní kontext místo obecných dojmů</li>
+          <li data-i18n="conduct.li2">respekt k lidem i k omezením agentů</li>
+          <li data-i18n="conduct.li3">bez sdílení neveřejných tajemství, klíčů a klientských dat v public kanálech</li>
+          <li data-i18n="conduct.li4">kritika ano, ale s návrhem lepší cesty</li>
+        </ul>
+      </section>
+
+      <p class="foot" data-i18n="foot">© 2026 Yggnet Labs s.r.o. · getgaldur.com · Community surface preview</p>
+    </main>
+  </div>
+  <script>
+    const T = {
+      cs: {
+        back: 'Zpět na getgaldur.com',
+        title: 'Komunita kolem metodiky pro hybridní týmy lidí a AI',
+        lead: 'GALDUR není komunita kolem produktu. Je to komunita kolem otázky, jak řídit agentní práci bezpečně, srozumitelně a bez provozního chaosu. Dnes už je live <a href="/templates/">template library</a>; veřejná GitHub discussions vrstva se otevře až s kurátorovaným public-safe releasem.',
+        status: 'Aktuální stav: metodika i šablony GALDUR jsou veřejně dostupné — šablony ke stažení zde i na getgaldur.com, komunita na GitHubu (Discussions a forkovatelné šablony) je otevřená. Přidej se a přispěj.',
+        'operator.title':'Yggnet Labs s.r.o.','operator.sub':'Operator komunitní a billing vrstvy kolem GALDUR',
+        'cards.templates.badge':'Templates','cards.templates.title':'Template library','cards.templates.body':'Intent Spec a Trace Audit šablony už jsou veřejně dostupné ke stažení na webu. To je první community-safe vrstva před otevřením GitHub forking flow.','cards.templates.cta':'Otevřít templates →',
+        'cards.discussions.badge':'Discussions','cards.discussions.title':'Jak budou fungovat diskuze','cards.discussions.body':'Searchable fórum má žít v GitHub Discussions: otázky, case studies, nápady, mezinárodní překlady a show-and-tell z praxe.','cards.discussions.li1':'Q&A — rychlé otázky a odpovědi','cards.discussions.li2':'Case Studies — konkrétní nasazení GALDUR','cards.discussions.li3':'Ideas — návrhy změn a nových modulů',
+        'cards.issues.badge':'Issues','cards.issues.title':'Co patří do Issues','cards.issues.body':'GitHub Issues nejsou obecné fórum. Patří tam jen metodické nebo template chyby a missing content.','cards.issues.li1':'chyba v textu metodiky','cards.issues.li2':'chyba v šabloně nebo quick reference','cards.issues.li3':'chybějící sekce, příklad nebo template',
+        'cards.access.badge':'Early access','cards.access.title':'Než se otevře public GitHub','cards.access.body':'Než bude public GitHub scope uvolněný, sběr zájmu a prvního feedbacku běží přes early access intake na landing page a přes support kontakt.','cards.access.cta':'Přihlásit early access →',
+        'flow.title':'Jak komunita ovlivňuje metodiku','flow.li1':'Komunita hlásí, co funguje a co nefunguje v praxi.','flow.li2':'Case studies a Q&A se propisují do backlogu dalších verzí.','flow.li3':'Templates a quick references se ladí podle reality provozu, ne podle teorie.','flow.li4':'Nová verze vyjde až po splnění podmínek, ne podle kalendáře.',
+        'conduct.title':'Komunitní pravidla','conduct.li1':'věcnost a konkrétní kontext místo obecných dojmů','conduct.li2':'respekt k lidem i k omezením agentů','conduct.li3':'bez sdílení neveřejných tajemství, klíčů a klientských dat v public kanálech','conduct.li4':'kritika ano, ale s návrhem lepší cesty',
+        foot:'© 2026 Yggnet Labs s.r.o. · getgaldur.com · Community surface preview'
+      },
+      en: {
+        back: 'Back to getgaldur.com',
+        title: 'Community for the methodology of hybrid human–AI teams',
+        lead: 'GALDUR is not a community around a product. It is a community around the question of how to govern agentic work safely, clearly and without operational chaos. The <a href="/templates/">template library</a> is already live; the public GitHub discussions layer opens only with a curated public-safe release.',
+        status: 'Current status: the GALDUR methodology and templates are publicly available — templates downloadable here and on getgaldur.com, and the community on GitHub (Discussions and forkable templates) is open. Join and contribute.',
+        'operator.title':'Yggnet Labs s.r.o.','operator.sub':'Operator of the community and billing layer around GALDUR',
+        'cards.templates.badge':'Templates','cards.templates.title':'Template library','cards.templates.body':'Intent Spec and Trace Audit templates are already downloadable from the website. This is the first community-safe layer before the GitHub forking flow opens.','cards.templates.cta':'Open templates →',
+        'cards.discussions.badge':'Discussions','cards.discussions.title':'How discussions will work','cards.discussions.body':'The searchable forum is meant to live in GitHub Discussions: questions, case studies, ideas, international translations and show-and-tell from practice.','cards.discussions.li1':'Q&A — quick questions and answers','cards.discussions.li2':'Case Studies — concrete GALDUR deployments','cards.discussions.li3':'Ideas — proposals for changes and new modules',
+        'cards.issues.badge':'Issues','cards.issues.title':'What belongs in Issues','cards.issues.body':'GitHub Issues are not a general forum. They are only for methodology/template bugs and missing content.','cards.issues.li1':'bug in the methodology text','cards.issues.li2':'bug in a template or quick reference','cards.issues.li3':'missing section, example or template',
+        'cards.access.badge':'Early access','cards.access.title':'Before public GitHub opens','cards.access.body':'Until the public GitHub scope is released, initial interest and first feedback are collected through the landing page early access intake and the support contact.','cards.access.cta':'Join early access →',
+        'flow.title':'How the community shapes the methodology','flow.li1':'The community reports what works and what fails in practice.','flow.li2':'Case studies and Q&A feed the backlog of future versions.','flow.li3':'Templates and quick references are refined according to operating reality, not theory.','flow.li4':'A new version ships only when conditions are met, not on a calendar.',
+        'conduct.title':'Community rules','conduct.li1':'substance and specific context over vague impressions','conduct.li2':'respect for people and for agent limitations','conduct.li3':'no public sharing of non-public secrets, keys or client data','conduct.li4':'critique is welcome, but bring a better path with it',
+        foot:'© 2026 Yggnet Labs s.r.o. · getgaldur.com · Community surface preview'
+      }
+    };
+    function applyLang(lang){const d=T[lang]||T.cs;document.documentElement.lang=lang;localStorage.setItem('g-lang',lang);document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(d[k]!==undefined)el.textContent=d[k];});document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.dataset.i18nHtml;if(d[k]!==undefined)el.innerHTML=d[k];});document.querySelectorAll('.lang button').forEach(btn=>btn.classList.toggle('active',btn.dataset.lang===lang));}
+    function setLang(lang){applyLang(lang)}
+    const saved=localStorage.getItem('g-lang');applyLang(saved&&T[saved]?saved:'cs');
+  </script>
+</body>
+</html>

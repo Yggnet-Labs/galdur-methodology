@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GALDUR website
+    url: https://getgaldur.com
+    about: Learn about the GALDUR methodology, download the PDF, or join the community.
+  - name: Discussions
+    url: https://github.com/Yggnet-Labs/Galdur-Methodology/discussions
+    about: Ask questions, share how you use GALDUR, and propose ideas.

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GALDUR — Legal</title>
+  <style>
+    :root{--bg:#0f1117;--bg2:#161b22;--text:#e6edf3;--muted:#8b949e;--line:#30363d;--accent:#4da3ff;--max:920px}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+    .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:24px 0 0;flex-wrap:wrap}
+    .back,.lang button{border:1px solid var(--line);background:var(--bg2);color:var(--text);padding:10px 14px;border-radius:8px;text-decoration:none;cursor:pointer}
+    .lang{display:flex;gap:8px}.lang button.active{border-color:var(--accent);color:var(--accent)}main{padding:32px 0 72px}.eyebrow{color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+    h1{font-size:42px;line-height:1.1;margin:10px 0 18px}h2{font-size:24px;margin:0 0 14px}p{margin:0 0 14px}.lead{font-size:18px;color:#d0d7de;max-width:780px}
+    .card{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:24px;margin-top:24px}.card ul{margin:12px 0 0 18px;padding:0}.card li{margin-bottom:10px}
+    .operator-mark{display:flex;align-items:center;gap:16px;margin-top:22px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--bg2);max-width:440px}.operator-mark img{width:54px;height:auto;border-radius:10px;background:#f2f2f2}.operator-mark strong{display:block;font-size:14px}.operator-mark span{display:block;color:var(--muted);font-size:13px}
+    a{color:var(--accent)}.small{color:var(--muted);font-size:14px}.foot{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="/">← <span data-i18n="back">Zpět na getgaldur.com</span></a>
+      <div class="lang"><button data-lang="cs" onclick="setLang('cs')">CS</button><button data-lang="en" onclick="setLang('en')">EN</button></div>
+    </div>
+    <main>
+      <div class="eyebrow">GALDUR · LEGAL</div>
+      <h1 data-i18n="title">Právní a zákaznické informace</h1>
+      <p class="lead" data-i18n-html="lead">Provozovatel webu a digitálního downloadu je <strong>Yggnet Labs s.r.o.</strong>, VAT ID <strong>CZ24445541</strong>. Kontakt pro právní, zákaznické i doručovací dotazy: <a href="mailto:info@getgaldur.com">info@getgaldur.com</a>.</p>
+      <div class="operator-mark">
+        <img src="/branding/yggnet_webmark.png" alt="Yggnet Labs logo">
+        <div>
+          <strong data-i18n="operator.title">Yggnet Labs s.r.o.</strong>
+          <span data-i18n="operator.sub">Právní a billing operátor webu getgaldur.com</span>
+        </div>
+      </div>
+
+      <section class="card" id="terms">
+        <h2 data-i18n="terms.title">Podmínky digitálního downloadu</h2>
+        <div data-i18n-html="terms.body"></div>
+      </section>
+
+      <section class="card" id="privacy">
+        <h2 data-i18n="privacy.title">Ochrana osobních údajů</h2>
+        <div data-i18n-html="privacy.body"></div>
+      </section>
+
+      <section class="card" id="refunds">
+        <h2 data-i18n="refunds.title">Doručení a refund otázky</h2>
+        <div data-i18n-html="refunds.body"></div>
+      </section>
+
+      <section class="card" id="contact">
+        <h2 data-i18n="contact.title">Kontakt</h2>
+        <div data-i18n-html="contact.body"></div>
+      </section>
+
+      <p class="foot" data-i18n="foot">© 2026 Yggnet Labs s.r.o. · getgaldur.com · GALDUR v0.9-draft</p>
+    </main>
+  </div>
+
+  <script>
+    const T = {
+      cs: {
+        back: 'Zpět na getgaldur.com',
+        title: 'Právní a zákaznické informace',
+        lead: 'Provozovatel webu a digitálního downloadu je <strong>Yggnet Labs s.r.o.</strong>, VAT ID <strong>CZ24445541</strong>. Kontakt pro právní, zákaznické i doručovací dotazy: <a href="mailto:info@getgaldur.com">info@getgaldur.com</a>.',
+        'operator.title':'Yggnet Labs s.r.o.','operator.sub':'Právní a billing operátor webu getgaldur.com',
+        'terms.title': 'Podmínky digitálního downloadu',
+        'terms.body': '<p>GALDUR metodika je dostupná ke čtení online zdarma. Placený checkout na getgaldur.com se týká digitálního PDF downloadu a související podpory projektu.</p><ul><li>Standard = digitální PDF metodiky.</li><li>Contributor = PDF + supporter acknowledgement podle aktuálního community modelu.</li><li>Platba je zpracována přes Stripe. Po úspěšné platbě je download link doručen na zadaný e-mail.</li><li>Obsah zůstává duševním vlastnictvím Yggnet Labs s.r.o. / autorů, pokud konkrétní část nemá výslovně jinou licenci.</li></ul>',
+        'privacy.title': 'Ochrana osobních údajů',
+        'privacy.body': '<p>Zpracováváme jen údaje potřebné pro doručení PDF, komunitní registraci a zákaznickou podporu.</p><ul><li>Typicky: jméno, e-mail, volitelně organizace/role, zvolený tier a jazyk.</li><li>Platební údaje zpracovává Stripe; getgaldur.com neukládá čísla karet.</li><li>Transakční e-maily a download delivery jdou přes Resend / náš backend.</li><li>Údaje používáme pro doručení, audit plateb, řešení supportu a zákonné účetní povinnosti.</li><li>Pro dotazy, opravu nebo výmaz napiš na <a href="mailto:info@getgaldur.com">info@getgaldur.com</a>.</li></ul>',
+        'refunds.title': 'Doručení a refund otázky',
+        'refunds.body': '<p>Digitální download se spouští hned po úspěšné platbě. Pokud něco selže, řešíme to přímo přes support.</p><ul><li>Nedorazil e-mail nebo nefunguje link? Napiš na <a href="mailto:info@getgaldur.com">info@getgaldur.com</a> a doručení obnovíme ručně.</li><li>Duplicitní platba nebo technický problém s doručením se řeší individuálně, včetně možnosti refundace.</li><li>Po úspěšně doručeném digitálním obsahu posuzujeme refund požadavky case-by-case, hlavně při technickém nebo zjevně chybném zpracování.</li></ul>',
+        'contact.title': 'Kontakt',
+        'contact.body': '<p><strong>Yggnet Labs s.r.o.</strong><br>getgaldur.com<br>VAT ID: CZ24445541<br><a href="mailto:info@getgaldur.com">info@getgaldur.com</a></p><p class="small">Pokud řešíš web bug, payment issue nebo delivery problém, napiš do předmětu e-mailu krátce: <strong>GALDUR support</strong>.</p>',
+        foot: '© 2026 Yggnet Labs s.r.o. · getgaldur.com · GALDUR v0.9-draft'
+      },
+      en: {
+        back: 'Back to getgaldur.com',
+        title: 'Legal and customer information',
+        lead: 'The operator of the website and digital download flow is <strong>Yggnet Labs s.r.o.</strong>, VAT ID <strong>CZ24445541</strong>. Contact for legal, customer or delivery questions: <a href="mailto:info@getgaldur.com">info@getgaldur.com</a>.',
+        'operator.title':'Yggnet Labs s.r.o.','operator.sub':'Legal and billing operator of getgaldur.com',
+        'terms.title': 'Digital download terms',
+        'terms.body': '<p>The GALDUR methodology is free to read online. The paid checkout on getgaldur.com applies to the digital PDF download and related project support.</p><ul><li>Standard = digital methodology PDF.</li><li>Contributor = PDF + supporter acknowledgement under the current community model.</li><li>Payments are processed by Stripe. After successful payment, the download link is sent to the email entered at checkout.</li><li>The content remains the intellectual property of Yggnet Labs s.r.o. / the authors unless a specific part states a different license explicitly.</li></ul>',
+        'privacy.title': 'Privacy notice',
+        'privacy.body': '<p>We process only the data needed for PDF delivery, community registration and customer support.</p><ul><li>Typically: name, email, optionally organisation/role, selected tier and language.</li><li>Payment details are processed by Stripe; getgaldur.com does not store card numbers.</li><li>Transactional emails and download delivery are handled through Resend / our backend.</li><li>We use the data for delivery, payment audit, support resolution and legal accounting obligations.</li><li>For access, correction or deletion requests write to <a href="mailto:info@getgaldur.com">info@getgaldur.com</a>.</li></ul>',
+        'refunds.title': 'Delivery and refund questions',
+        'refunds.body': '<p>Digital delivery starts immediately after a successful payment. If anything fails, we resolve it directly through support.</p><ul><li>No delivery email or broken link? Write to <a href="mailto:info@getgaldur.com">info@getgaldur.com</a> and we will re-issue delivery manually.</li><li>Duplicate charges or technical delivery failures are handled individually, including a refund when appropriate.</li><li>After successful digital delivery, refund requests are reviewed case-by-case, especially for technical or obviously incorrect processing.</li></ul>',
+        'contact.title': 'Contact',
+        'contact.body': '<p><strong>Yggnet Labs s.r.o.</strong><br>getgaldur.com<br>VAT ID: CZ24445541<br><a href="mailto:info@getgaldur.com">info@getgaldur.com</a></p><p class="small">If you are reporting a web bug, payment issue or delivery problem, use the email subject <strong>GALDUR support</strong>.</p>',
+        foot: '© 2026 Yggnet Labs s.r.o. · getgaldur.com · GALDUR v0.9-draft'
+      }
+    };
+
+    function applyLang(lang) {
+      const dict = T[lang] || T.cs;
+      document.documentElement.lang = lang;
+      localStorage.setItem('g-lang', lang);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.dataset.i18n;
+        if (dict[k] !== undefined) el.textContent = dict[k];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const k = el.dataset.i18nHtml;
+        if (dict[k] !== undefined) el.innerHTML = dict[k];
+      });
+      document.querySelectorAll('.lang button').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+    }
+
+    function setLang(lang) { applyLang(lang); }
+
+    const saved = localStorage.getItem('g-lang');
+    applyLang(saved && T[saved] ? saved : 'cs');
+  </script>
+</body>
+</html>

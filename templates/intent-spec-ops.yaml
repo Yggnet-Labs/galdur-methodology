@@ -1,0 +1,91 @@
+## IDENTIFIKACE
+id: IS-YYYY-NNN
+domain: infra | db | network | security | cloud | data
+title: ""
+status: draft
+version: "1.0"
+created_by: ""
+created_at: ""
+
+## HEADER — human-authored
+
+intent: |
+  # Proč to děláme (2–4 věty).
+  # NENÍ to popis implementace.
+
+outcome:
+  - ""
+
+scope:
+  in_scope:
+    - ""
+  out_of_scope:
+    - ""
+
+constraints:
+  - ""
+
+environment:
+  target: production | staging | dev | mixed
+  systems: []
+  change_window: ""           # e.g. "Sat 02:00–04:00 UTC"
+  notification_required: false
+
+dependencies:
+  depends_on: []
+  blocks: []
+
+risk_assessment:
+  blast_radius: low | medium | high | critical
+  reversibility: easy | partial | hard | irreversible
+  estimated_downtime: none | seconds | minutes | hours
+  rollback_plan: ""           # MANDATORY for all Ops tasks
+
+context: |
+  # Technical context the agent needs.
+
+## EXECUTION BODY — machine-readable
+
+governance:
+  level: collaborative        # Ops default is higher than Dev
+  # L2 collaborative = agent plans → human approves → executes
+  # L3 manual        = human executes, agent assists
+  escalate_on:
+    - production_impact
+    - blast_radius_expansion
+    - security_sensitive
+    - irreversible_action
+  escalation_to: ""
+  timeout_hours: 2            # shorter timeout for Ops
+  change_window_required: false
+
+tasks:
+  - id: IS-NNN-T1
+    title: ""
+    type: infrastructure | database | network | security | migration
+    agent_role: infra_agent | db_agent | network_agent | security_agent
+    pre_conditions: []
+    acceptance: ""
+    rollback: ""              # MANDATORY
+    timeout_hours: 1
+
+## VALIDATION GATE
+
+validation:
+  reviewer: ""
+  checklist:
+    - "All outcome conditions met?"
+    - "No constraints violated?"
+    - "Rollback plan verified?"
+    - "Monitoring alerts active?"
+    - "Change window observed?"
+
+## POST-EXECUTION
+
+post_actions:
+  notify: []
+  monitoring_period: "24h"
+
+## AUDIT TRAIL
+
+drift_log: []
