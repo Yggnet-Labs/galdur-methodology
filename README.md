@@ -36,10 +36,16 @@ Questions, feedback and contributions are welcome via GitHub Discussions and at
 [getgaldur.com](https://getgaldur.com). Contributions to the methodology are credited in
 the next release.
 
-## License
+## Licensing
 
-Templates and documentation in this repository are released under the **MIT License**
-(see [`LICENSE`](LICENSE)). The GALDUR methodology text remains © Yggnet Labs s.r.o.
+GALDUR uses the same licensing as getgaldur.com — see the
+[Terms of Use](https://getgaldur.com/terms.html) for the authoritative wording:
+
+| What | License |
+|------|---------|
+| **Template payloads** (`templates/*` — Intent Spec, Governance Levels & Hard Locks quick refs, Trace Audit) | **MIT** — see [`LICENSE`](LICENSE). Free to use, adapt and redistribute, including commercially. |
+| **Methodology & documentation** (`docs/`, landing, community and legal pages) | **CC BY 4.0** — see [`LICENSE-DOCS`](LICENSE-DOCS). Free to share and adapt with attribution: *"Yggnet Labs s.r.o., getgaldur.com — Licensed under CC BY 4.0"*. |
+| **The GALDUR name and logos** | Trademarks / IP of Yggnet Labs s.r.o. — see the [Trademark Policy](https://getgaldur.com/trademark.html). Not covered by the licenses above. |
 
 ---
 

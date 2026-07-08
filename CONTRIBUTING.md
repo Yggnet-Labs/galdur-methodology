@@ -32,5 +32,6 @@ Substantive contributions to the methodology are credited in the next release.
 - Website: [getgaldur.com](https://getgaldur.com)
 - Maintainer: Vladimír Šedivý · Yggnet Labs s.r.o. · galdur@yggnet.cz
 
-By contributing you agree that your contributions are licensed under the repository's
-[MIT License](LICENSE).
+By contributing you agree that your contributions are licensed under the same terms as
+the part of the repository they touch: template payloads under the [MIT License](LICENSE),
+methodology and documentation under [CC BY 4.0](LICENSE-DOCS).

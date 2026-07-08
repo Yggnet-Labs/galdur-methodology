@@ -1,0 +1,27 @@
+GALDUR — Methodology & documentation license
+=============================================
+
+The GALDUR methodology and documentation in this repository — everything under
+`docs/`, together with the methodology text on the landing, community and legal
+pages — is licensed under the
+
+    Creative Commons Attribution 4.0 International License (CC BY 4.0)
+
+You are free to share and adapt this material, including for commercial purposes,
+provided you give appropriate credit. Required attribution:
+
+    "Yggnet Labs s.r.o., getgaldur.com — Licensed under CC BY 4.0"
+
+Full legal text: https://creativecommons.org/licenses/by/4.0/legalcode
+Human-readable summary: https://creativecommons.org/licenses/by/4.0/
+
+Note on scope:
+  • The reusable template payloads under `templates/` are licensed separately under
+    the MIT License (see LICENSE) — free use without conditions, no attribution required.
+  • The GALDUR name and logos are trademarks / intellectual property of
+    Yggnet Labs s.r.o. and are not covered by CC BY 4.0. See:
+    https://getgaldur.com/trademark.html
+
+Authoritative wording: https://getgaldur.com/terms.html (section "Content and license").
+
+© 2026 Yggnet Labs s.r.o.
