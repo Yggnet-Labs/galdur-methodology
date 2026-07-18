@@ -1,0 +1,86 @@
+# ============================================================================
+# GALDUR Intent Spec — Loop Execution Mode variant
+# Template draft for v0.95 · MIT License · getgaldur.com
+# ----------------------------------------------------------------------------
+# For agents running in loops (Ralph-style bash loops, /goal-style condition
+# loops, scheduled re-runs): the LOOP is the unit of delegated work. It gets
+# a mandate (this spec), a budget, an independent evaluator, and a named human
+# accountability owner. "Sit on the loop, not in it — but own the loop."
+# ============================================================================
+
+id: IS-YYYY-NNN
+domain: dev                  # dev | ops | db | network | security | ...
+title: ""
+status: draft                # lifecycle state — see methodology ch. 05
+
+intent: |
+  # WHAT we want to achieve and WHY it matters (1-3 sentences of business
+  # context). Outcome, not implementation. The loop cannot rescue a vague
+  # intent — it will optimize around it.
+
+execution_mode: loop         # NEW in v0.95 — marks this spec as loop-executed
+
+loop:                        # runtime CONTRACT — enforced by the harness,
+                             # never by trust in the agent
+  max_iterations: 50         # REQUIRED. Hard stop. No default, no infinity.
+  completion_promise: |      # REQUIRED. A BINARY, machine-testable predicate.
+    # Good:  "all tests in tests/payments/ pass AND coverage >= 85%"
+    # Good:  "feature_list.json contains zero items with status=failing"
+    # Anti-pattern: "the code looks good", "the feature works" (not testable
+    # -> invites reward hacking of weak done-conditions)
+  evaluator: ""              # REQUIRED. Who/what verifies the promise.
+                             # MUST NOT be the worker agent (workers grade
+                             # their own homework generously — never allow it).
+                             # A machine evaluator is a Gate Runner component,
+                             # NOT a fifth role; the human Curator remains the
+                             # deciding authority above it.
+                             # Mandatory separate evaluator from L1 upward;
+                             # optional for trivial L0 loops (calibration rule,
+                             # not dogma).
+  loop_budget:               # REQUIRED. Fail-safe stops, runtime-enforced.
+    max_tokens: 0
+    max_cost_usd: 0
+    max_wall_hours: 0
+  no_progress_after: 3       # N iterations without observable state change
+                             # -> Suspend + Drift Signal (do not spin)
+  iteration_log: "[LOOP]"    # every iteration emits a [LOOP] event
+                             # (audit trail + Living Lab metrics feed)
+
+acceptance:                  # binary criteria for the HUMAN Validation Gate
+  # TAMPER-RESISTANT: acceptance criteria and tests are READ-ONLY for the
+  # worker agent. Changing them requires an Amendment — never an in-loop edit.
+  # ("It is unacceptable to remove or edit tests.")
+  - ""
+
+scope:
+  in_scope: []
+  out_of_scope: []           # REQUIRED — loops scope-creep by design
+  constraints: []
+
+governance_level: L1         # L0-L3 per calibration guide ch. 6.1 — EXPLICIT
+governance_level_reason: ""  # one line: why this level (mandatory in v0.95)
+curator: ""                  # named human owner of the Validation Gate (REQUIRED)
+timeout_hours: 24            # max SUSPENDED wait before escalation
+
+validation:
+  gate_binding: completion_promise   # the human gate fires when the promise
+                                     # is met (or the loop stops on budget/
+                                     # no-progress) — NOT per iteration
+  checklist:
+    - "Completion promise verified by the evaluator (not the worker)?"
+    - "No budget breach; no tampering with acceptance/tests in [LOOP] log?"
+    - "Drift log reviewed (scope / constraint / context / escalation / external)?"
+    - "Outcome matches the intent, not just the letter of the promise?"
+
+depends_on: []
+blocks: []
+drift_log: []                # filled by the agent + governance engine
+
+# ----------------------------------------------------------------------------
+# WHAT IS *NOT* A LOOP (v0.95 scope rule)
+# Infra polling, schedulers, health checks, message-queue consumers and other
+# non-work cycles are NOT loops in this sense. Do not wrap them in loop
+# governance — that produces noise, not signal, and drowns your diary/metrics.
+# Loop governance applies to WORK-EXECUTION loops only: cycles that change
+# the state of a deliverable toward an acceptance criterion.
+# ----------------------------------------------------------------------------
