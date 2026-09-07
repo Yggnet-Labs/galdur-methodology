@@ -1,6 +1,6 @@
 # ============================================================================
 # GALDUR Intent Spec — Loop Execution Mode variant
-# Template draft for v0.95 · MIT License · getgaldur.com
+# GALDUR v0.95 · MIT License · getgaldur.com
 # ----------------------------------------------------------------------------
 # For agents running in loops (Ralph-style bash loops, /goal-style condition
 # loops, scheduled re-runs): the LOOP is the unit of delegated work. It gets
@@ -52,12 +52,11 @@ acceptance:                  # binary criteria for the HUMAN Validation Gate
   # ("It is unacceptable to remove or edit tests.")
   - ""
 
-scope:
-  in_scope: []
-  out_of_scope: []           # REQUIRED — loops scope-creep by design
-  constraints: []
+in_scope: []                 # optional
+out_of_scope: []             # REQUIRED — loops scope-creep by design (ch. 04)
+constraints: []              # negative rules; the loop must never cross them
 
-governance_level: L1         # L0-L3 per calibration guide ch. 6.1 — EXPLICIT
+governance_level: L1         # L0-L3 per calibration guide ch. 06 — EXPLICIT; ONE level per spec (v0.95)
 governance_level_reason: ""  # one line: why this level (mandatory in v0.95)
 curator: ""                  # named human owner of the Validation Gate (REQUIRED)
 timeout_hours: 24            # max SUSPENDED wait before escalation

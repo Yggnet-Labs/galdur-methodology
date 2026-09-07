@@ -1,81 +1,98 @@
-## IDENTIFIKACE
+# ============================================================================
+# GALDUR Intent Spec — OPS variant (full template)
+# GALDUR v0.95 · MIT License · getgaldur.com
+# ----------------------------------------------------------------------------
+# For infrastructure, database, network and security work. Appendix B of the
+# methodology is a strict SUBSET of this file. Ops defaults are stricter than
+# dev: governance L2, shorter timeouts, mandatory rollback per task, risk
+# assessment and change window. Mandatory fields (ch. 04): intent, domain,
+# out_of_scope, constraints, acceptance, governance_level, curator,
+# timeout_hours.
+# ============================================================================
+
+## IDENTIFICATION
 id: IS-YYYY-NNN
-domain: infra | db | network | security | cloud | data
+domain: infra | db | network | security
 title: ""
-status: draft
-version: "1.0"
-created_by: ""
-created_at: ""
+status: draft                    # lifecycle state — see ch. 05
+version: "1.0"                   # optional
+created_by: ""                   # optional
+created_at: ""                   # optional, ISO-8601
 
 ## HEADER — human-authored
 
 intent: |
-  # Proč to děláme (2–4 věty).
-  # NENÍ to popis implementace.
+  # WHY we do this (1–3 sentences). Outcome, not implementation.
 
-outcome:
+acceptance:                      # binary criteria for the Validation Gate
+  # TAMPER-RESISTANT (AM-2): READ-ONLY for the executing agent; change only via Amendment.
   - ""
 
-scope:
-  in_scope:
-    - ""
-  out_of_scope:
-    - ""
+execution_mode: single           # single | loop (AM-1); loop requires the full loop
+                                 # contract — see intent-spec-loop.yaml
 
+in_scope: []                     # optional
+out_of_scope:                    # REQUIRED
+  - ""
 constraints:
   - ""
 
 environment:
-  target: production | staging | dev | mixed
+  target: production | staging | dev
   systems: []
-  change_window: ""           # e.g. "Sat 02:00–04:00 UTC"
+  change_window: ""              # e.g. "Sat 02:00–04:00 UTC"
   notification_required: false
 
-dependencies:
-  depends_on: []
-  blocks: []
-
-risk_assessment:
+risk_assessment:                 # MANDATORY for ops
   blast_radius: low | medium | high | critical
   reversibility: easy | partial | hard | irreversible
   estimated_downtime: none | seconds | minutes | hours
-  rollback_plan: ""           # MANDATORY for all Ops tasks
+  rollback_plan: ""
 
 context: |
-  # Technical context the agent needs.
+  # Technical context the agent needs (runbooks, inventories, monitoring).
 
-## EXECUTION BODY — machine-readable
+trust_boundary: internal         # internal | external (external → governance level +1, ch. 10)
 
-governance:
-  level: collaborative        # Ops default is higher than Dev
-  # L2 collaborative = agent plans → human approves → executes
-  # L3 manual        = human executes, agent assists
-  escalate_on:
-    - production_impact
-    - blast_radius_expansion
-    - security_sensitive
-    - irreversible_action
-  escalation_to: ""
-  timeout_hours: 2            # shorter timeout for Ops
+## EXECUTION
+
+governance_level: L2             # ops default is L2 — higher than dev; ONE level per spec (v0.95)
+governance_level_reason: ""      # one line: why this level
+curator: ""                      # named human owner of the Validation Gate (REQUIRED — ch. 04)
+timeout_hours: 2                 # shorter than dev
+
+escalation:
+  triggers: [
+    production_impact,
+    blast_radius_expansion,
+    irreversible_action
+  ]
+  escalate_to: ""
   change_window_required: false
+
+## DEPENDENCIES
+
+depends_on: []
+blocks: []
+
+## TASKS — machine-readable
 
 tasks:
   - id: IS-NNN-T1
     title: ""
-    type: infrastructure | database | network | security | migration
-    agent_role: infra_agent | db_agent | network_agent | security_agent
+    type: infrastructure | database | network | security
+    agent_role: infra_agent | db_agent | network_agent
     pre_conditions: []
     acceptance: ""
-    rollback: ""              # MANDATORY
+    rollback: ""                 # MANDATORY for every ops task
     timeout_hours: 1
 
 ## VALIDATION GATE
 
 validation:
-  reviewer: ""
+  reviewer: ""                   # defaults to curator
   checklist:
-    - "All outcome conditions met?"
-    - "No constraints violated?"
+    - "Acceptance criteria met?"
     - "Rollback plan verified?"
     - "Monitoring alerts active?"
     - "Change window observed?"
@@ -88,4 +105,4 @@ post_actions:
 
 ## AUDIT TRAIL
 
-drift_log: []
+drift_log: []                    # filled by the agent + governance engine

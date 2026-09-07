@@ -1,5 +1,7 @@
 # Trace Audit — [Datum / Date]
 
+*GALDUR v0.95 template · MIT · getgaldur.com — adapt the rhythm and the tables to your domain.*
+
 **Review period:** [od / from] → [do / to]  
 **Facilitator:** [Intent Architect nebo Governance Steward]  
 **Participants:** [seznam]
@@ -18,6 +20,8 @@
 | Hard Lock incidents | | | 0 |
 | Average Amendment Rate | | | < 0.2 |
 | Average time spec → validated | | | — |
+| Machine pre-gate rejections (AM-3) | | | — |
+| Loop specs suspended for no-progress (AM-4) | | | 0 |
 
 **Overall assessment:** ✅ Healthy / ⚠️ Attention needed / 🔴 Action required
 
@@ -36,6 +40,7 @@
 | escalation | | | |
 | timeout | | | |
 | amendment_proposed | | | |
+| tamper_attempt (acceptance/tests edited by agent — AM-2) | | | |
 
 ### 2.2 Specs with Highest Drift Score
 
@@ -43,7 +48,13 @@
 |---|---|---|---|---|
 | | | | | |
 
-### 2.3 Patterns — Where Specs Failed
+### 2.3 Loop specs — longitudinal drift (AM-4)
+
+| Spec ID | Iterations | No-progress suspends | Budget stops | Completion promise met? |
+|---|---|---|---|---|
+| | | | | |
+
+### 2.4 Patterns — Where Specs Failed
 
 **Pattern #1:** [description]  
 Occurrence: [N times]  
@@ -147,3 +158,7 @@ Notes: [...]
 *Trace Audit completed: [datum]*  
 *Next Trace Audit: [datum nebo trigger]*  
 *Archived to: [link or location]*
+
+---
+
+*GALDUR v0.95 · © 2026 Yggnet Labs s.r.o. · getgaldur.com · MIT License (templates)*

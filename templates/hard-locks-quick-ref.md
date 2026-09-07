@@ -4,6 +4,8 @@ Hard Locks are categories of actions that **an agent must never perform without 
 
 These locks are implemented in the governance engine — the agent cannot override them, the curator cannot delegate them.
 
+**Semantics (v0.95, unified):** a locked action is executed by a human, never by the agent. A human *approval* unlocks the continuation of the spec — it does not hand the locked action back to the agent. Editing acceptance criteria or tests is **not** a Hard Lock but a drift event `constraint_breach` (AM-2); in loops it suspends the spec.
+
 ---
 
 ## Universal Hard Locks — all domains, no exceptions
@@ -93,4 +95,4 @@ The purpose of Hard Locks is to protect the system **and** the Curator. An agent
 
 ---
 
-*GALDUR v0.9 · © 2026 Yggnet Labs s.r.o. · getgaldur.com · MIT License (templates)*
+*GALDUR v0.95 · © 2026 Yggnet Labs s.r.o. · getgaldur.com · MIT License (templates)*

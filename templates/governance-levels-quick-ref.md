@@ -1,5 +1,7 @@
 # Governance Levels — Quick Reference
 
+*GALDUR v0.95 · one level per spec, chosen explicitly and justified in `governance_level_reason`.*
+
 ## L0 — Autonomous
 
 **Agent executes, logs, continues. Human is notified async.**
@@ -66,8 +68,17 @@ Human touchpoint: Every step must be explicitly triggered by the human.
 
 ## HARD — Absolute Locks
 
-**These cannot be reduced by any governance_override in the Intent Spec.**  
-See [hard-locks.md](hard-locks.md) for the complete list.
+**Cannot be reduced by anything in the Intent Spec.** A locked action is always executed by a human; approval unlocks the *continuation of the spec*, it does not free the agent's hands (v0.95).  
+See [hard-locks-quick-ref.md](hard-locks-quick-ref.md) for the complete list.
+
+---
+
+## v0.95 rules that change how you pick a level
+
+- **Per-spec, not per-task.** One spec = one governance level for all its tasks. Mixed sensitivity (docs + DB migration)? Split into two specs linked with `depends_on`. There is no per-task `governance_override` in v0.95 (roadmap v1.x).
+- **Untrusted inputs raise the level by one.** A spec that consumes e-mail, web content, uploads or another agent's output declares `trust_boundary: external` → L0 becomes L1, L1 becomes L2 (prompt-injection defence, ch. 10).
+- **Loops (AM-1).** `execution_mode: loop` needs the runtime contract (max_iterations, completion_promise, evaluator ≠ worker, loop_budget); a separate evaluator is mandatory from L1 upward.
+- **Acceptance is read-only for the agent (AM-2).** Changing criteria or tests is a drift event `constraint_breach`; in a loop it suspends the spec.
 
 ---
 
@@ -106,4 +117,4 @@ Is the action reversible within 5 minutes without side effects?
 
 ---
 
-*GALDUR v0.9 · © 2026 Yggnet Labs s.r.o. · getgaldur.com · MIT License (templates)*
+*GALDUR v0.95 · © 2026 Yggnet Labs s.r.o. · getgaldur.com · MIT License (templates)*

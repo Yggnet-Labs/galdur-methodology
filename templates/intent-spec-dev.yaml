@@ -1,90 +1,114 @@
-## IDENTIFIKACE
+# ============================================================================
+# GALDUR Intent Spec — DEV variant (full template)
+# GALDUR v0.95 · MIT License · getgaldur.com
+# ----------------------------------------------------------------------------
+# For isolated development tasks (code, tests, docs, analysis). Appendix A of
+# the methodology is a strict SUBSET of this file: every field shown there
+# exists here under the same name. Mandatory fields (ch. 04): intent, domain,
+# out_of_scope, constraints, acceptance, governance_level, curator,
+# timeout_hours. Everything else is optional — delete what you do not use.
+# ============================================================================
+
+## IDENTIFICATION
 id: IS-YYYY-NNN
 domain: dev
 title: ""
-status: draft
-version: "1.0"
-created_by: ""
-created_at: ""
+status: draft                    # lifecycle state — see ch. 05 (draft → crystallized → active → …)
+version: "1.0"                   # optional: spec revision (Amendments bump it)
+created_by: ""                   # optional
+created_at: ""                   # optional, ISO-8601
 
 ## HEADER — human-authored
 
 intent: |
-  # Proč to děláme (2–4 věty).
-  # Co je strategický důvod, jaký problém řeší, co odblokuje.
-  # NENÍ to popis implementace.
+  # WHY we do this and what it unlocks (1–3 sentences of business context).
+  # Outcome, not implementation. A vague intent cannot be rescued downstream.
 
-outcome:
-  # Jak KONKRÉTNĚ a MĚŘITELNĚ poznáme, že je hotovo.
-  # Každý bod musí být binárně ověřitelný (ano/ne, pass/fail).
+acceptance:                      # binary, machine-testable criteria for the Validation Gate
+  # TAMPER-RESISTANT (AM-2): acceptance criteria and the tests that verify them
+  # are READ-ONLY for the executing agent. It reads and fulfils them; it must
+  # not change, delete or weaken them — not even temporarily, not even inside
+  # a loop. The only way to change them is an Amendment. An attempt = drift
+  # event constraint_breach (in loops: immediate Suspend).
   - ""
 
-scope:
-  in_scope:
-    - ""
-  out_of_scope:
-    # POVINNÉ — agenti mají tendenci scope-creepovat.
-    - ""
-
-constraints:
-  # Co agent NESMÍ dělat. Negativní pravidla.
+in_scope: []                     # optional — what IS included, when it helps clarity
+out_of_scope:                    # REQUIRED — agents scope-creep (ch. 04)
+  - ""
+constraints:                     # negative rules the agent must never violate
   - ""
 
 context: |
-  # Technický kontext, který agent potřebuje k exekuci.
+  # Technical context the agent needs to execute (repos, conventions, links).
 
-dependencies:
-  depends_on: []   # IS-IDs that must be validated first
-  blocks: []       # IS-IDs waiting for this spec
+trust_boundary: internal         # internal | external — external = the spec consumes
+                                 # untrusted inputs (e-mail, web, uploads, other agents'
+                                 # output) → governance level is raised by one (ch. 10)
+
+## EXECUTION
+
+execution_mode: single           # single | loop (AM-1)
+# If execution_mode: loop, the full loop contract is REQUIRED — use
+# intent-spec-loop.yaml (max_iterations, completion_promise, evaluator, loop_budget).
+
+governance_level: L1             # L0=autonomous | L1=supervised | L2=collaborative | L3=manual
+                                 # ONE level per spec (v0.95: governance is per-spec, not
+                                 # per-task — split mixed-sensitivity work into two specs)
+governance_level_reason: ""      # one line: why this level (calibration guide ch. 06)
+curator: ""                      # named human owner of the Validation Gate (REQUIRED — ch. 04)
+timeout_hours: 4                 # max wait in SUSPENDED before escalation
+
+escalation:
+  triggers: [
+    schema_changes,
+    new_external_dependency,
+    security_sensitive
+  ]
+  escalate_to: ""                # named human (defaults to curator)
+
+## DEPENDENCIES
+
+depends_on: []                   # specs that must be Validated first
+blocks: []                       # specs waiting for this one
+
+## RISK (optional for dev; mandatory for ops — see intent-spec-ops.yaml)
 
 risk_assessment:
-  blast_radius: low | medium | high | critical
-  reversibility: easy | partial | hard | irreversible
+  blast_radius: low              # low | medium | high | critical
+  reversibility: easy            # easy | partial | hard | irreversible
   rollback_plan: ""
 
-## EXECUTION BODY — machine-readable
+## TASKS — machine-readable
 
-governance:
-  level: autonomous | supervised | collaborative | manual
-  # L0 autonomous    = agent executes, logs, continues
-  # L1 supervised    = Validation Gate before deploy
-  # L2 collaborative = agent plans → human approves → executes
-  # L3 manual        = human executes, agent assists
-  escalate_on:
-    - schema_changes
-    - new_external_dependency
-    - security_sensitive
-  escalation_to: ""
-  timeout_hours: 4
-
-tasks:
-  - id: IS-NNN-T1
-    title: ""
-    type: implementation | testing | documentation | analysis
-    agent_role: coding_agent | docs_agent | analysis_agent
-    depends_on: []
-    governance_override: ~   # only downward (more autonomy), never upward
-    pre_conditions: []
-    acceptance: ""
-    rollback: ""
-    timeout_hours: 2
+tasks: []
+# - id: IS-NNN-T1
+#   title: ""
+#   type: implementation         # implementation | testing | documentation | analysis
+#   agent_role: coding_agent     # coding_agent | docs_agent | analysis_agent
+#   depends_on: []
+#   pre_conditions: []
+#   acceptance: ""               # task-level check; spec-level acceptance above stays authoritative
+#   rollback: ""
+#   timeout_hours: 2
+#   # NOTE (v0.95): there is NO per-task governance_override. If a task needs a
+#   # different level, it belongs in a separate spec linked via depends_on.
 
 ## VALIDATION GATE
 
 validation:
-  reviewer: ""
+  reviewer: ""                   # defaults to curator
   checklist:
-    - "All outcome conditions met?"
-    - "No constraints violated?"
+    - "Acceptance criteria met?"
+    - "No constraint violated?"
     - "Drift report read and understood?"
     - "Rollback plan verified (if applicable)?"
 
 ## AUDIT TRAIL
 
-drift_log: []
+drift_log: []                    # filled by the agent + governance engine
 # - task_id: IS-NNN-T1
 #   timestamp: YYYY-MM-DDTHH:MM:SSZ
-#   type: scope_expansion | constraint_violation | technical_deviation |
+#   type: scope_drift | constraint_breach | technical_deviation |
 #         inferred_decision | escalation | timeout | amendment_proposed
 #   description: ""
 #   resolution: approved | reverted | escalated | accepted_with_note
