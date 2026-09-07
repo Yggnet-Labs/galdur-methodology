@@ -1,6 +1,6 @@
 # Hard Locks — Quick Reference
 
-Hard Locks are categories of actions that **an agent must never perform without explicit real-time human approval**, regardless of any instructions in the Intent Spec.
+Hard Locks are categories of actions that **an agent never performs**, regardless of any instructions in the Intent Spec. When such an action is needed, a human performs it after explicit real-time approval by the Intent Architect.
 
 These locks are implemented in the governance engine — the agent cannot override them, the curator cannot delegate them.
 

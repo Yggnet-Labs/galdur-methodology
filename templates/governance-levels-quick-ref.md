@@ -44,7 +44,9 @@ When to use:
 - External parties involved (customer, partner)
 - Partially reversible or high-impact actions
 
-Examples: prod deploy, destructive DB migration, firewall changes, API breaking change, sending email to customer
+Examples: prod deploy with a verified rollback, internal API breaking change, non-destructive prod config change, migration with tested rollback
+
+*Not L2:* destructive DB migrations, prod firewall changes, customer-facing e-mail — these sit in the domain hard minima / Hard Locks below and are human-executed (L3/HARD).
 
 Human touchpoint: Approval required BEFORE execution.
 
@@ -55,7 +57,7 @@ Human touchpoint: Approval required BEFORE execution.
 **Human executes, agent assists.**
 
 When to use:
-- Hard Lock categories (see hard-locks.md)
+- Hard Lock categories (see hard-locks-quick-ref.md)
 - Irreversible actions
 - Legal or financial commitments
 - Security-critical operations
@@ -82,22 +84,23 @@ See [hard-locks-quick-ref.md](hard-locks-quick-ref.md) for the complete list.
 
 ---
 
-## Decision Tree — Which Level?
+## Decision Tree — Which Level? (Appendix C of the methodology)
+
+**First check the domain governance matrix and the Hard Locks (ch. 06 and 10) — their minimum takes precedence over this orientation tree.**
 
 ```
-Is the action reversible within 5 minutes without side effects?
-├── YES → L0 candidate
-│         Does it affect multiple modules or staging?
-│         ├── YES → L1
-│         └── NO  → L0
-└── NO  → L2 candidate minimum
-          Does it touch production or an external party?
-          ├── YES + irreversible consequences → L3
-          ├── YES                             → L2
-          └── NO                             → back to reversibility check
-                Is it a Hard Lock category?
-                └── YES → L3/HARD — always human, no exceptions
+Is the action reversible within 60 minutes without data loss?
+├── NO  → L3 (Manual), unless the domain matrix names a Hard Lock or explicitly another level
+└── YES → Does the blast radius reach beyond a single spec / service?
+          ├── YES → L2 (Collaborative) — a human approves the plan
+          └── NO  → Does the action touch the production environment?
+                    ├── YES → at least the level set by the domain matrix (ch. 06)
+                    └── NO  → Is the agent calibrated (< 15 drift events / 100 specs)?
+                              ├── YES → L0 (Autonomous) — async Drift Signal
+                              └── NO  → L1 (Supervised) — Validation Gate before deploy
 ```
+
+The tree mirrors the calibration logic of ch. 06; per-domain thresholds, multi-layer escalation and level-specific policies are in ch. 06 and ch. 10.
 
 **When in doubt: choose higher.** The drift log will show if you were too strict — that is correctable. An incident from too low a level may not be.
 
@@ -105,15 +108,18 @@ Is the action reversible within 5 minutes without side effects?
 
 ## CANNOT BE REDUCED (domain defaults)
 
-| Domain | Hard minimum |
+| Domain | Hard Locks (human-executed, cannot be reduced) |
 |---|---|
-| Dev | DB destructive, Auth/session, Cryptography, Payments, External comms |
-| Infra | Prod firewall, IAM changes, Prod data delete, Backup restore to prod |
-| Network | DNS prod, Core routing, VPN prod config |
-| Security | Incident containment, Audit log manipulation |
-| Sales | Sending to customer, Accepting commitments |
-| Legal | Sending contracts, Signing, Regulatory filing |
-| Finance | Any payment, Banking system access |
+| Dev | DB destructive · Auth · Cryptography · Payments · External communication |
+| Infra | Restore to prod · Decommission without backup verification · Prod SSL/TLS without downtime coordination |
+| Database | Prod restore · UPDATE without WHERE > 10K rows · Replication config |
+| Network | DNS prod (A, MX, NS) · Core switch · VPN prod config |
+| Security | Incident containment · Audit log manipulation · Prod firewall |
+| Sales | Sending offers to customers · Accepting commitments (prices, deadlines) |
+| Legal | Sending contracts · Signing, accepting or rejecting · Regulatory filing |
+| Finance | Any payment · Banking or payment system access |
+
+Hard Locks cannot be reduced by any `governance_override` or Amendment. The agent never executes a locked action — after an explicit real-time approval by the Intent Architect, a human performs it; the approval unlocks the continuation of the spec, not the agent's execution. Every such use is a Hard Lock incident with a mandatory Trace Audit (ch. 10).
 
 ---
 

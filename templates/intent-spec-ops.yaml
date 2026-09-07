@@ -57,7 +57,7 @@ trust_boundary: internal         # internal | external (external → governance 
 ## EXECUTION
 
 governance_level: L2             # ops default is L2 — higher than dev; ONE level per spec (v0.95)
-governance_level_reason: ""      # one line: why this level
+governance_level_reason: ""      # one line: why this level — recommended, not a ch. 04 mandatory field
 curator: ""                      # named human owner of the Validation Gate (REQUIRED — ch. 04)
 timeout_hours: 2                 # shorter than dev
 

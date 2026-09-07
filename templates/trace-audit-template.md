@@ -40,7 +40,7 @@
 | escalation | | | |
 | timeout | | | |
 | amendment_proposed | | | |
-| tamper_attempt (acceptance/tests edited by agent — AM-2) | | | |
+| — of which constraint_breach: acceptance/tests edited by the agent (AM-2 tamper attempt; sub-tag, not a separate type) | | | |
 
 ### 2.2 Specs with Highest Drift Score
 

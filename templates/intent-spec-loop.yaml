@@ -57,7 +57,8 @@ out_of_scope: []             # REQUIRED — loops scope-creep by design (ch. 04)
 constraints: []              # negative rules; the loop must never cross them
 
 governance_level: L1         # L0-L3 per calibration guide ch. 06 — EXPLICIT; ONE level per spec (v0.95)
-governance_level_reason: ""  # one line: why this level (mandatory in v0.95)
+governance_level_reason: ""  # one line: why this level — RECOMMENDED template extension,
+                             # not one of the mandatory fields of ch. 04
 curator: ""                  # named human owner of the Validation Gate (REQUIRED)
 timeout_hours: 24            # max SUSPENDED wait before escalation
 

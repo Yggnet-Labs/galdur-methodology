@@ -6,7 +6,8 @@
 # the methodology is a strict SUBSET of this file: every field shown there
 # exists here under the same name. Mandatory fields (ch. 04): intent, domain,
 # out_of_scope, constraints, acceptance, governance_level, curator,
-# timeout_hours. Everything else is optional — delete what you do not use.
+# timeout_hours. The loop contract becomes mandatory when execution_mode: loop
+# (AM-1). Everything else is optional — delete what you do not use.
 # ============================================================================
 
 ## IDENTIFICATION
@@ -54,7 +55,7 @@ execution_mode: single           # single | loop (AM-1)
 governance_level: L1             # L0=autonomous | L1=supervised | L2=collaborative | L3=manual
                                  # ONE level per spec (v0.95: governance is per-spec, not
                                  # per-task — split mixed-sensitivity work into two specs)
-governance_level_reason: ""      # one line: why this level (calibration guide ch. 06)
+governance_level_reason: ""      # one line: why this level — recommended, not a ch. 04 mandatory field
 curator: ""                      # named human owner of the Validation Gate (REQUIRED — ch. 04)
 timeout_hours: 4                 # max wait in SUSPENDED before escalation
 

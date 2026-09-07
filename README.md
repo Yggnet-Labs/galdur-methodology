@@ -31,10 +31,11 @@ The files in `templates/` are meant to be copied into your own repositories and 
 to your team — intent specs, hard-lock references and the trace-audit template. Fork,
 adapt, and share back what works.
 
-Appendices A–C of the methodology are strict subsets of `intent-spec-dev.yaml`,
-`intent-spec-ops.yaml` and `governance-levels-quick-ref.md`: every field printed in the
-book exists in the template under the same name, so a spec written from the book
-validates against the template and vice versa.
+Appendices A and B of the methodology use the same field names as `intent-spec-dev.yaml`
+and `intent-spec-ops.yaml`: every field printed in the book exists in the template under
+the same name; the templates add optional fields (identification, risk, tasks, post-actions).
+Appendix C (the reference card) is harmonised with `governance-levels-quick-ref.md`. There is
+no validation schema — the match is by field names, checked when the release is prepared.
 
 ## Community
 
