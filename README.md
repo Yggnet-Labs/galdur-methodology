@@ -33,7 +33,7 @@ adapt, and share back what works.
 
 Appendices A and B of the methodology use the same field names as `intent-spec-dev.yaml`
 and `intent-spec-ops.yaml`: every field printed in the book exists in the template under
-the same name; the templates add optional fields (identification, risk, tasks, post-actions).
+the same name; the templates add optional fields (identification, task details; risk assessment is optional for dev and mandatory for ops, post-actions for ops).
 Appendix C (the reference card) is harmonised with `governance-levels-quick-ref.md`. There is
 no validation schema — the match is by field names, checked when the release is prepared.
 

@@ -9,7 +9,7 @@
 When to use:
 - Read-only operations (queries, analysis, monitoring)
 - Isolated changes (single file, test, log)
-- Easily reversible (undone in < 5 minutes, no side effects)
+- Easily reversible (undone within 60 minutes without data loss, no side effects — the threshold of the decision tree below)
 - Low blast radius
 
 Examples: unit tests, README, isolated bug fix, log rotation, read-only analysis, reporting
