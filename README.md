@@ -1,5 +1,12 @@
 # GALDUR
 
+**English** · [Čeština](README.cs.md)
+
+[![Release](https://img.shields.io/github/v/release/Yggnet-Labs/galdur-methodology?display_name=tag)](https://github.com/Yggnet-Labs/galdur-methodology/releases)
+[![Templates: MIT](https://img.shields.io/badge/templates-MIT-blue.svg)](LICENSE)
+[![Methodology: CC BY 4.0](https://img.shields.io/badge/methodology-CC%20BY%204.0-lightgrey.svg)](LICENSE-DOCS)
+[![Discussions](https://img.shields.io/github/discussions/Yggnet-Labs/galdur-methodology)](https://github.com/Yggnet-Labs/galdur-methodology/discussions)
+
 **A methodology for hybrid teams of people and AI agents.**
 
 GALDUR is a governance methodology for building and operating software when part of
@@ -11,6 +18,17 @@ the intent contracts, autonomy levels, hard locks and audit trail to stay in con
 - **Current release: v0.95** — seven amendments since v0.9 (AM-1 Loop Execution Mode, AM-2 tamper-resistant acceptance, AM-3 machine pre-gate, AM-4 longitudinal drift in loops, AM-5 five separate Spec Health indicators, AM-6/AM-7 record patches). Full changelog and amendment log are at the end of the methodology.
 - Web & methodology (buy / download / community): **https://getgaldur.com**
 - Author: Vladimír Šedivý · **Yggnet Labs s.r.o.**
+
+## Start in 10 minutes
+
+1. Read the [seven principles and governance levels](docs/en/index.html).
+2. Choose the lowest autonomy level that matches the risk of the task.
+3. Copy an Intent Spec from `templates/` (`dev`, `ops`, or `loop`) into your repository.
+4. Fill in the objective, acceptance evidence, allowed actions, Hard Locks, and evaluator.
+5. Run the work, capture the evidence, and use the Trace Audit template after completion.
+
+Start with L1 or L2 if you are unsure. Hard Locks are not override switches: the agent
+never performs a locked action; after explicit approval, a human performs it.
 
 ## What's in this repository
 
@@ -42,6 +60,10 @@ no validation schema — the match is by field names, checked when the release i
 Questions, feedback and contributions are welcome via GitHub Discussions and at
 [getgaldur.com](https://getgaldur.com). Contributions to the methodology are credited in
 the next release.
+
+Before contributing, read [CONTRIBUTING.md](CONTRIBUTING.md), the
+[Code of Conduct](CODE_OF_CONDUCT.md), and [SECURITY.md](SECURITY.md). Release changes
+are summarized in [CHANGELOG.md](CHANGELOG.md).
 
 ## Licensing
 
